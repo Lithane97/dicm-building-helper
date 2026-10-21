@@ -1,0 +1,809 @@
+# Verified single-click reproduction workers and read-only diagnostics.
+# Reserve-aware batches dispatch these workers from dicm_bh_development_batch events.
+namespace = dicm_bh_development_spend
+country_event = {
+    id = dicm_bh_development_spend.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_status value = 0 }
+            set_variable = { which = dicm_bh_sp_spent value = 0 }
+            set_variable = { which = dicm_bh_sp_dev_delta value = 0 }
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_adm_reserve }
+            dicm_bh_sp_collect_target = { TYPE = adm }
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                set_country_flag = dicm_bh_sp_active
+                event_target:dicm_bh_sp_target = {
+                    province_event = { id = dicm_bh_development_spend.11 }
+                }
+                clr_country_flag = dicm_bh_sp_active
+                log = "DICM BH SCRIPTED DEVELOPMENT TARGET: [dicm_bh_sp_target.GetName]"
+            }
+            dicm_bh_restore_trade_report = yes
+            log = "DICM BH SCRIPTED DEVELOPMENT TYPE: ADM"
+            log = "DICM BH SCRIPTED DEVELOPMENT STATUS: [Root.dicm_bh_sp_status.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT SPENT: [Root.dicm_bh_sp_spent.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT GAIN: [Root.dicm_bh_sp_dev_delta.GetValue]"
+            if = {
+                limit = { NOT = { has_country_flag = dicm_bh_db_running } }
+                country_event = { id = dicm_bh_dev_menu.1 }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+province_event = {
+    id = dicm_bh_development_spend.11
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    owned_by = FROM
+                    dicm_bh_sp_site_supported = yes
+                    has_province_flag = dicm_bh_dev_adm_candidate
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                set_variable = { which = dicm_bh_sp_cost which = dicm_bh_dev_cost }
+                export_to_variable = { which = dicm_bh_sp_dev_before value = development }
+                owner = {
+                    export_to_variable = { which = dicm_bh_sp_before value = trigger_value:adm_power }
+                    set_variable = { which = dicm_bh_sp_cost which = PREV }
+                    set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_adm_reserve }
+                    change_variable = { which = dicm_bh_sp_required which = dicm_bh_sp_cost }
+                    set_variable = { which = dicm_bh_sp_native_hooks_before which = num_of_times_developed }
+                    set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_cost }
+                    if = {
+                        limit = {
+                            check_variable = { which = dicm_bh_sp_before which = dicm_bh_sp_required }
+                            check_variable = { which = dicm_bh_sp_cost value = 1 }
+                            NOT = { check_variable = { which = dicm_bh_sp_cost value = 2048 } }
+                        }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 1024 DELTA = -1024 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 512 DELTA = -512 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 256 DELTA = -256 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 128 DELTA = -128 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 64 DELTA = -64 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 32 DELTA = -32 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 16 DELTA = -16 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 8 DELTA = -8 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 4 DELTA = -4 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 2 DELTA = -2 }
+                        dicm_bh_sp_power_piece = { TYPE = adm VALUE = 1 DELTA = -1 }
+                        export_to_variable = { which = dicm_bh_sp_after value = trigger_value:adm_power }
+                        set_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_before }
+                        subtract_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_after }
+                        if = {
+                            limit = {
+                                is_variable_equal = { which = dicm_bh_sp_spent which = dicm_bh_sp_cost }
+                                check_variable = { which = dicm_bh_sp_after which = dicm_bh_dm_adm_reserve }
+                            }
+                            set_variable = { which = dicm_bh_sp_status value = 1 }
+                        }
+                        else = {
+                            # Failed payment verification: refund observed deduction, no development.
+                            set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_spent }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 1024 DELTA = 1024 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 512 DELTA = 512 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 256 DELTA = 256 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 128 DELTA = 128 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 64 DELTA = 64 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 32 DELTA = 32 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 16 DELTA = 16 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 8 DELTA = 8 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 4 DELTA = 4 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 2 DELTA = 2 }
+                            dicm_bh_sp_power_piece = { TYPE = adm VALUE = 1 DELTA = 1 }
+                            set_variable = { which = dicm_bh_sp_status value = 2 }
+                        }
+                    }
+                }
+                if = {
+                    limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                    add_base_tax = 1
+                    export_to_variable = { which = dicm_bh_sp_dev_after value = development }
+                    set_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_after }
+                    subtract_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_before }
+                    owner = {
+                        set_variable = { which = dicm_bh_sp_dev_before which = PREV }
+                        set_variable = { which = dicm_bh_sp_raw_delta which = PREV }
+                        set_variable = { which = dicm_bh_sp_auto_hooks_delta which = num_of_times_developed }
+                        subtract_variable = { which = dicm_bh_sp_auto_hooks_delta which = dicm_bh_sp_native_hooks_before }
+                    }
+                    if = {
+                        limit = {
+                            is_variable_equal = { which = dicm_bh_sp_raw_delta value = 1 }
+                            owner = { is_variable_equal = { which = dicm_bh_sp_auto_hooks_delta value = 0 } }
+                        }
+                        # Verified +1 before any institution mutation; helper restores it.
+                        dicm_bh_sp_apply_institution_progress = { BASE = tax }
+                        if = {
+                            limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                            dicm_bh_sp_apply_side_effects = yes
+                            set_province_flag = dicm_bh_sp_adm_replay_pending
+                            province_event = { id = dicm_bh_development_spend.21 }
+                        }
+                    }
+                    else_if = {
+                        limit = { is_variable_equal = { which = dicm_bh_sp_raw_delta value = 0 } }
+                        owner = {
+                            dicm_bh_sp_refund_payment = { TYPE = adm }
+                            set_variable = { which = dicm_bh_sp_status value = 4 }
+                        }
+                    }
+                    else = {
+                        # Unexpected base delta or automatic hooks: do not double-replay.
+                        owner = { set_variable = { which = dicm_bh_sp_status value = 3 } }
+                    }
+                    export_to_variable = { which = dicm_bh_sp_dev_delta value = development }
+                    subtract_variable = { which = dicm_bh_sp_dev_delta which = dicm_bh_sp_dev_before }
+                    owner = { set_variable = { which = dicm_bh_sp_dev_delta which = PREV } }
+                }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_spend.2
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_status value = 0 }
+            set_variable = { which = dicm_bh_sp_spent value = 0 }
+            set_variable = { which = dicm_bh_sp_dev_delta value = 0 }
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_dip_reserve }
+            dicm_bh_sp_collect_target = { TYPE = dip }
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                set_country_flag = dicm_bh_sp_active
+                event_target:dicm_bh_sp_target = {
+                    province_event = { id = dicm_bh_development_spend.12 }
+                }
+                clr_country_flag = dicm_bh_sp_active
+                log = "DICM BH SCRIPTED DEVELOPMENT TARGET: [dicm_bh_sp_target.GetName]"
+            }
+            dicm_bh_restore_trade_report = yes
+            log = "DICM BH SCRIPTED DEVELOPMENT TYPE: DIP"
+            log = "DICM BH SCRIPTED DEVELOPMENT STATUS: [Root.dicm_bh_sp_status.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT SPENT: [Root.dicm_bh_sp_spent.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT GAIN: [Root.dicm_bh_sp_dev_delta.GetValue]"
+            if = {
+                limit = { NOT = { has_country_flag = dicm_bh_db_running } }
+                country_event = { id = dicm_bh_dev_menu.1 }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+province_event = {
+    id = dicm_bh_development_spend.12
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    owned_by = FROM
+                    dicm_bh_sp_site_supported = yes
+                    has_province_flag = dicm_bh_dev_dip_candidate
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                set_variable = { which = dicm_bh_sp_cost which = dicm_bh_dev_cost }
+                export_to_variable = { which = dicm_bh_sp_dev_before value = development }
+                owner = {
+                    export_to_variable = { which = dicm_bh_sp_before value = trigger_value:dip_power }
+                    set_variable = { which = dicm_bh_sp_cost which = PREV }
+                    set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_dip_reserve }
+                    change_variable = { which = dicm_bh_sp_required which = dicm_bh_sp_cost }
+                    set_variable = { which = dicm_bh_sp_native_hooks_before which = num_of_times_developed }
+                    set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_cost }
+                    if = {
+                        limit = {
+                            check_variable = { which = dicm_bh_sp_before which = dicm_bh_sp_required }
+                            check_variable = { which = dicm_bh_sp_cost value = 1 }
+                            NOT = { check_variable = { which = dicm_bh_sp_cost value = 2048 } }
+                        }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 1024 DELTA = -1024 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 512 DELTA = -512 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 256 DELTA = -256 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 128 DELTA = -128 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 64 DELTA = -64 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 32 DELTA = -32 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 16 DELTA = -16 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 8 DELTA = -8 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 4 DELTA = -4 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 2 DELTA = -2 }
+                        dicm_bh_sp_power_piece = { TYPE = dip VALUE = 1 DELTA = -1 }
+                        export_to_variable = { which = dicm_bh_sp_after value = trigger_value:dip_power }
+                        set_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_before }
+                        subtract_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_after }
+                        if = {
+                            limit = {
+                                is_variable_equal = { which = dicm_bh_sp_spent which = dicm_bh_sp_cost }
+                                check_variable = { which = dicm_bh_sp_after which = dicm_bh_dm_dip_reserve }
+                            }
+                            set_variable = { which = dicm_bh_sp_status value = 1 }
+                        }
+                        else = {
+                            # Failed payment verification: refund observed deduction, no development.
+                            set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_spent }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 1024 DELTA = 1024 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 512 DELTA = 512 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 256 DELTA = 256 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 128 DELTA = 128 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 64 DELTA = 64 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 32 DELTA = 32 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 16 DELTA = 16 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 8 DELTA = 8 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 4 DELTA = 4 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 2 DELTA = 2 }
+                            dicm_bh_sp_power_piece = { TYPE = dip VALUE = 1 DELTA = 1 }
+                            set_variable = { which = dicm_bh_sp_status value = 2 }
+                        }
+                    }
+                }
+                if = {
+                    limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                    add_base_production = 1
+                    export_to_variable = { which = dicm_bh_sp_dev_after value = development }
+                    set_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_after }
+                    subtract_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_before }
+                    owner = {
+                        set_variable = { which = dicm_bh_sp_dev_before which = PREV }
+                        set_variable = { which = dicm_bh_sp_raw_delta which = PREV }
+                        set_variable = { which = dicm_bh_sp_auto_hooks_delta which = num_of_times_developed }
+                        subtract_variable = { which = dicm_bh_sp_auto_hooks_delta which = dicm_bh_sp_native_hooks_before }
+                    }
+                    if = {
+                        limit = {
+                            is_variable_equal = { which = dicm_bh_sp_raw_delta value = 1 }
+                            owner = { is_variable_equal = { which = dicm_bh_sp_auto_hooks_delta value = 0 } }
+                        }
+                        # Verified +1 before any institution mutation; helper restores it.
+                        dicm_bh_sp_apply_institution_progress = { BASE = production }
+                        if = {
+                            limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                            dicm_bh_sp_apply_side_effects = yes
+                            set_province_flag = dicm_bh_sp_dip_replay_pending
+                            province_event = { id = dicm_bh_development_spend.22 }
+                        }
+                    }
+                    else_if = {
+                        limit = { is_variable_equal = { which = dicm_bh_sp_raw_delta value = 0 } }
+                        owner = {
+                            dicm_bh_sp_refund_payment = { TYPE = dip }
+                            set_variable = { which = dicm_bh_sp_status value = 4 }
+                        }
+                    }
+                    else = {
+                        # Unexpected base delta or automatic hooks: do not double-replay.
+                        owner = { set_variable = { which = dicm_bh_sp_status value = 3 } }
+                    }
+                    export_to_variable = { which = dicm_bh_sp_dev_delta value = development }
+                    subtract_variable = { which = dicm_bh_sp_dev_delta which = dicm_bh_sp_dev_before }
+                    owner = { set_variable = { which = dicm_bh_sp_dev_delta which = PREV } }
+                }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_spend.3
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_status value = 0 }
+            set_variable = { which = dicm_bh_sp_spent value = 0 }
+            set_variable = { which = dicm_bh_sp_dev_delta value = 0 }
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_mil_reserve }
+            dicm_bh_sp_collect_target = { TYPE = mil }
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                set_country_flag = dicm_bh_sp_active
+                event_target:dicm_bh_sp_target = {
+                    province_event = { id = dicm_bh_development_spend.13 }
+                }
+                clr_country_flag = dicm_bh_sp_active
+                log = "DICM BH SCRIPTED DEVELOPMENT TARGET: [dicm_bh_sp_target.GetName]"
+            }
+            dicm_bh_restore_trade_report = yes
+            log = "DICM BH SCRIPTED DEVELOPMENT TYPE: MIL"
+            log = "DICM BH SCRIPTED DEVELOPMENT STATUS: [Root.dicm_bh_sp_status.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT SPENT: [Root.dicm_bh_sp_spent.GetValue]"
+            log = "DICM BH SCRIPTED DEVELOPMENT GAIN: [Root.dicm_bh_sp_dev_delta.GetValue]"
+            if = {
+                limit = { NOT = { has_country_flag = dicm_bh_db_running } }
+                country_event = { id = dicm_bh_dev_menu.1 }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+province_event = {
+    id = dicm_bh_development_spend.13
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    owned_by = FROM
+                    dicm_bh_sp_site_supported = yes
+                    has_province_flag = dicm_bh_dev_mil_candidate
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                set_variable = { which = dicm_bh_sp_cost which = dicm_bh_dev_cost }
+                export_to_variable = { which = dicm_bh_sp_dev_before value = development }
+                owner = {
+                    export_to_variable = { which = dicm_bh_sp_before value = trigger_value:mil_power }
+                    set_variable = { which = dicm_bh_sp_cost which = PREV }
+                    set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_mil_reserve }
+                    change_variable = { which = dicm_bh_sp_required which = dicm_bh_sp_cost }
+                    set_variable = { which = dicm_bh_sp_native_hooks_before which = num_of_times_developed }
+                    set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_cost }
+                    if = {
+                        limit = {
+                            check_variable = { which = dicm_bh_sp_before which = dicm_bh_sp_required }
+                            check_variable = { which = dicm_bh_sp_cost value = 1 }
+                            NOT = { check_variable = { which = dicm_bh_sp_cost value = 2048 } }
+                        }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 1024 DELTA = -1024 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 512 DELTA = -512 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 256 DELTA = -256 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 128 DELTA = -128 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 64 DELTA = -64 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 32 DELTA = -32 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 16 DELTA = -16 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 8 DELTA = -8 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 4 DELTA = -4 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 2 DELTA = -2 }
+                        dicm_bh_sp_power_piece = { TYPE = mil VALUE = 1 DELTA = -1 }
+                        export_to_variable = { which = dicm_bh_sp_after value = trigger_value:mil_power }
+                        set_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_before }
+                        subtract_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_after }
+                        if = {
+                            limit = {
+                                is_variable_equal = { which = dicm_bh_sp_spent which = dicm_bh_sp_cost }
+                                check_variable = { which = dicm_bh_sp_after which = dicm_bh_dm_mil_reserve }
+                            }
+                            set_variable = { which = dicm_bh_sp_status value = 1 }
+                        }
+                        else = {
+                            # Failed payment verification: refund observed deduction, no development.
+                            set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_spent }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 1024 DELTA = 1024 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 512 DELTA = 512 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 256 DELTA = 256 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 128 DELTA = 128 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 64 DELTA = 64 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 32 DELTA = 32 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 16 DELTA = 16 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 8 DELTA = 8 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 4 DELTA = 4 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 2 DELTA = 2 }
+                            dicm_bh_sp_power_piece = { TYPE = mil VALUE = 1 DELTA = 1 }
+                            set_variable = { which = dicm_bh_sp_status value = 2 }
+                        }
+                    }
+                }
+                if = {
+                    limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                    add_base_manpower = 1
+                    export_to_variable = { which = dicm_bh_sp_dev_after value = development }
+                    set_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_after }
+                    subtract_variable = { which = dicm_bh_sp_raw_delta which = dicm_bh_sp_dev_before }
+                    owner = {
+                        set_variable = { which = dicm_bh_sp_dev_before which = PREV }
+                        set_variable = { which = dicm_bh_sp_raw_delta which = PREV }
+                        set_variable = { which = dicm_bh_sp_auto_hooks_delta which = num_of_times_developed }
+                        subtract_variable = { which = dicm_bh_sp_auto_hooks_delta which = dicm_bh_sp_native_hooks_before }
+                    }
+                    if = {
+                        limit = {
+                            is_variable_equal = { which = dicm_bh_sp_raw_delta value = 1 }
+                            owner = { is_variable_equal = { which = dicm_bh_sp_auto_hooks_delta value = 0 } }
+                        }
+                        # Verified +1 before any institution mutation; helper restores it.
+                        dicm_bh_sp_apply_institution_progress = { BASE = manpower }
+                        if = {
+                            limit = { owner = { is_variable_equal = { which = dicm_bh_sp_status value = 1 } } }
+                            dicm_bh_sp_apply_side_effects = yes
+                            set_province_flag = dicm_bh_sp_mil_replay_pending
+                            province_event = { id = dicm_bh_development_spend.23 }
+                        }
+                    }
+                    else_if = {
+                        limit = { is_variable_equal = { which = dicm_bh_sp_raw_delta value = 0 } }
+                        owner = {
+                            dicm_bh_sp_refund_payment = { TYPE = mil }
+                            set_variable = { which = dicm_bh_sp_status value = 4 }
+                        }
+                    }
+                    else = {
+                        # Unexpected base delta or automatic hooks: do not double-replay.
+                        owner = { set_variable = { which = dicm_bh_sp_status value = 3 } }
+                    }
+                    export_to_variable = { which = dicm_bh_sp_dev_delta value = development }
+                    subtract_variable = { which = dicm_bh_sp_dev_delta which = dicm_bh_sp_dev_before }
+                    owner = { set_variable = { which = dicm_bh_sp_dev_delta which = PREV } }
+                }
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Read-only baseline / after-step observation, persisted with the test save.
+country_event = {
+    id = dicm_bh_development_spend.90
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_adm_reserve }
+            dicm_bh_sp_collect_target = { TYPE = adm }
+            every_owned_province = { clr_province_flag = dicm_bh_sp_watched }
+            clr_country_flag = dicm_bh_sp_watch_set
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                event_target:dicm_bh_sp_target = {
+                    set_province_flag = dicm_bh_sp_watched
+                    set_variable = { which = dicm_bh_sp_watch_cost which = dicm_bh_dev_cost }
+                    owner = { set_variable = { which = dicm_bh_sp_watch_cost which = PREV } }
+                    dicm_bh_sp_watch_snapshot = yes
+                }
+                set_country_flag = dicm_bh_sp_watch_set
+                log = "DICM BH STEP BASELINE TARGET: [dicm_bh_sp_target.GetName]"
+                log = "DICM BH STEP BASELINE COST: [Root.dicm_bh_sp_watch_cost.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_adm_power which = dicm_bh_sp_watch_adm_power }
+                log = "DICM BH STEP BASELINE adm_power: [Root.dicm_bh_sp_baseline_adm_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_dip_power which = dicm_bh_sp_watch_dip_power }
+                log = "DICM BH STEP BASELINE dip_power: [Root.dicm_bh_sp_baseline_dip_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_mil_power which = dicm_bh_sp_watch_mil_power }
+                log = "DICM BH STEP BASELINE mil_power: [Root.dicm_bh_sp_baseline_mil_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_crown which = dicm_bh_sp_watch_crown }
+                log = "DICM BH STEP BASELINE crown: [Root.dicm_bh_sp_baseline_crown.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_devastation which = dicm_bh_sp_watch_devastation }
+                log = "DICM BH STEP BASELINE devastation: [Root.dicm_bh_sp_baseline_devastation.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_tax which = dicm_bh_sp_watch_tax }
+                log = "DICM BH STEP BASELINE tax: [Root.dicm_bh_sp_baseline_tax.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_production which = dicm_bh_sp_watch_production }
+                log = "DICM BH STEP BASELINE production: [Root.dicm_bh_sp_baseline_production.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_manpower which = dicm_bh_sp_watch_manpower }
+                log = "DICM BH STEP BASELINE manpower: [Root.dicm_bh_sp_baseline_manpower.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_native_counter which = dicm_bh_sp_watch_native_counter }
+                log = "DICM BH STEP BASELINE native_counter: [Root.dicm_bh_sp_baseline_native_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_ee_adm_counter which = dicm_bh_sp_watch_ee_adm_counter }
+                log = "DICM BH STEP BASELINE ee_adm_counter: [Root.dicm_bh_sp_baseline_ee_adm_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_province_from_counter which = dicm_bh_sp_watch_province_from_counter }
+                set_variable = { which = dicm_bh_sp_baseline_from_counter which = dicm_bh_sp_watch_from_counter }
+                log = "DICM BH STEP BASELINE from_counter: [Root.dicm_bh_sp_baseline_from_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_feudalism which = dicm_bh_sp_watch_inst_feudalism }
+                log = "DICM BH STEP BASELINE inst_feudalism: [Root.dicm_bh_sp_baseline_inst_feudalism.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_renaissance which = dicm_bh_sp_watch_inst_renaissance }
+                log = "DICM BH STEP BASELINE inst_renaissance: [Root.dicm_bh_sp_baseline_inst_renaissance.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_new_world_i which = dicm_bh_sp_watch_inst_new_world_i }
+                log = "DICM BH STEP BASELINE inst_new_world_i: [Root.dicm_bh_sp_baseline_inst_new_world_i.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_printing_press which = dicm_bh_sp_watch_inst_printing_press }
+                log = "DICM BH STEP BASELINE inst_printing_press: [Root.dicm_bh_sp_baseline_inst_printing_press.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_global_trade which = dicm_bh_sp_watch_inst_global_trade }
+                log = "DICM BH STEP BASELINE inst_global_trade: [Root.dicm_bh_sp_baseline_inst_global_trade.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_manufactories which = dicm_bh_sp_watch_inst_manufactories }
+                log = "DICM BH STEP BASELINE inst_manufactories: [Root.dicm_bh_sp_baseline_inst_manufactories.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_enlightenment which = dicm_bh_sp_watch_inst_enlightenment }
+                log = "DICM BH STEP BASELINE inst_enlightenment: [Root.dicm_bh_sp_baseline_inst_enlightenment.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_industrialization which = dicm_bh_sp_watch_inst_industrialization }
+                log = "DICM BH STEP BASELINE inst_industrialization: [Root.dicm_bh_sp_baseline_inst_industrialization.GetValue]"
+            }
+            else = { log = "DICM BH STEP BASELINE: no supported affordable ADM site above reserve" }
+            dicm_bh_restore_trade_report = yes
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_spend.91
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_watch_set }
+                every_owned_province = {
+                    limit = { has_province_flag = dicm_bh_sp_watched }
+                    save_event_target_as = dicm_bh_sp_watched_site
+                    dicm_bh_sp_watch_snapshot = yes
+                }
+                log = "DICM BH STEP AFTER TARGET: [dicm_bh_sp_watched_site.GetName]"
+                set_variable = { which = dicm_bh_sp_delta_adm_power which = dicm_bh_sp_watch_adm_power }
+                subtract_variable = { which = dicm_bh_sp_delta_adm_power which = dicm_bh_sp_baseline_adm_power }
+                log = "DICM BH STEP DELTA adm_power: [Root.dicm_bh_sp_delta_adm_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_dip_power which = dicm_bh_sp_watch_dip_power }
+                subtract_variable = { which = dicm_bh_sp_delta_dip_power which = dicm_bh_sp_baseline_dip_power }
+                log = "DICM BH STEP DELTA dip_power: [Root.dicm_bh_sp_delta_dip_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_mil_power which = dicm_bh_sp_watch_mil_power }
+                subtract_variable = { which = dicm_bh_sp_delta_mil_power which = dicm_bh_sp_baseline_mil_power }
+                log = "DICM BH STEP DELTA mil_power: [Root.dicm_bh_sp_delta_mil_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_crown which = dicm_bh_sp_watch_crown }
+                subtract_variable = { which = dicm_bh_sp_delta_crown which = dicm_bh_sp_baseline_crown }
+                log = "DICM BH STEP DELTA crown: [Root.dicm_bh_sp_delta_crown.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_devastation which = dicm_bh_sp_watch_devastation }
+                subtract_variable = { which = dicm_bh_sp_delta_devastation which = dicm_bh_sp_baseline_devastation }
+                log = "DICM BH STEP DELTA devastation: [Root.dicm_bh_sp_delta_devastation.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_tax which = dicm_bh_sp_watch_tax }
+                subtract_variable = { which = dicm_bh_sp_delta_tax which = dicm_bh_sp_baseline_tax }
+                log = "DICM BH STEP DELTA tax: [Root.dicm_bh_sp_delta_tax.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_production which = dicm_bh_sp_watch_production }
+                subtract_variable = { which = dicm_bh_sp_delta_production which = dicm_bh_sp_baseline_production }
+                log = "DICM BH STEP DELTA production: [Root.dicm_bh_sp_delta_production.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_manpower which = dicm_bh_sp_watch_manpower }
+                subtract_variable = { which = dicm_bh_sp_delta_manpower which = dicm_bh_sp_baseline_manpower }
+                log = "DICM BH STEP DELTA manpower: [Root.dicm_bh_sp_delta_manpower.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_native_counter which = dicm_bh_sp_watch_native_counter }
+                subtract_variable = { which = dicm_bh_sp_delta_native_counter which = dicm_bh_sp_baseline_native_counter }
+                log = "DICM BH STEP DELTA native_counter: [Root.dicm_bh_sp_delta_native_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_ee_adm_counter which = dicm_bh_sp_watch_ee_adm_counter }
+                subtract_variable = { which = dicm_bh_sp_delta_ee_adm_counter which = dicm_bh_sp_baseline_ee_adm_counter }
+                log = "DICM BH STEP DELTA ee_adm_counter: [Root.dicm_bh_sp_delta_ee_adm_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_province_from_counter which = dicm_bh_sp_watch_province_from_counter }
+                subtract_variable = { which = dicm_bh_sp_delta_province_from_counter which = dicm_bh_sp_baseline_province_from_counter }
+                log = "DICM BH STEP DELTA province_from_counter: [Root.dicm_bh_sp_delta_province_from_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_from_counter which = dicm_bh_sp_watch_from_counter }
+                subtract_variable = { which = dicm_bh_sp_delta_from_counter which = dicm_bh_sp_baseline_from_counter }
+                log = "DICM BH STEP DELTA from_counter: [Root.dicm_bh_sp_delta_from_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_feudalism which = dicm_bh_sp_watch_inst_feudalism }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_feudalism which = dicm_bh_sp_baseline_inst_feudalism }
+                log = "DICM BH STEP DELTA inst_feudalism: [Root.dicm_bh_sp_delta_inst_feudalism.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_renaissance which = dicm_bh_sp_watch_inst_renaissance }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_renaissance which = dicm_bh_sp_baseline_inst_renaissance }
+                log = "DICM BH STEP DELTA inst_renaissance: [Root.dicm_bh_sp_delta_inst_renaissance.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_new_world_i which = dicm_bh_sp_watch_inst_new_world_i }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_new_world_i which = dicm_bh_sp_baseline_inst_new_world_i }
+                log = "DICM BH STEP DELTA inst_new_world_i: [Root.dicm_bh_sp_delta_inst_new_world_i.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_printing_press which = dicm_bh_sp_watch_inst_printing_press }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_printing_press which = dicm_bh_sp_baseline_inst_printing_press }
+                log = "DICM BH STEP DELTA inst_printing_press: [Root.dicm_bh_sp_delta_inst_printing_press.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_global_trade which = dicm_bh_sp_watch_inst_global_trade }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_global_trade which = dicm_bh_sp_baseline_inst_global_trade }
+                log = "DICM BH STEP DELTA inst_global_trade: [Root.dicm_bh_sp_delta_inst_global_trade.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_manufactories which = dicm_bh_sp_watch_inst_manufactories }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_manufactories which = dicm_bh_sp_baseline_inst_manufactories }
+                log = "DICM BH STEP DELTA inst_manufactories: [Root.dicm_bh_sp_delta_inst_manufactories.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_enlightenment which = dicm_bh_sp_watch_inst_enlightenment }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_enlightenment which = dicm_bh_sp_baseline_inst_enlightenment }
+                log = "DICM BH STEP DELTA inst_enlightenment: [Root.dicm_bh_sp_delta_inst_enlightenment.GetValue]"
+                set_variable = { which = dicm_bh_sp_delta_inst_industrialization which = dicm_bh_sp_watch_inst_industrialization }
+                subtract_variable = { which = dicm_bh_sp_delta_inst_industrialization which = dicm_bh_sp_baseline_inst_industrialization }
+                log = "DICM BH STEP DELTA inst_industrialization: [Root.dicm_bh_sp_delta_inst_industrialization.GetValue]"
+            }
+            else = { log = "DICM BH STEP AFTER: run baseline .90 first" }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Native hook comparison showed FROM is the developed province, not its owner.
+# This second province event changes FROM to the first province event's ROOT.
+province_event = {
+    id = dicm_bh_development_spend.21
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    has_province_flag = dicm_bh_sp_adm_replay_pending
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                clr_province_flag = dicm_bh_sp_adm_replay_pending
+                dicm_bh_sp_replay_adm_hooks = yes
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Native hook comparison showed FROM is the developed province, not its owner.
+# This second province event changes FROM to the first province event's ROOT.
+province_event = {
+    id = dicm_bh_development_spend.22
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    has_province_flag = dicm_bh_sp_dip_replay_pending
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                clr_province_flag = dicm_bh_sp_dip_replay_pending
+                dicm_bh_sp_replay_dip_hooks = yes
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Native hook comparison showed FROM is the developed province, not its owner.
+# This second province event changes FROM to the first province event's ROOT.
+province_event = {
+    id = dicm_bh_development_spend.23
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            if = {
+                limit = {
+                    has_province_flag = dicm_bh_sp_mil_replay_pending
+                    owner = { has_country_flag = dicm_bh_sp_active }
+                }
+                clr_province_flag = dicm_bh_sp_mil_replay_pending
+                dicm_bh_sp_replay_mil_hooks = yes
+            }
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Read-only DIP baseline selection in native event scope.
+country_event = {
+    id = dicm_bh_development_spend.92
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_dip_reserve }
+            dicm_bh_sp_collect_target = { TYPE = dip }
+            every_owned_province = { clr_province_flag = dicm_bh_sp_watched }
+            clr_country_flag = dicm_bh_sp_watch_set
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                event_target:dicm_bh_sp_target = {
+                    set_province_flag = dicm_bh_sp_watched
+                    set_variable = { which = dicm_bh_sp_watch_cost which = dicm_bh_dev_cost }
+                    owner = { set_variable = { which = dicm_bh_sp_watch_cost which = PREV } }
+                    dicm_bh_sp_watch_snapshot = yes
+                }
+                set_country_flag = dicm_bh_sp_watch_set
+                log = "DICM BH STEP BASELINE TARGET: [dicm_bh_sp_target.GetName]"
+                log = "DICM BH STEP BASELINE COST: [Root.dicm_bh_sp_watch_cost.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_adm_power which = dicm_bh_sp_watch_adm_power }
+                log = "DICM BH STEP BASELINE adm_power: [Root.dicm_bh_sp_baseline_adm_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_dip_power which = dicm_bh_sp_watch_dip_power }
+                log = "DICM BH STEP BASELINE dip_power: [Root.dicm_bh_sp_baseline_dip_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_mil_power which = dicm_bh_sp_watch_mil_power }
+                log = "DICM BH STEP BASELINE mil_power: [Root.dicm_bh_sp_baseline_mil_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_crown which = dicm_bh_sp_watch_crown }
+                log = "DICM BH STEP BASELINE crown: [Root.dicm_bh_sp_baseline_crown.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_devastation which = dicm_bh_sp_watch_devastation }
+                log = "DICM BH STEP BASELINE devastation: [Root.dicm_bh_sp_baseline_devastation.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_tax which = dicm_bh_sp_watch_tax }
+                log = "DICM BH STEP BASELINE tax: [Root.dicm_bh_sp_baseline_tax.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_production which = dicm_bh_sp_watch_production }
+                log = "DICM BH STEP BASELINE production: [Root.dicm_bh_sp_baseline_production.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_manpower which = dicm_bh_sp_watch_manpower }
+                log = "DICM BH STEP BASELINE manpower: [Root.dicm_bh_sp_baseline_manpower.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_native_counter which = dicm_bh_sp_watch_native_counter }
+                log = "DICM BH STEP BASELINE native_counter: [Root.dicm_bh_sp_baseline_native_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_ee_adm_counter which = dicm_bh_sp_watch_ee_adm_counter }
+                log = "DICM BH STEP BASELINE ee_adm_counter: [Root.dicm_bh_sp_baseline_ee_adm_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_province_from_counter which = dicm_bh_sp_watch_province_from_counter }
+                set_variable = { which = dicm_bh_sp_baseline_from_counter which = dicm_bh_sp_watch_from_counter }
+                log = "DICM BH STEP BASELINE from_counter: [Root.dicm_bh_sp_baseline_from_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_feudalism which = dicm_bh_sp_watch_inst_feudalism }
+                log = "DICM BH STEP BASELINE inst_feudalism: [Root.dicm_bh_sp_baseline_inst_feudalism.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_renaissance which = dicm_bh_sp_watch_inst_renaissance }
+                log = "DICM BH STEP BASELINE inst_renaissance: [Root.dicm_bh_sp_baseline_inst_renaissance.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_new_world_i which = dicm_bh_sp_watch_inst_new_world_i }
+                log = "DICM BH STEP BASELINE inst_new_world_i: [Root.dicm_bh_sp_baseline_inst_new_world_i.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_printing_press which = dicm_bh_sp_watch_inst_printing_press }
+                log = "DICM BH STEP BASELINE inst_printing_press: [Root.dicm_bh_sp_baseline_inst_printing_press.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_global_trade which = dicm_bh_sp_watch_inst_global_trade }
+                log = "DICM BH STEP BASELINE inst_global_trade: [Root.dicm_bh_sp_baseline_inst_global_trade.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_manufactories which = dicm_bh_sp_watch_inst_manufactories }
+                log = "DICM BH STEP BASELINE inst_manufactories: [Root.dicm_bh_sp_baseline_inst_manufactories.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_enlightenment which = dicm_bh_sp_watch_inst_enlightenment }
+                log = "DICM BH STEP BASELINE inst_enlightenment: [Root.dicm_bh_sp_baseline_inst_enlightenment.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_industrialization which = dicm_bh_sp_watch_inst_industrialization }
+                log = "DICM BH STEP BASELINE inst_industrialization: [Root.dicm_bh_sp_baseline_inst_industrialization.GetValue]"
+            }
+            else = { log = "DICM BH STEP BASELINE: no supported affordable DIP site above reserve" }
+            dicm_bh_restore_trade_report = yes
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Read-only MIL baseline selection in native event scope.
+country_event = {
+    id = dicm_bh_development_spend.93
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            set_variable = { which = dicm_bh_sp_required which = dicm_bh_dm_mil_reserve }
+            dicm_bh_sp_collect_target = { TYPE = mil }
+            every_owned_province = { clr_province_flag = dicm_bh_sp_watched }
+            clr_country_flag = dicm_bh_sp_watch_set
+            if = {
+                limit = { has_country_flag = dicm_bh_sp_target_set }
+                event_target:dicm_bh_sp_target = {
+                    set_province_flag = dicm_bh_sp_watched
+                    set_variable = { which = dicm_bh_sp_watch_cost which = dicm_bh_dev_cost }
+                    owner = { set_variable = { which = dicm_bh_sp_watch_cost which = PREV } }
+                    dicm_bh_sp_watch_snapshot = yes
+                }
+                set_country_flag = dicm_bh_sp_watch_set
+                log = "DICM BH STEP BASELINE TARGET: [dicm_bh_sp_target.GetName]"
+                log = "DICM BH STEP BASELINE COST: [Root.dicm_bh_sp_watch_cost.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_adm_power which = dicm_bh_sp_watch_adm_power }
+                log = "DICM BH STEP BASELINE adm_power: [Root.dicm_bh_sp_baseline_adm_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_dip_power which = dicm_bh_sp_watch_dip_power }
+                log = "DICM BH STEP BASELINE dip_power: [Root.dicm_bh_sp_baseline_dip_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_mil_power which = dicm_bh_sp_watch_mil_power }
+                log = "DICM BH STEP BASELINE mil_power: [Root.dicm_bh_sp_baseline_mil_power.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_crown which = dicm_bh_sp_watch_crown }
+                log = "DICM BH STEP BASELINE crown: [Root.dicm_bh_sp_baseline_crown.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_devastation which = dicm_bh_sp_watch_devastation }
+                log = "DICM BH STEP BASELINE devastation: [Root.dicm_bh_sp_baseline_devastation.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_tax which = dicm_bh_sp_watch_tax }
+                log = "DICM BH STEP BASELINE tax: [Root.dicm_bh_sp_baseline_tax.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_production which = dicm_bh_sp_watch_production }
+                log = "DICM BH STEP BASELINE production: [Root.dicm_bh_sp_baseline_production.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_manpower which = dicm_bh_sp_watch_manpower }
+                log = "DICM BH STEP BASELINE manpower: [Root.dicm_bh_sp_baseline_manpower.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_native_counter which = dicm_bh_sp_watch_native_counter }
+                log = "DICM BH STEP BASELINE native_counter: [Root.dicm_bh_sp_baseline_native_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_ee_adm_counter which = dicm_bh_sp_watch_ee_adm_counter }
+                log = "DICM BH STEP BASELINE ee_adm_counter: [Root.dicm_bh_sp_baseline_ee_adm_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_province_from_counter which = dicm_bh_sp_watch_province_from_counter }
+                set_variable = { which = dicm_bh_sp_baseline_from_counter which = dicm_bh_sp_watch_from_counter }
+                log = "DICM BH STEP BASELINE from_counter: [Root.dicm_bh_sp_baseline_from_counter.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_feudalism which = dicm_bh_sp_watch_inst_feudalism }
+                log = "DICM BH STEP BASELINE inst_feudalism: [Root.dicm_bh_sp_baseline_inst_feudalism.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_renaissance which = dicm_bh_sp_watch_inst_renaissance }
+                log = "DICM BH STEP BASELINE inst_renaissance: [Root.dicm_bh_sp_baseline_inst_renaissance.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_new_world_i which = dicm_bh_sp_watch_inst_new_world_i }
+                log = "DICM BH STEP BASELINE inst_new_world_i: [Root.dicm_bh_sp_baseline_inst_new_world_i.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_printing_press which = dicm_bh_sp_watch_inst_printing_press }
+                log = "DICM BH STEP BASELINE inst_printing_press: [Root.dicm_bh_sp_baseline_inst_printing_press.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_global_trade which = dicm_bh_sp_watch_inst_global_trade }
+                log = "DICM BH STEP BASELINE inst_global_trade: [Root.dicm_bh_sp_baseline_inst_global_trade.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_manufactories which = dicm_bh_sp_watch_inst_manufactories }
+                log = "DICM BH STEP BASELINE inst_manufactories: [Root.dicm_bh_sp_baseline_inst_manufactories.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_enlightenment which = dicm_bh_sp_watch_inst_enlightenment }
+                log = "DICM BH STEP BASELINE inst_enlightenment: [Root.dicm_bh_sp_baseline_inst_enlightenment.GetValue]"
+                set_variable = { which = dicm_bh_sp_baseline_inst_industrialization which = dicm_bh_sp_watch_inst_industrialization }
+                log = "DICM BH STEP BASELINE inst_industrialization: [Root.dicm_bh_sp_baseline_inst_industrialization.GetValue]"
+            }
+            else = { log = "DICM BH STEP BASELINE: no supported affordable MIL site above reserve" }
+            dicm_bh_restore_trade_report = yes
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

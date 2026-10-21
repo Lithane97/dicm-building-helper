@@ -1,0 +1,108 @@
+# Candidate traversal and estimate bookkeeping shared by trade events.
+# Direct, parameter-free helpers. Scope changes stay inside each helper and return
+# to the caller's country/province scope. ROOT is always the acting country.
+# The calling events retain the while loops, building IDs, and engine construction.
+# No helper calls another helper, and no event is fired here.
+
+# Country scope. Remove stale candidate flags from all owned provinces.
+# Used before evaluation, after processing, and to terminate a scan with no valid target.
+dicm_bh_clear_trade_candidates = {
+    every_owned_province = {
+        clr_province_flag = dicm_bh_trade_candidate
+    }
+}
+
+# Province scope; ROOT is the acting country.
+# Inputs: calculated trade gain, construction cost, and the country's chosen minimum.
+# Flag this province when gain/cost are positive and gain meets the minimum.
+# Increment the owner's eligible-province count only when the province qualifies.
+dicm_bh_mark_trade_candidate = {
+    set_variable = { which = dicm_bh_minimum which = ROOT }
+    if = {
+        limit = {
+            check_variable = { which = dicm_bh_trade_gain value = 0.001 }
+            check_variable = { which = dicm_bh_trade_gain which = dicm_bh_minimum }
+            check_variable = { which = dicm_bh_trade_cost value = 0.001 }
+        }
+        set_province_flag = dicm_bh_trade_candidate
+        owner = {
+            change_variable = { which = dicm_bh_trade_eligible value = 1 }
+        }
+    }
+}
+
+# Country scope. Scan remaining candidates and save the highest-gain province as
+# event_target:dicm_bh_trade_best; the country flag reports whether a target was found.
+# Coastal ties compare development; other families preserve their tie behavior.
+# The event keeps the processing loop and enters the saved target after this returns.
+dicm_bh_select_best_trade_candidate = {
+    clr_country_flag = dicm_bh_trade_best_set
+    clr_country_flag = dicm_bh_fort_border_pass
+    # Forts use border status as their first ordering key, then neighbour count.
+    # This restricts selection only; the minimum still compares the plain count.
+    if = {
+        limit = {
+            dicm_bh_fort_selected = yes
+            any_owned_province = {
+                has_province_flag = dicm_bh_trade_candidate
+                dicm_bh_fort_border_province = yes
+            }
+        }
+        set_country_flag = dicm_bh_fort_border_pass
+    }
+    every_owned_province = {
+        limit = {
+            has_province_flag = dicm_bh_trade_candidate
+            OR = {
+                owner = { NOT = { has_country_flag = dicm_bh_fort_border_pass } }
+                dicm_bh_fort_border_province = yes
+            }
+        }
+        if = {
+            limit = { owner = { NOT = { has_country_flag = dicm_bh_trade_best_set } } }
+            save_event_target_as = dicm_bh_trade_best
+            owner = {
+                set_country_flag = dicm_bh_trade_best_set
+            }
+        }
+        else_if = {
+            limit = {
+                check_variable = { which = dicm_bh_trade_gain which = event_target:dicm_bh_trade_best }
+                OR = {
+                    owner = { NOT = { dicm_bh_coastal_selected = yes } }
+                    NOT = { is_variable_equal = { which = dicm_bh_trade_gain which = event_target:dicm_bh_trade_best } }
+                    check_variable = { which = dicm_bh_coastal_development which = event_target:dicm_bh_trade_best }
+                }
+            }
+            save_event_target_as = dicm_bh_trade_best
+        }
+    }
+    clr_country_flag = dicm_bh_fort_border_pass
+}
+
+# Province scope; ROOT is the acting country.
+# Remove this province from the candidate set before attempting construction/estimation.
+# Copy remaining action budget from ROOT, refresh the owner's current treasury,
+# then copy that treasury back into this province for the affordability check.
+dicm_bh_prepare_trade_candidate = {
+    clr_province_flag = dicm_bh_trade_candidate
+    set_variable = { which = dicm_bh_trade_remaining which = ROOT }
+    owner = {
+        export_to_variable = { which = dicm_bh_trade_cash value = treasury }
+    }
+    set_variable = { which = dicm_bh_trade_cash which = ROOT }
+}
+
+# Province scope. Estimate bookkeeping only; no construction or treasury mutation.
+# Copy this province's cost into owner scope through PREV, then update simulated
+# spending, remaining budget, and building count.
+# Keep the owner scope inside this helper so PREV remains the candidate province.
+dicm_bh_record_trade_estimate = {
+    set_variable = { which = dicm_bh_trade_cost_copy which = dicm_bh_trade_cost }
+    owner = {
+        set_variable = { which = dicm_bh_trade_cost_copy which = PREV }
+        change_variable = { which = dicm_bh_trade_spent which = dicm_bh_trade_cost_copy }
+        subtract_variable = { which = dicm_bh_trade_remaining which = dicm_bh_trade_cost_copy }
+        change_variable = { which = dicm_bh_trade_count value = 1 }
+    }
+}

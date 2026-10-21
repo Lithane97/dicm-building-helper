@@ -1,0 +1,144 @@
+# Shared trade calculations and bookkeeping.
+# All helpers are direct, parameter-free calls. No loops, event calls, scope switches,
+# construction effects, or treasury mutations are introduced here.
+# ROOT references only copy variables from the acting country; call sites retain their scope.
+
+# Country scope. Reset report counters and flags for one construction/estimate pass.
+# Clamp the budget percentage, snapshot treasury, and initialize remaining funds.
+# Divide before multiplying to avoid fixed-point overflow.
+# Export country trade-power and build-cost modifiers for province calculations.
+# Leaves build/upgrade mode flags and UI settings intact (apart from the original budget clamp).
+dicm_bh_initialize_trade_run = {
+    set_variable = { which = dicm_bh_trade_count value = 0 }
+    set_variable = { which = dicm_bh_trade_eligible value = 0 }
+    set_variable = { which = dicm_bh_trade_budget_skips value = 0 }
+    set_variable = { which = dicm_bh_trade_failed value = 0 }
+    set_variable = { which = dicm_bh_trade_spent value = 0 }
+    clr_country_flag = dicm_bh_trade_cost_mismatch
+    clr_country_flag = dicm_bh_trade_supported
+    clr_country_flag = dicm_bh_trade_tech_ready
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_budget_percent value = 1 } } }
+        set_variable = { which = dicm_bh_budget_percent value = 100 }
+    }
+    if = {
+        limit = { check_variable = { which = dicm_bh_budget_percent value = 100 } }
+        set_variable = { which = dicm_bh_budget_percent value = 100 }
+    }
+    export_to_variable = { which = dicm_bh_trade_cash_start value = treasury }
+    set_variable = { which = dicm_bh_trade_budget which = dicm_bh_trade_cash_start }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_trade_budget value = 0 } } }
+        set_variable = { which = dicm_bh_trade_budget value = 0 }
+    }
+    divide_variable = { which = dicm_bh_trade_budget value = 100 }
+    multiply_variable = { which = dicm_bh_trade_budget which = dicm_bh_budget_percent }
+    set_variable = { which = dicm_bh_trade_remaining which = dicm_bh_trade_budget }
+    export_to_variable = { which = dicm_bh_trade_country_power value = modifier:global_prov_trade_power_modifier }
+    export_to_variable = { which = dicm_bh_trade_country_cost value = modifier:build_cost }
+}
+
+# Province scope. Read the highest existing trade-building tier.
+# Outputs: dicm_bh_trade_old_bonus and dicm_bh_trade_old_cost; both zero if absent.
+# Base bonuses/costs: Marketplace 0.5/100, Trade Depot 1/300, Stock Exchange 1.25/400.
+dicm_bh_read_existing_trade_building = {
+    set_variable = { which = dicm_bh_trade_old_bonus value = 0 }
+    set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+    if = {
+        limit = { has_building = stock_exchange }
+        set_variable = { which = dicm_bh_trade_old_bonus value = 1.25 }
+        set_variable = { which = dicm_bh_trade_old_cost value = 400 }
+    }
+    else_if = {
+        limit = { has_building = trade_depot }
+        set_variable = { which = dicm_bh_trade_old_bonus value = 1 }
+        set_variable = { which = dicm_bh_trade_old_cost value = 300 }
+    }
+    else_if = {
+        limit = { has_building = marketplace }
+        set_variable = { which = dicm_bh_trade_old_bonus value = 0.5 }
+        set_variable = { which = dicm_bh_trade_old_cost value = 100 }
+    }
+}
+
+# Province scope; ROOT must be the acting country.
+# Export current province power and its local modifier; copy the country modifier from ROOT.
+# Outputs: dicm_bh_trade_power, dicm_bh_trade_local_power, dicm_bh_trade_country_power,
+# and dicm_bh_trade_denominator = 1 + local modifier + country modifier.
+# No scope switches; the calling event still prepares the building-specific bonus increase.
+dicm_bh_prepare_trade_power = {
+    export_to_variable = { which = dicm_bh_trade_power value = province_trade_power }
+    export_to_variable = { which = dicm_bh_trade_local_power value = modifier:province_trade_power_modifier }
+    set_variable = { which = dicm_bh_trade_country_power which = ROOT }
+    set_variable = { which = dicm_bh_trade_denominator which = dicm_bh_trade_local_power }
+    change_variable = { which = dicm_bh_trade_denominator which = dicm_bh_trade_country_power }
+    change_variable = { which = dicm_bh_trade_denominator value = 1 }
+}
+
+# Province scope. Pure arithmetic: no scope changes, construction, or treasury effects.
+# Inputs (already prepared in the current province):
+#   dicm_bh_trade_power       = current province trade power
+#   dicm_bh_trade_delta       = target building bonus minus existing building bonus
+#   dicm_bh_trade_denominator = 1 + local power modifier + country power modifier
+# Output:
+#   dicm_bh_trade_gain        = estimated additional province trade power
+# Preserve the original multiply-then-divide order and invalid-denominator guard.
+# Used by both live construction and read-only cached estimates.
+dicm_bh_calculate_trade_gain = {
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    if = {
+        limit = { check_variable = { which = dicm_bh_trade_denominator value = 0.001 } }
+        set_variable = { which = dicm_bh_trade_gain which = dicm_bh_trade_power }
+        multiply_variable = { which = dicm_bh_trade_gain which = dicm_bh_trade_delta }
+        divide_variable = { which = dicm_bh_trade_gain which = dicm_bh_trade_denominator }
+    }
+}
+
+# Province scope; ROOT must be the acting country.
+# Output: dicm_bh_trade_cost_factor = max(0.1, 1 + country cost modifier + local cost modifier).
+# Also refreshes dicm_bh_trade_local_cost and dicm_bh_trade_country_cost.
+# Country build_cost already includes inflation; do not add it separately.
+dicm_bh_calculate_trade_cost_factor = {
+    export_to_variable = { which = dicm_bh_trade_local_cost value = modifier:local_build_cost }
+    set_variable = { which = dicm_bh_trade_country_cost which = ROOT }
+    set_variable = { which = dicm_bh_trade_cost_factor which = dicm_bh_trade_country_cost }
+    change_variable = { which = dicm_bh_trade_cost_factor which = dicm_bh_trade_local_cost }
+    change_variable = { which = dicm_bh_trade_cost_factor value = 1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_trade_cost_factor value = 0.1 } } }
+        set_variable = { which = dicm_bh_trade_cost_factor value = 0.1 }
+    }
+}
+
+# Province scope. The caller sets dicm_bh_trade_cost to the target building's base cost.
+# Inputs: dicm_bh_trade_old_cost and dicm_bh_trade_cost_factor.
+# Output: dicm_bh_trade_cost = (target base cost - existing base cost) * cost factor.
+dicm_bh_apply_trade_cost_factor = {
+    subtract_variable = { which = dicm_bh_trade_cost which = dicm_bh_trade_old_cost }
+    multiply_variable = { which = dicm_bh_trade_cost which = dicm_bh_trade_cost_factor }
+}
+
+# Country scope. Bookkeeping only, called after successful engine construction.
+# Input: dicm_bh_trade_before = treasury immediately before construction.
+# Output: dicm_bh_trade_actual = before - current treasury; update spent, remaining, and count.
+# Does not change treasury or start construction.
+dicm_bh_record_trade_payment = {
+    export_to_variable = { which = dicm_bh_trade_after value = treasury }
+    set_variable = { which = dicm_bh_trade_actual which = dicm_bh_trade_before }
+    subtract_variable = { which = dicm_bh_trade_actual which = dicm_bh_trade_after }
+    change_variable = { which = dicm_bh_trade_spent which = dicm_bh_trade_actual }
+    subtract_variable = { which = dicm_bh_trade_remaining which = dicm_bh_trade_actual }
+    change_variable = { which = dicm_bh_trade_count value = 1 }
+}
+
+# Province scope. Inputs: dicm_bh_trade_actual and dicm_bh_trade_cost.
+# Output: dicm_bh_trade_difference = absolute difference between actual and estimated cost.
+# The event retains the mismatch threshold check and country flag update.
+dicm_bh_calculate_trade_cost_difference = {
+    set_variable = { which = dicm_bh_trade_difference which = dicm_bh_trade_actual }
+    subtract_variable = { which = dicm_bh_trade_difference which = dicm_bh_trade_cost }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_trade_difference value = 0 } } }
+        multiply_variable = { which = dicm_bh_trade_difference value = -1 }
+    }
+}

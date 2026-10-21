@@ -1,0 +1,56 @@
+# Province scope. Tax gains shared by diagnostics, estimates and construction.
+# Building bonuses match vanilla and Europa Expanded: temple 0.4, cathedral 0.6.
+# Monthly gain = (base tax + flat annual tax) * (1 - autonomy / 100)
+#                * (target local tax bonus - existing building bonus) / 12.
+# Country/local tax-efficiency bonuses are additive with the building bonus,
+# so they cancel in this marginal calculation. Building on_built effects are excluded.
+# Only dicm_bh_tax_* scratch variables are written; no buildings or treasury change.
+# Small native-display precision differences are accepted; no correction offset.
+dicm_bh_calculate_tax_gains = {
+    export_to_variable = { which = dicm_bh_tax_base value = base_tax }
+    export_to_variable = { which = dicm_bh_tax_flat value = modifier:tax_income }
+    export_to_variable = { which = dicm_bh_tax_autonomy value = local_autonomy }
+    export_to_variable = { which = dicm_bh_tax_local_modifier value = modifier:local_tax_modifier }
+    set_variable = { which = dicm_bh_tax_basis which = dicm_bh_tax_base }
+    change_variable = { which = dicm_bh_tax_basis which = dicm_bh_tax_flat }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_tax_basis value = 0 } } }
+        set_variable = { which = dicm_bh_tax_basis value = 0 }
+    }
+    set_variable = { which = dicm_bh_tax_autonomy_fraction which = dicm_bh_tax_autonomy }
+    divide_variable = { which = dicm_bh_tax_autonomy_fraction value = 100 }
+    set_variable = { which = dicm_bh_tax_autonomy_factor value = 1 }
+    subtract_variable = { which = dicm_bh_tax_autonomy_factor which = dicm_bh_tax_autonomy_fraction }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_tax_autonomy_factor value = 0 } } }
+        set_variable = { which = dicm_bh_tax_autonomy_factor value = 0 }
+    }
+    if = {
+        limit = { check_variable = { which = dicm_bh_tax_autonomy_factor value = 1 } }
+        set_variable = { which = dicm_bh_tax_autonomy_factor value = 1 }
+    }
+    multiply_variable = { which = dicm_bh_tax_basis which = dicm_bh_tax_autonomy_factor }
+    set_variable = { which = dicm_bh_tax_old_bonus value = 0 }
+    if = {
+        limit = { has_building = cathedral }
+        set_variable = { which = dicm_bh_tax_old_bonus value = 0.6 }
+    }
+    else_if = {
+        limit = { has_building = temple }
+        set_variable = { which = dicm_bh_tax_old_bonus value = 0.4 }
+    }
+    set_variable = { which = dicm_bh_tax_church_delta value = 0.4 }
+    subtract_variable = { which = dicm_bh_tax_church_delta which = dicm_bh_tax_old_bonus }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_tax_church_delta value = 0 } } }
+        set_variable = { which = dicm_bh_tax_church_delta value = 0 }
+    }
+    set_variable = { which = dicm_bh_tax_cathedral_delta value = 0.6 }
+    subtract_variable = { which = dicm_bh_tax_cathedral_delta which = dicm_bh_tax_old_bonus }
+    set_variable = { which = dicm_bh_tax_church_gain which = dicm_bh_tax_basis }
+    multiply_variable = { which = dicm_bh_tax_church_gain which = dicm_bh_tax_church_delta }
+    divide_variable = { which = dicm_bh_tax_church_gain value = 12 }
+    set_variable = { which = dicm_bh_tax_cathedral_gain which = dicm_bh_tax_basis }
+    multiply_variable = { which = dicm_bh_tax_cathedral_gain which = dicm_bh_tax_cathedral_delta }
+    divide_variable = { which = dicm_bh_tax_cathedral_gain value = 12 }
+}

@@ -1,0 +1,12 @@
+defined_text = {
+    name = GetDICMBHProductionEstimateNote
+    random = no
+    text = {
+        localisation_key = dicm_bh_production_estimate_note
+        trigger = { OR = {
+            is_variable_equal = { which = dicm_bh_selection value = 3 }
+            is_variable_equal = { which = dicm_bh_selection value = 4 }
+        } }
+    }
+    text = { localisation_key = dicm_bh_production_estimate_note_none trigger = { always = yes } }
+}

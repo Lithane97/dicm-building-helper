@@ -1,0 +1,2 @@
+# Read-only native event probe. Restart required after first adding its event.
+country_event = { id = dicm_bh_estate_probe.1 }

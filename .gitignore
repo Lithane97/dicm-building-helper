@@ -1,0 +1,22 @@
+# Local game/test output
+tools/validation/
+*.eu4
+*.eu4.*
+*.log
+*.zip
+
+# Python and editor state
+__pycache__/
+*.py[cod]
+.venv/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Local credentials/configuration must never enter the repository
+.env
+.env.*
+*.local
+*.pem
+*.key

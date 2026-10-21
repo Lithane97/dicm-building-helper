@@ -1,0 +1,119 @@
+# All remaining manufactory families are new construction only.
+# Never replace a completed manufactory, State House, Ramparts or resource building.
+dicm_bh_manufactory_slot_clear = {
+    NOT = { has_manufactory_trigger = yes }
+}
+dicm_bh_manufactory_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 25 }
+            mil_tech = 11
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = weapons
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 26 }
+            adm_tech = 11
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = textile
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 27 }
+            adm_tech = 6
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = farm_estate
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 28 }
+            dip_tech = 14
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = tradecompany
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 29 }
+            dip_tech = 7
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = impressment_offices
+                
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 31 }
+            adm_tech = 15
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = soldier_households
+                
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 32 }
+            adm_tech = 21
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = furnace
+                
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 33 }
+            dip_tech = 11
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = wharf
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 34 }
+            adm_tech = 14
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = plantations
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 35 }
+            adm_tech = 16
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = mills
+                NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 36 }
+            adm_tech = 6
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = ramparts
+                dicm_bh_has_fort_building = yes
+            }
+        }
+    }
+}

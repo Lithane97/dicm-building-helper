@@ -1,0 +1,105 @@
+# Country UI state only. Saved absolute minima are independent by building category.
+dicm_bh_save_minimum = {
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 12 } } set_variable = { which = dicm_bh_saved_ramparts which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 11 } } set_variable = { which = dicm_bh_saved_coastal which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 10 } } set_variable = { which = dicm_bh_saved_university which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 9 } } set_variable = { which = dicm_bh_saved_forts which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 1 } } set_variable = { which = dicm_bh_saved_tax which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 2 } } set_variable = { which = dicm_bh_saved_production which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 3 } } set_variable = { which = dicm_bh_saved_trade which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 4 } } set_variable = { which = dicm_bh_saved_manpower which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 5 } } set_variable = { which = dicm_bh_saved_sailors which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 6 } } set_variable = { which = dicm_bh_saved_army which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 7 } } set_variable = { which = dicm_bh_saved_navy which = dicm_bh_minimum } }
+    if = { limit = { is_variable_equal = { which = dicm_bh_scale value = 8 } } set_variable = { which = dicm_bh_saved_governing which = dicm_bh_minimum } }
+}
+dicm_bh_use_scale = {
+    dicm_bh_save_minimum = yes
+    set_variable = { which = dicm_bh_scale value = $index$ }
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_initialized_$category$ } }
+        set_variable = { which = dicm_bh_saved_$category$ value = $default$ }
+        set_country_flag = dicm_bh_initialized_$category$
+    }
+    set_variable = { which = dicm_bh_minimum which = dicm_bh_saved_$category$ }
+    set_variable = { which = dicm_bh_step_small value = $small$ }
+    set_variable = { which = dicm_bh_step_large value = $large$ }
+}
+dicm_bh_load_selected_scale = {
+    if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 1 } } dicm_bh_use_scale = { category = tax index = 1 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 2 } } dicm_bh_use_scale = { category = tax index = 1 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 3 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 4 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 5 } } dicm_bh_use_scale = { category = trade index = 3 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 6 } } dicm_bh_use_scale = { category = trade index = 3 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 7 } } dicm_bh_use_scale = { category = trade index = 3 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 8 } } dicm_bh_use_scale = { category = manpower index = 4 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 9 } } dicm_bh_use_scale = { category = manpower index = 4 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 10 } } dicm_bh_use_scale = { category = sailors index = 5 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 11 } } dicm_bh_use_scale = { category = sailors index = 5 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 12 } } dicm_bh_use_scale = { category = army index = 6 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 13 } } dicm_bh_use_scale = { category = army index = 6 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 14 } } dicm_bh_use_scale = { category = navy index = 7 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 15 } } dicm_bh_use_scale = { category = navy index = 7 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 16 } } dicm_bh_use_scale = { category = governing index = 8 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 17 } } dicm_bh_use_scale = { category = governing index = 8 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 18 } } dicm_bh_use_scale = { category = university index = 10 default = 0 small = 0.1 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 19 } } dicm_bh_use_scale = { category = forts index = 9 default = 5 small = 1 large = 5 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 20 } } dicm_bh_use_scale = { category = forts index = 9 default = 5 small = 1 large = 5 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 21 } } dicm_bh_use_scale = { category = forts index = 9 default = 5 small = 1 large = 5 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 22 } } dicm_bh_use_scale = { category = forts index = 9 default = 5 small = 1 large = 5 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 23 } } dicm_bh_use_scale = { category = coastal index = 11 default = 0 small = 1 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 24 } } dicm_bh_use_scale = { category = coastal index = 11 default = 0 small = 1 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 25 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 26 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 27 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 28 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 29 } } dicm_bh_use_scale = { category = sailors index = 5 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 30 } } dicm_bh_use_scale = { category = governing index = 8 default = 1 small = 0.10 large = 1 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 31 } } dicm_bh_use_scale = { category = manpower index = 4 default = 100 small = 100 large = 1000 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 32 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 33 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 34 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 35 } } dicm_bh_use_scale = { category = production index = 2 default = 0.10 small = 0.01 large = 0.10 } }
+    else_if = { limit = { is_variable_equal = { which = dicm_bh_selection value = 36 } } dicm_bh_use_scale = { category = ramparts index = 12 default = 0 small = 1 large = 1 } }
+
+}
+
+# Country scope. Open the default helper tab and initialize missing settings only.
+dicm_bh_open_builder = {
+    clr_country_flag = dicm_bh_dev_active
+    set_country_flag = upgrade_building_toggle_active
+    set_country_flag = dicm_bh_active
+    if = {
+        limit = {
+            NOT = {
+                check_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 1
+                }
+            }
+        }
+        set_variable = {
+            which = dicm_bh_budget_percent
+            value = 100
+        }
+    }
+    if = {
+        limit = {
+            NOT = {
+                check_variable = {
+                    which = dicm_bh_selection
+                    value = 1
+                }
+            }
+        }
+        set_variable = {
+            which = dicm_bh_selection
+            value = 3
+        }
+    }
+    dicm_bh_load_selected_scale = yes
+    country_event = {
+        id = dicm_bh_estimate.1
+    }
+}

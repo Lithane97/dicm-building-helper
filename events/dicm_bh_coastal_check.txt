@@ -1,0 +1,123 @@
+# Read-only ranking and cost diagnostic. No construction or spending.
+namespace = dicm_bh_coastal_check
+country_event = {
+    id = dicm_bh_coastal_check.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_save_trade_report = yes
+            set_variable = { which = dicm_bh_coastal_saved_selection which = dicm_bh_selection }
+            export_to_variable = { which = dicm_bh_coastal_before value = treasury }
+            set_variable = { which = dicm_bh_minimum value = 0 }
+            log = "DICM BH COASTAL CHECK BEGIN: [Root.GetName]"
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 23 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH COASTAL CASE: coastal_defence NEW"
+            if = {
+                limit = { dip_tech = 5 }
+                dicm_bh_collect_coastal_candidates = { BUILDING = coastal_defence BASE_COST = 100 }
+                log = "DICM BH COASTAL ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_coastal_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_coastal_rank value = 10 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_coastal_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                                set_variable = { which = dicm_bh_coastal_development which = PREV }
+                            }
+                        }
+                        log = "DICM BH COASTAL TARGET: rank=[Root.dicm_bh_coastal_rank.GetValue] province=[dicm_bh_trade_best.GetName] priority=[Root.dicm_bh_trade_gain.GetValue] development=[Root.dicm_bh_coastal_development.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH COASTAL LOCKED: dip tech 5 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 24 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH COASTAL CASE: naval_battery NEW"
+            if = {
+                limit = { dip_tech = 12 }
+                dicm_bh_collect_coastal_candidates = { BUILDING = naval_battery BASE_COST = 200 }
+                log = "DICM BH COASTAL ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_coastal_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_coastal_rank value = 10 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_coastal_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                                set_variable = { which = dicm_bh_coastal_development which = PREV }
+                            }
+                        }
+                        log = "DICM BH COASTAL TARGET: rank=[Root.dicm_bh_coastal_rank.GetValue] province=[dicm_bh_trade_best.GetName] priority=[Root.dicm_bh_trade_gain.GetValue] development=[Root.dicm_bh_coastal_development.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH COASTAL LOCKED: dip tech 12 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 24 }
+            set_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH COASTAL CASE: naval_battery UPGRADE"
+            if = {
+                limit = { dip_tech = 12 }
+                dicm_bh_collect_coastal_candidates = { BUILDING = naval_battery BASE_COST = 200 }
+                log = "DICM BH COASTAL ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_coastal_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_coastal_rank value = 10 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_coastal_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                                set_variable = { which = dicm_bh_coastal_development which = PREV }
+                            }
+                        }
+                        log = "DICM BH COASTAL TARGET: rank=[Root.dicm_bh_coastal_rank.GetValue] province=[dicm_bh_trade_best.GetName] priority=[Root.dicm_bh_trade_gain.GetValue] development=[Root.dicm_bh_coastal_development.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH COASTAL LOCKED: dip tech 12 required" }
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection which = dicm_bh_coastal_saved_selection }
+            dicm_bh_restore_trade_report = yes
+            export_to_variable = { which = dicm_bh_coastal_drift value = treasury }
+            subtract_variable = { which = dicm_bh_coastal_drift which = dicm_bh_coastal_before }
+            log = "DICM BH COASTAL TREASURY DRIFT: [Root.dicm_bh_coastal_drift.GetValue]"
+            log = "DICM BH COASTAL CHECK END"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

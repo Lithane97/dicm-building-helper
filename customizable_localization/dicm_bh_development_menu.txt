@@ -1,0 +1,43 @@
+defined_text = {
+    name = GetDICMBHDevMenuADM
+    random = no
+    text = { localisation_key = dicm_bh_dev_scan_failed trigger = { has_country_flag = dicm_bh_dm_scan_failed } }
+    text = { localisation_key = dicm_bh_dev_adm_values trigger = { has_country_flag = dicm_bh_dev_best_adm_set } }
+    text = { localisation_key = dicm_bh_dev_no_candidate trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHDevMenuDIP
+    random = no
+    text = { localisation_key = dicm_bh_dev_scan_failed trigger = { has_country_flag = dicm_bh_dm_scan_failed } }
+    text = { localisation_key = dicm_bh_dev_dip_values trigger = { has_country_flag = dicm_bh_dev_best_dip_set } }
+    text = { localisation_key = dicm_bh_dev_no_candidate trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHDevMenuMIL
+    random = no
+    text = { localisation_key = dicm_bh_dev_scan_failed trigger = { has_country_flag = dicm_bh_dm_scan_failed } }
+    text = { localisation_key = dicm_bh_dev_mil_values trigger = { has_country_flag = dicm_bh_dev_best_mil_set } }
+    text = { localisation_key = dicm_bh_dev_no_candidate trigger = { always = yes } }
+}
+
+defined_text = {
+    name = GetDICMBHDevBatchFooter
+    random = no
+    text = { localisation_key = dicm_bh_dev_batch_summary trigger = { has_country_flag = dicm_bh_db_has_result } }
+    text = { localisation_key = dicm_bh_dev_batch_idle trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHDevBatchPower
+    random = no
+    text = { localisation_key = dicm_bh_dev_batch_adm trigger = { has_country_flag = dicm_bh_db_adm } }
+    text = { localisation_key = dicm_bh_dev_batch_dip trigger = { has_country_flag = dicm_bh_db_dip } }
+    text = { localisation_key = dicm_bh_dev_batch_mil trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHDevBatchReason
+    random = no
+    text = { localisation_key = dicm_bh_dev_batch_failed trigger = { is_variable_equal = { which = dicm_bh_db_stop value = 2 } } }
+    text = { localisation_key = dicm_bh_dev_batch_limit trigger = { is_variable_equal = { which = dicm_bh_db_stop value = 3 } } }
+    text = { localisation_key = dicm_bh_dev_batch_finished trigger = { has_country_flag = dicm_bh_db_has_result } }
+    text = { localisation_key = dicm_bh_dev_batch_idle trigger = { always = yes } }
+}

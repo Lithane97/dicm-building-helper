@@ -1,0 +1,163 @@
+# Development menu: reserve controls, previews and native-event batches.
+custom_window = {
+    name = dicm_bh_dev_window
+    potential = {
+        has_country_flag = upgrade_building_toggle_active
+        has_country_flag = dicm_bh_dev_active
+        NOT = { has_country_flag = dicm_bh_active }
+    }
+}
+custom_button = {
+    name = dicm_bh_dev_open
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_dev_open_tt
+    effect = {
+        hidden_effect = {
+            set_country_flag = upgrade_building_toggle_active
+            clr_country_flag = dicm_bh_active
+            set_country_flag = dicm_bh_dev_active
+            dicm_bh_dev_initialize_menu = yes
+            country_event = { id = dicm_bh_dev_menu.1 }
+        }
+    }
+    frame = { number = 2 trigger = { has_country_flag = dicm_bh_dev_active } }
+    frame = { number = 1 trigger = { always = yes } }
+}
+custom_button = {
+    name = dicm_bh_dev_close
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_close_tt
+    effect = { hidden_effect = {
+        clr_country_flag = upgrade_building_toggle_active
+        clr_country_flag = dicm_bh_active
+        clr_country_flag = dicm_bh_dev_active
+    } }
+}
+custom_button = {
+    name = dicm_bh_dev_refresh
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_dev_refresh_tt
+    effect = { hidden_effect = { country_event = { id = dicm_bh_dev_menu.1 } } }
+}
+custom_button = {
+    name = dicm_bh_dev_adm_minus
+    potential = { }
+    trigger = { check_variable = { which = dicm_bh_dm_adm_reserve value = 1 } }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_adm_reserve value = -50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_adm_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_adm_reserve value = 0 }
+        }
+    } }
+}
+custom_button = {
+    name = dicm_bh_dev_adm_plus
+    potential = { }
+    trigger = {  }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_adm_reserve value = 50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_adm_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_adm_reserve value = 0 }
+        }
+    } }
+}
+custom_text_box = { name = dicm_bh_dev_adm_reserve potential = { } tooltip = dicm_bh_dev_reserve_tt }
+custom_text_box = { name = dicm_bh_dev_adm_preview potential = { } tooltip = dicm_bh_dev_preview_tt }
+custom_button = {
+    name = dicm_bh_dev_adm_spend
+    potential = { }
+    trigger = {
+        NOT = { has_country_flag = dicm_bh_db_running }
+        NOT = { has_country_flag = dicm_bh_dm_scan_failed }
+        check_variable = { which = dicm_bh_dm_adm_cost value = 1 }
+    }
+    tooltip = dicm_bh_dev_spend_tt
+    effect = { hidden_effect = { country_event = { id = dicm_bh_development_batch.1 } } }
+}
+custom_button = {
+    name = dicm_bh_dev_dip_minus
+    potential = { }
+    trigger = { check_variable = { which = dicm_bh_dm_dip_reserve value = 1 } }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_dip_reserve value = -50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_dip_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_dip_reserve value = 0 }
+        }
+    } }
+}
+custom_button = {
+    name = dicm_bh_dev_dip_plus
+    potential = { }
+    trigger = {  }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_dip_reserve value = 50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_dip_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_dip_reserve value = 0 }
+        }
+    } }
+}
+custom_text_box = { name = dicm_bh_dev_dip_reserve potential = { } tooltip = dicm_bh_dev_reserve_tt }
+custom_text_box = { name = dicm_bh_dev_dip_preview potential = { } tooltip = dicm_bh_dev_preview_tt }
+custom_button = {
+    name = dicm_bh_dev_dip_spend
+    potential = { }
+    trigger = {
+        NOT = { has_country_flag = dicm_bh_db_running }
+        NOT = { has_country_flag = dicm_bh_dm_scan_failed }
+        check_variable = { which = dicm_bh_dm_dip_cost value = 1 }
+    }
+    tooltip = dicm_bh_dev_spend_tt
+    effect = { hidden_effect = { country_event = { id = dicm_bh_development_batch.2 } } }
+}
+custom_button = {
+    name = dicm_bh_dev_mil_minus
+    potential = { }
+    trigger = { check_variable = { which = dicm_bh_dm_mil_reserve value = 1 } }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_mil_reserve value = -50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_mil_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_mil_reserve value = 0 }
+        }
+    } }
+}
+custom_button = {
+    name = dicm_bh_dev_mil_plus
+    potential = { }
+    trigger = {  }
+    tooltip = dicm_bh_dev_reserve_tt
+    effect = { hidden_effect = {
+        change_variable = { which = dicm_bh_dm_mil_reserve value = 50 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_dm_mil_reserve value = 0 } } }
+            set_variable = { which = dicm_bh_dm_mil_reserve value = 0 }
+        }
+    } }
+}
+custom_text_box = { name = dicm_bh_dev_mil_reserve potential = { } tooltip = dicm_bh_dev_reserve_tt }
+custom_text_box = { name = dicm_bh_dev_mil_preview potential = { } tooltip = dicm_bh_dev_preview_tt }
+custom_button = {
+    name = dicm_bh_dev_mil_spend
+    potential = { }
+    trigger = {
+        NOT = { has_country_flag = dicm_bh_db_running }
+        NOT = { has_country_flag = dicm_bh_dm_scan_failed }
+        check_variable = { which = dicm_bh_dm_mil_cost value = 1 }
+    }
+    tooltip = dicm_bh_dev_spend_tt
+    effect = { hidden_effect = { country_event = { id = dicm_bh_development_batch.3 } } }
+}
+
+custom_text_box = { name = dicm_bh_dev_footer potential = { } tooltip = dicm_bh_dev_batch_report_tt }

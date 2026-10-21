@@ -1,0 +1,80 @@
+# Province scope. Engine legality plus independent construction-conflict checks.
+dicm_bh_trade_province_free = {
+    controlled_by = owner
+    is_colony = no
+    NOT = { OR = {
+        has_construction = core
+        has_construction = culture
+        has_construction = building
+        has_construction = missionary
+        has_construction = canal
+        has_construction = great_project
+    } }
+}
+
+# Country scope. Minimum and budget are evaluated on click, not in hover tooltips.
+dicm_bh_trade_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 5 }
+            dip_tech = 4
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = marketplace
+                NOT = { OR = { has_building = marketplace has_building = trade_depot has_building = stock_exchange } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 6 }
+            dip_tech = 17
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = trade_depot
+                NOT = { OR = { has_building = marketplace has_building = trade_depot has_building = stock_exchange } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 7 }
+            dip_tech = 22
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = stock_exchange
+                NOT = { OR = { has_building = marketplace has_building = trade_depot has_building = stock_exchange } }
+            }
+        }
+    }
+}
+
+# Country scope. Minimum and budget are evaluated on click, not in hover tooltips.
+dicm_bh_trade_upgrade_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 5 }
+            dip_tech = 4
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = marketplace
+                always = no
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 6 }
+            dip_tech = 17
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = trade_depot
+                has_building = marketplace
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 7 }
+            dip_tech = 22
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = stock_exchange
+                OR = { has_building = marketplace has_building = trade_depot }
+            }
+        }
+    }
+}
+

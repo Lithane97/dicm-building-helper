@@ -1,0 +1,74 @@
+# Hidden native worker avoids visible-event effect preview scope warnings.
+namespace = dicm_bh_dev_menu
+country_event = {
+    id = dicm_bh_dev_menu.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_dev_initialize_menu = yes
+            dicm_bh_save_trade_report = yes
+            clr_country_flag = dicm_bh_trade_cost_mismatch
+            export_to_variable = { which = dicm_bh_dm_cash_before value = treasury }
+            dicm_bh_evaluate_country_development = yes
+            export_to_variable = { which = dicm_bh_dm_drift value = treasury }
+            subtract_variable = { which = dicm_bh_dm_drift which = dicm_bh_dm_cash_before }
+            clr_country_flag = dicm_bh_dm_scan_failed
+            if = {
+                limit = { has_country_flag = dicm_bh_trade_cost_mismatch }
+                set_country_flag = dicm_bh_dm_scan_failed
+            }
+            set_variable = { which = dicm_bh_dm_adm_cost value = 0 }
+            set_variable = { which = dicm_bh_dm_adm_benefit value = 0 }
+            set_variable = { which = dicm_bh_dm_adm_score value = 0 }
+            if = {
+                limit = { has_country_flag = dicm_bh_dev_best_adm_set }
+                event_target:dicm_bh_dev_best_adm = {
+                    set_variable = { which = dicm_bh_dm_adm_cost which = dicm_bh_dev_cost }
+                    set_variable = { which = dicm_bh_dm_adm_benefit which = dicm_bh_dev_adm_benefit }
+                    set_variable = { which = dicm_bh_dm_adm_score which = dicm_bh_dev_adm_score }
+                    owner = {
+                        set_variable = { which = dicm_bh_dm_adm_cost which = PREV }
+                        set_variable = { which = dicm_bh_dm_adm_benefit which = PREV }
+                        set_variable = { which = dicm_bh_dm_adm_score which = PREV }
+                    }
+                }
+            }
+            set_variable = { which = dicm_bh_dm_dip_cost value = 0 }
+            set_variable = { which = dicm_bh_dm_dip_benefit value = 0 }
+            set_variable = { which = dicm_bh_dm_dip_score value = 0 }
+            if = {
+                limit = { has_country_flag = dicm_bh_dev_best_dip_set }
+                event_target:dicm_bh_dev_best_dip = {
+                    set_variable = { which = dicm_bh_dm_dip_cost which = dicm_bh_dev_cost }
+                    set_variable = { which = dicm_bh_dm_dip_benefit which = dicm_bh_dev_dip_benefit }
+                    set_variable = { which = dicm_bh_dm_dip_score which = dicm_bh_dev_dip_score }
+                    owner = {
+                        set_variable = { which = dicm_bh_dm_dip_cost which = PREV }
+                        set_variable = { which = dicm_bh_dm_dip_benefit which = PREV }
+                        set_variable = { which = dicm_bh_dm_dip_score which = PREV }
+                    }
+                }
+            }
+            set_variable = { which = dicm_bh_dm_mil_cost value = 0 }
+            set_variable = { which = dicm_bh_dm_mil_benefit value = 0 }
+            set_variable = { which = dicm_bh_dm_mil_score value = 0 }
+            if = {
+                limit = { has_country_flag = dicm_bh_dev_best_mil_set }
+                event_target:dicm_bh_dev_best_mil = {
+                    set_variable = { which = dicm_bh_dm_mil_cost which = dicm_bh_dev_cost }
+                    set_variable = { which = dicm_bh_dm_mil_benefit which = dicm_bh_dev_mil_benefit }
+                    set_variable = { which = dicm_bh_dm_mil_score which = dicm_bh_dev_mil_score }
+                    owner = {
+                        set_variable = { which = dicm_bh_dm_mil_cost which = PREV }
+                        set_variable = { which = dicm_bh_dm_mil_benefit which = PREV }
+                        set_variable = { which = dicm_bh_dm_mil_score which = PREV }
+                    }
+                }
+            }
+            dicm_bh_restore_trade_report = yes
+            log = "DICM BH DEVELOPMENT MENU REFRESH: treasury_drift=[Root.dicm_bh_dm_drift.GetValue]"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

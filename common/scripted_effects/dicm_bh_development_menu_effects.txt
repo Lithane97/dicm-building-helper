@@ -1,0 +1,9 @@
+dicm_bh_dev_initialize_menu = {
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_dm_initialized } }
+        set_variable = { which = dicm_bh_dm_adm_reserve value = 500 }
+        set_variable = { which = dicm_bh_dm_dip_reserve value = 500 }
+        set_variable = { which = dicm_bh_dm_mil_reserve value = 500 }
+        set_country_flag = dicm_bh_dm_initialized
+    }
+}

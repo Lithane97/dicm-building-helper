@@ -1,0 +1,52 @@
+# Country selection. Coastal priorities use a separate development tie-breaker.
+dicm_bh_coastal_selected = {
+    OR = {
+        is_variable_equal = { which = dicm_bh_selection value = 23 }
+        is_variable_equal = { which = dicm_bh_selection value = 24 }
+    }
+}
+# Province scope. Wealth proxy used for the trade-port and recent-raid groups.
+dicm_bh_coastal_valuable = {
+    OR = {
+        development = 20
+        province_has_center_of_trade_of_level = 1
+        has_river_estuary_trigger = yes
+        is_capital = yes
+    }
+}
+# Evidence of exposure, not a prediction of raider range or future diplomacy.
+dicm_bh_coastal_recently_raided = {
+    has_province_modifier = slaves_raided
+}
+dicm_bh_coastal_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 23 }
+            dip_tech = 5
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = coastal_defence
+                NOT = { OR = { has_building = coastal_defence has_building = naval_battery } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 24 }
+            dip_tech = 12
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = naval_battery
+                NOT = { OR = { has_building = coastal_defence has_building = naval_battery } }
+            }
+        }
+    }
+}
+dicm_bh_coastal_upgrade_available = {
+    is_variable_equal = { which = dicm_bh_selection value = 24 }
+    dip_tech = 12
+    any_owned_province = {
+        dicm_bh_trade_province_free = yes
+        can_build = naval_battery
+        has_building = coastal_defence
+        NOT = { has_building = naval_battery }
+    }
+}

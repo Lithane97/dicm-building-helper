@@ -1,0 +1,22 @@
+# Disposable-save construction test. Selects training_fields, minimum 0, budget 10%.
+# This DOES queue upgrades and spend gold. Use the disposable lower-tier fixture.
+log = "DICM BH RESOURCE UPGRADE TEST BEGIN: training_fields"
+set_variable = { which = dicm_bh_selection value = 9 }
+dicm_bh_load_selected_scale = yes
+set_variable = { which = dicm_bh_minimum value = 0 }
+dicm_bh_save_minimum = yes
+set_variable = { which = dicm_bh_budget_percent value = 10 }
+export_to_variable = { which = dicm_bh_resource_test_before value = treasury }
+country_event = { id = dicm_bh_estimate.1 }
+log = "DICM BH RESOURCE UPGRADE TEST PREVIEW COUNT: [Root.dicm_bh_est_upgrade_count.GetValue]"
+log = "DICM BH RESOURCE UPGRADE TEST PREVIEW COST: [Root.dicm_bh_est_upgrade_cost.GetValue]"
+log = "DICM BH RESOURCE UPGRADE TEST PREVIEW CAP: [Root.dicm_bh_est_limit.GetValue]"
+country_event = { id = dicm_bh_trade.5 }
+log = "DICM BH RESOURCE UPGRADE TEST ACTUAL COUNT: [Root.dicm_bh_trade_count.GetValue]"
+log = "DICM BH RESOURCE UPGRADE TEST ACTUAL COST: [Root.dicm_bh_trade_spent.GetValue]"
+log = "DICM BH RESOURCE UPGRADE TEST FAILED: [Root.dicm_bh_trade_failed.GetValue]"
+export_to_variable = { which = dicm_bh_resource_test_after value = treasury }
+set_variable = { which = dicm_bh_resource_test_paid which = dicm_bh_resource_test_before }
+subtract_variable = { which = dicm_bh_resource_test_paid which = dicm_bh_resource_test_after }
+log = "DICM BH RESOURCE UPGRADE TEST TREASURY LOSS: [Root.dicm_bh_resource_test_paid.GetValue]"
+log = "DICM BH RESOURCE UPGRADE TEST END: training_fields"

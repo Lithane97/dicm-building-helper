@@ -1,0 +1,7 @@
+defined_text = {
+    name = GetDICMBHTaxProbeStatus
+    random = no
+    text = { localisation_key = dicm_bh_tax_probe_no_selection trigger = { NOT = { has_province_flag = dicm_bh_tax_probe_selected } } }
+    text = { localisation_key = dicm_bh_tax_probe_pass trigger = { has_province_flag = dicm_bh_tax_probe_pass } }
+    text = { localisation_key = dicm_bh_tax_probe_fail trigger = { always = yes } }
+}

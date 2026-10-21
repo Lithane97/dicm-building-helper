@@ -1,0 +1,54 @@
+# Country scope. A batch always uses the verified single-click worker.
+# Fresh native ranking before every attempt; stop on any failed check.
+dicm_bh_sp_spend_batch = {
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_db_running } }
+        dicm_bh_dev_initialize_menu = yes
+        set_country_flag = dicm_bh_db_running
+        set_country_flag = dicm_bh_db_continue
+        clr_country_flag = dicm_bh_db_adm
+        clr_country_flag = dicm_bh_db_dip
+        clr_country_flag = dicm_bh_db_mil
+        set_country_flag = dicm_bh_db_$TYPE$
+        set_variable = { which = dicm_bh_db_attempts value = 0 }
+        set_variable = { which = dicm_bh_db_steps value = 0 }
+        set_variable = { which = dicm_bh_db_stop value = 0 }
+        export_to_variable = { which = dicm_bh_db_power_before value = trigger_value:$TYPE$_power }
+        while = {
+            limit = {
+                has_country_flag = dicm_bh_db_continue
+                NOT = { check_variable = { which = dicm_bh_db_attempts value = 1000 } }
+            }
+            change_variable = { which = dicm_bh_db_attempts value = 1 }
+            country_event = { id = dicm_bh_development_spend.$STEP$ }
+            if = {
+                limit = {
+                    is_variable_equal = { which = dicm_bh_sp_status value = 1 }
+                    check_variable = { which = dicm_bh_sp_spent value = 1 }
+                    is_variable_equal = { which = dicm_bh_sp_dev_delta value = 1 }
+                }
+                change_variable = { which = dicm_bh_db_steps value = 1 }
+            }
+            else = {
+                clr_country_flag = dicm_bh_db_continue
+                set_variable = { which = dicm_bh_db_stop value = 2 }
+                if = {
+                    limit = { is_variable_equal = { which = dicm_bh_sp_status value = 0 } }
+                    set_variable = { which = dicm_bh_db_stop value = 1 }
+                }
+            }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_db_continue }
+            set_variable = { which = dicm_bh_db_stop value = 3 }
+        }
+        export_to_variable = { which = dicm_bh_db_power_after value = trigger_value:$TYPE$_power }
+        set_variable = { which = dicm_bh_db_spent which = dicm_bh_db_power_before }
+        subtract_variable = { which = dicm_bh_db_spent which = dicm_bh_db_power_after }
+        set_variable = { which = dicm_bh_db_reserve which = dicm_bh_dm_$TYPE$_reserve }
+        clr_country_flag = dicm_bh_db_continue
+        clr_country_flag = dicm_bh_db_running
+        set_country_flag = dicm_bh_db_has_result
+        country_event = { id = dicm_bh_dev_menu.1 }
+    }
+}

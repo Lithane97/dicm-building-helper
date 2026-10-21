@@ -1,0 +1,26 @@
+# Disposable-save upgrade fixture: adds completed Barracks in Paris and Dock in Aix.
+# No gold is deducted. Reload the unmodified test baseline before using this file.
+183 = {
+    if = {
+        limit = {
+            owned_by = ROOT
+            NOT = { OR = { has_building = barracks has_building = training_fields } }
+            NOT = { has_construction = building }
+        }
+        add_building = barracks
+        log = "DICM BH RESOURCE FIXTURE: added barracks in Paris"
+    }
+    else = { log = "DICM BH RESOURCE FIXTURE: Paris skipped; ownership/building/construction guard" }
+}
+201 = {
+    if = {
+        limit = {
+            owned_by = ROOT
+            NOT = { OR = { has_building = dock has_building = drydock } }
+            NOT = { has_construction = building }
+        }
+        add_building = dock
+        log = "DICM BH RESOURCE FIXTURE: added dock in Aix"
+    }
+    else = { log = "DICM BH RESOURCE FIXTURE: Aix skipped; ownership/building/construction guard" }
+}

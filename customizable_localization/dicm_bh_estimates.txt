@@ -1,0 +1,13 @@
+defined_text = {
+    name = GetDICMBHBuildEstimate
+    random = no
+    text = { localisation_key = dicm_bh_est_build_values trigger = { has_country_flag = dicm_bh_est_ready } }
+    text = { localisation_key = dicm_bh_est_unavailable trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUpgradeEstimate
+    random = no
+    text = { localisation_key = dicm_bh_est_upgrade_values trigger = { has_country_flag = dicm_bh_est_ready } }
+    text = { localisation_key = dicm_bh_est_unavailable trigger = { always = yes } }
+}
+

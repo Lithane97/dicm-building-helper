@@ -1,0 +1,64 @@
+dicm_bh_resource_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 8 }
+            mil_tech = 6
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = barracks
+                NOT = { OR = { has_building = barracks has_building = training_fields } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 9 }
+            mil_tech = 16
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = training_fields
+                NOT = { OR = { has_building = barracks has_building = training_fields } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 10 }
+            dip_tech = 6
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = dock
+                NOT = { OR = { has_building = dock has_building = drydock } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 11 }
+            dip_tech = 19
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = drydock
+                NOT = { OR = { has_building = dock has_building = drydock } }
+            }
+        }
+    }
+}
+dicm_bh_resource_upgrade_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 9 }
+            mil_tech = 16
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = training_fields
+                has_building = barracks
+                NOT = { has_building = training_fields }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 11 }
+            dip_tech = 19
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = drydock
+                has_building = dock
+                NOT = { has_building = drydock }
+            }
+        }
+    }
+}

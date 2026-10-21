@@ -1,0 +1,39 @@
+# Country scope. Minimum and budget are checked in the shared processing pipeline.
+dicm_bh_production_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 3 }
+            adm_tech = 6
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                NOT = { trade_goods = gold }
+                NOT = { is_owned_by_trade_company = yes }
+                can_build = workshop
+                NOT = { OR = { has_building = workshop has_building = counting_house } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 4 }
+            adm_tech = 24
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                NOT = { trade_goods = gold }
+                NOT = { is_owned_by_trade_company = yes }
+                can_build = counting_house
+                NOT = { OR = { has_building = workshop has_building = counting_house } }
+            }
+        }
+    }
+}
+dicm_bh_production_upgrade_available = {
+    is_variable_equal = { which = dicm_bh_selection value = 4 }
+    adm_tech = 24
+    any_owned_province = {
+        dicm_bh_trade_province_free = yes
+        NOT = { trade_goods = gold }
+        NOT = { is_owned_by_trade_company = yes }
+        can_build = counting_house
+        has_building = workshop
+        NOT = { has_building = counting_house }
+    }
+}

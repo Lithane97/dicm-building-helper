@@ -1,0 +1,146 @@
+# Shared trade candidate collection and processing.
+# Parameters are literal text substitutions: BUILDING, BONUS, and BASE_COST.
+# Building-independent math and selection helpers are shared with both pipelines.
+# Construction and estimation are separate helpers; estimates cannot queue buildings.
+# The helper call graph is one-way: pipeline -> candidate/math helpers -> native effects.
+# ROOT is the acting country; existing province/owner/PREV scopes are preserved.
+
+# Country scope; ROOT is the acting country.
+# Parameters: BUILDING = target building ID; BONUS = target trade-power bonus;
+# BASE_COST = target unmodified building cost.
+# Scan legal provinces, calculate gain/cost, and mark candidates meeting the minimum.
+# Both live construction and cached estimates use this exact eligibility calculation.
+dicm_bh_collect_trade_candidates = {
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = {
+                    owner = {
+                        has_country_flag = dicm_bh_trade_upgrade_mode
+                    }
+                    OR = { has_building = marketplace has_building = trade_depot }
+                }
+                AND = {
+                    owner = {
+                        NOT = { has_country_flag = dicm_bh_trade_upgrade_mode }
+                    }
+                    NOT = {
+                        OR = { has_building = marketplace has_building = trade_depot has_building = stock_exchange }
+                    }
+                }
+            }
+        }
+        dicm_bh_read_existing_trade_building = yes
+        dicm_bh_prepare_trade_power = yes
+        set_variable = { which = dicm_bh_trade_delta value = $BONUS$ }
+        subtract_variable = { which = dicm_bh_trade_delta which = dicm_bh_trade_old_bonus }
+        dicm_bh_calculate_trade_gain = yes
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        dicm_bh_mark_trade_candidate = yes
+    }
+}
+
+# Country scope. BUILDING is the literal target building ID after parameter expansion.
+# Process highest-gain candidates while budget/cash allow normal engine construction.
+# Record actual payments and stop on a cost mismatch; skip unaffordable candidates.
+# No event is fired here; the calling event refreshes estimates and opens the report.
+dicm_bh_construct_trade_candidates = {
+    while = {
+        limit = {
+            any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+            NOT = { has_country_flag = dicm_bh_trade_cost_mismatch }
+        }
+        dicm_bh_select_best_trade_candidate = yes
+        if = {
+            limit = { has_country_flag = dicm_bh_trade_best_set }
+            event_target:dicm_bh_trade_best = {
+                dicm_bh_prepare_trade_candidate = yes
+                if = {
+                    limit = {
+                        dicm_bh_trade_province_free = yes
+                        can_build = $BUILDING$
+                        check_variable = { which = dicm_bh_trade_remaining which = dicm_bh_trade_cost }
+                        check_variable = { which = dicm_bh_trade_cash which = dicm_bh_trade_cost }
+                    }
+                    owner = {
+                        export_to_variable = { which = dicm_bh_trade_before value = treasury }
+                    }
+                    add_building_construction = { building = $BUILDING$ speed = 1 cost = 1 }
+                    if = {
+                        limit = { has_construction = building }
+                        owner = {
+                            dicm_bh_record_trade_payment = yes
+                        }
+                        set_variable = { which = dicm_bh_trade_actual which = ROOT }
+                        dicm_bh_calculate_trade_cost_difference = yes
+                        if = {
+                            limit = { check_variable = { which = dicm_bh_trade_difference value = 0.01 } }
+                            owner = {
+                                set_country_flag = dicm_bh_trade_cost_mismatch
+                            }
+                        }
+                        dicm_bh_reserve_fort_site = yes
+                    dicm_bh_reserve_administration_area = yes
+                        log = "DICM BH TRADE QUEUED: province=[This.GetName] gain=[This.dicm_bh_trade_gain.GetValue] estimated_cost=[This.dicm_bh_trade_cost.GetValue] actual_cost=[This.dicm_bh_trade_actual.GetValue]"
+                    }
+                    else = {
+                        owner = {
+                            change_variable = { which = dicm_bh_trade_failed value = 1 }
+                        }
+                    }
+                }
+                else = {
+                    owner = {
+                        change_variable = { which = dicm_bh_trade_budget_skips value = 1 }
+                    }
+                }
+            }
+        }
+        else = {
+            dicm_bh_clear_trade_candidates = yes
+        }
+    }
+}
+
+# Country scope. BUILDING is the target building ID.
+# Simulate the same candidate order and budget limits using estimate bookkeeping only.
+# No construction, treasury mutation, or event call; each preview pass has its own budget.
+dicm_bh_estimate_trade_candidates = {
+    while = {
+        limit = {
+            any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+            NOT = { has_country_flag = dicm_bh_trade_cost_mismatch }
+        }
+        dicm_bh_select_best_trade_candidate = yes
+        if = {
+            limit = { has_country_flag = dicm_bh_trade_best_set }
+            event_target:dicm_bh_trade_best = {
+                dicm_bh_prepare_trade_candidate = yes
+                if = {
+                    limit = {
+                        dicm_bh_trade_province_free = yes
+                        can_build = $BUILDING$
+                        check_variable = { which = dicm_bh_trade_remaining which = dicm_bh_trade_cost }
+                        check_variable = { which = dicm_bh_trade_cash which = dicm_bh_trade_cost }
+                    }
+                    dicm_bh_record_trade_estimate = yes
+                    dicm_bh_reserve_fort_site = yes
+                    dicm_bh_reserve_administration_area = yes
+                }
+                else = {
+                    owner = {
+                        change_variable = { which = dicm_bh_trade_budget_skips value = 1 }
+                    }
+                }
+            }
+        }
+        else = {
+            dicm_bh_clear_trade_candidates = yes
+        }
+    }
+}

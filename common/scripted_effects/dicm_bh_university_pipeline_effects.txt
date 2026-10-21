@@ -1,0 +1,57 @@
+# Country scope, country ROOT. Equal-weight aggregate of the three improvements
+# in benefit per 100 power. Normalize each category by its best eligible site;
+# raw ducat and manpower values are never added. Missing categories contribute 0.
+# The comparison set is fixed before budget processing, shared by preview/live.
+dicm_bh_collect_university_candidates = {
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+        dicm_bh_evaluate_country_development = yes
+        set_variable = { which = dicm_bh_uni_max_adm value = 0 }
+        set_variable = { which = dicm_bh_uni_max_dip value = 0 }
+        set_variable = { which = dicm_bh_uni_max_mil value = 0 }
+        every_owned_province = {
+            limit = { dicm_bh_university_site = yes }
+            dicm_bh_university_consider_max = { TYPE = adm }
+            dicm_bh_university_consider_max = { TYPE = dip }
+            dicm_bh_university_consider_max = { TYPE = mil }
+        }
+        every_owned_province = {
+            limit = {
+                dicm_bh_university_site = yes
+                owner = { NOT = { has_country_flag = dicm_bh_trade_cost_mismatch } }
+            }
+            set_variable = { which = dicm_bh_trade_gain value = 0 }
+            dicm_bh_university_add_score = { TYPE = adm }
+            dicm_bh_university_add_score = { TYPE = dip }
+            dicm_bh_university_add_score = { TYPE = mil }
+            set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+            dicm_bh_calculate_trade_cost_factor = yes
+            set_variable = { which = dicm_bh_trade_cost value = 300 }
+            dicm_bh_apply_trade_cost_factor = yes
+            dicm_bh_mark_trade_candidate = yes
+
+        }
+    }
+}
+
+# Province scope. Copy the maximum via PREV, retaining country ROOT.
+dicm_bh_university_consider_max = {
+    owner = {
+        set_variable = { which = dicm_bh_dev_$TYPE$_uni_gain which = PREV }
+        if = {
+            limit = { check_variable = { which = dicm_bh_dev_$TYPE$_uni_gain which = dicm_bh_uni_max_$TYPE$ } }
+            set_variable = { which = dicm_bh_uni_max_$TYPE$ which = dicm_bh_dev_$TYPE$_uni_gain }
+        }
+    }
+}
+
+# Province scope. Contribution is dimensionless, from 0 to 1 per power type.
+dicm_bh_university_add_score = {
+    set_variable = { which = dicm_bh_uni_max_$TYPE$ which = ROOT }
+    if = {
+        limit = { check_variable = { which = dicm_bh_uni_max_$TYPE$ value = 0.001 } }
+        set_variable = { which = dicm_bh_uni_component which = dicm_bh_dev_$TYPE$_uni_gain }
+        divide_variable = { which = dicm_bh_uni_component which = dicm_bh_uni_max_$TYPE$ }
+        change_variable = { which = dicm_bh_trade_gain which = dicm_bh_uni_component }
+    }
+}

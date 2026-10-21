@@ -1,0 +1,244 @@
+# Console diagnostics only. No construction or spending.
+# event dicm_bh_production_probe.1            -> capital province
+# event dicm_bh_production_probe.2 PROVINCE_ID -> specified province
+namespace = dicm_bh_production_probe
+country_event = {
+    id = dicm_bh_production_probe.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        capital_scope = { province_event = { id = dicm_bh_production_probe.2 } }
+    }
+    option = { name = dicm_bh_production_probe_close }
+}
+province_event = {
+    id = dicm_bh_production_probe.2
+    title = dicm_bh_production_probe_title
+    desc = dicm_bh_production_probe_desc
+    picture = TRADE_eventPicture
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_calculate_production_gains = yes
+            set_variable = { which = dicm_bh_production_minimum value = 0.1 }
+            set_variable = { which = dicm_bh_production_selection value = 0 }
+            set_variable = { which = dicm_bh_production_selected_gain value = 0 }
+            clr_province_flag = dicm_bh_production_probe_selected
+            clr_province_flag = dicm_bh_production_probe_pass
+            owner = {
+                set_variable = { which = dicm_bh_production_minimum which = dicm_bh_minimum }
+                set_variable = { which = dicm_bh_production_selection which = dicm_bh_selection }
+                ROOT = {
+                    set_variable = { which = dicm_bh_production_minimum which = PREV }
+                    set_variable = { which = dicm_bh_production_selection which = PREV }
+                }
+            }
+            if = {
+                limit = { is_variable_equal = { which = dicm_bh_production_selection value = 3 } }
+                set_province_flag = dicm_bh_production_probe_selected
+                set_variable = { which = dicm_bh_production_selected_gain which = dicm_bh_production_workshop_gain }
+            }
+            else_if = {
+                limit = { is_variable_equal = { which = dicm_bh_production_selection value = 4 } }
+                set_province_flag = dicm_bh_production_probe_selected
+                set_variable = { which = dicm_bh_production_selected_gain which = dicm_bh_production_counting_house_gain }
+            }
+            if = {
+                limit = {
+                    NOT = { trade_goods = gold }
+                    NOT = { is_owned_by_trade_company = yes }
+                    has_province_flag = dicm_bh_production_probe_input
+                    has_province_flag = dicm_bh_production_probe_selected
+                    check_variable = { which = dicm_bh_production_selected_gain value = 0.001 }
+                    check_variable = { which = dicm_bh_production_selected_gain which = dicm_bh_production_minimum }
+                }
+                set_province_flag = dicm_bh_production_probe_pass
+            }
+            log = "DICM BH PRODUCTION INPUT: province=[Root.GetName] annual=[Root.dicm_bh_production_annual_value.GetValue] base=[Root.dicm_bh_production_base.GetValue] autonomy=[Root.dicm_bh_production_autonomy.GetValue] old_bonus=[Root.dicm_bh_production_old_bonus.GetValue]"
+            log = "DICM BH PRODUCTION GAIN: workshop=[Root.dicm_bh_production_workshop_gain.GetValue] counting_house=[Root.dicm_bh_production_counting_house_gain.GetValue] minimum=[Root.dicm_bh_production_minimum.GetValue]"
+        }
+    }
+    option = {
+        name = dicm_bh_production_probe_edit
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = { name = dicm_bh_production_probe_close }
+}
+
+# Alternating input events: .3 buttons open .4, and .4 buttons open .3.
+# Each click updates the province variable, then the new popup resolves its current value.
+# No immediate self-recursion; reopening happens only in a player-selected option.
+# Finish leaves the editor and opens the read-only calculation event .2.
+# Manual input editor. Touches only this province's diagnostic scratch value.
+# Enter annual TRADE VALUE, before autonomy/production efficiency, not monthly income.
+province_event = {
+    id = dicm_bh_production_probe.3
+    title = dicm_bh_production_probe_input_title
+    desc = dicm_bh_production_probe_input_desc
+    picture = TRADE_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = dicm_bh_production_probe_plus10
+        change_variable = { which = dicm_bh_production_annual_value value = 10 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus1
+        change_variable = { which = dicm_bh_production_annual_value value = 1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus01
+        change_variable = { which = dicm_bh_production_annual_value value = 0.1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus01
+        change_variable = { which = dicm_bh_production_annual_value value = -0.1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus1
+        change_variable = { which = dicm_bh_production_annual_value value = -1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus10
+        change_variable = { which = dicm_bh_production_annual_value value = -10 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus001
+        change_variable = { which = dicm_bh_production_annual_value value = 0.01 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus001
+        change_variable = { which = dicm_bh_production_annual_value value = -0.01 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.4 }
+    }
+    option = {
+        name = dicm_bh_production_probe_apply
+        set_province_flag = dicm_bh_production_probe_input
+        province_event = { id = dicm_bh_production_probe.2 }
+    }
+}
+
+# Manual input editor. Touches only this province's diagnostic scratch value.
+# Enter annual TRADE VALUE, before autonomy/production efficiency, not monthly income.
+province_event = {
+    id = dicm_bh_production_probe.4
+    title = dicm_bh_production_probe_input_title
+    desc = dicm_bh_production_probe_input_desc
+    picture = TRADE_eventPicture
+    is_triggered_only = yes
+    option = {
+        name = dicm_bh_production_probe_plus10
+        change_variable = { which = dicm_bh_production_annual_value value = 10 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus1
+        change_variable = { which = dicm_bh_production_annual_value value = 1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus01
+        change_variable = { which = dicm_bh_production_annual_value value = 0.1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus01
+        change_variable = { which = dicm_bh_production_annual_value value = -0.1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus1
+        change_variable = { which = dicm_bh_production_annual_value value = -1 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus10
+        change_variable = { which = dicm_bh_production_annual_value value = -10 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_plus001
+        change_variable = { which = dicm_bh_production_annual_value value = 0.01 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_minus001
+        change_variable = { which = dicm_bh_production_annual_value value = -0.01 }
+        if = {
+            limit = { NOT = { check_variable = { which = dicm_bh_production_annual_value value = 0 } } }
+            set_variable = { which = dicm_bh_production_annual_value value = 0 }
+        }
+        province_event = { id = dicm_bh_production_probe.3 }
+    }
+    option = {
+        name = dicm_bh_production_probe_apply
+        set_province_flag = dicm_bh_production_probe_input
+        province_event = { id = dicm_bh_production_probe.2 }
+    }
+}

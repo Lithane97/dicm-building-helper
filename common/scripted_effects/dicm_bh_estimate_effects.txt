@@ -1,0 +1,563 @@
+# Estimate refresh helpers. Country scope throughout; ROOT is the acting country.
+# These helpers preserve the existing synchronous save -> preview -> restore order.
+# Monetary formatting uses literal variable-name substitution, without changing source values.
+
+# Country scope. Preserve live trade report variables, settings, and flags before previews.
+# Backup slots are temporary scratch state; this refresh runs synchronously.
+dicm_bh_save_trade_report = {
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_minimum which = dicm_bh_minimum }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_budget_percent which = dicm_bh_budget_percent }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_count which = dicm_bh_trade_count }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_eligible which = dicm_bh_trade_eligible }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_budget_skips which = dicm_bh_trade_budget_skips }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_failed which = dicm_bh_trade_failed }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_spent which = dicm_bh_trade_spent }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_cash_start which = dicm_bh_trade_cash_start }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_budget which = dicm_bh_trade_budget }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_remaining which = dicm_bh_trade_remaining }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_country_power which = dicm_bh_trade_country_power }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_country_cost which = dicm_bh_trade_country_cost }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_old_bonus which = dicm_bh_trade_old_bonus }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_old_cost which = dicm_bh_trade_old_cost }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_power which = dicm_bh_trade_power }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_local_power which = dicm_bh_trade_local_power }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_denominator which = dicm_bh_trade_denominator }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_delta which = dicm_bh_trade_delta }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_gain which = dicm_bh_trade_gain }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_local_cost which = dicm_bh_trade_local_cost }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_cost_factor which = dicm_bh_trade_cost_factor }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_cost which = dicm_bh_trade_cost }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_cash which = dicm_bh_trade_cash }
+    set_variable = { which = dicm_bh_est_saved_dicm_bh_trade_cost_copy which = dicm_bh_trade_cost_copy }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_preview
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_preview }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_preview
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_upgrade_mode
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_upgrade_mode }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_upgrade_mode
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_cost_mismatch
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_cost_mismatch }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_cost_mismatch
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_supported
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_supported }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_supported
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_tech_ready
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_tech_ready }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_tech_ready
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_best_set
+    if = {
+        limit = { has_country_flag = dicm_bh_trade_best_set }
+        set_country_flag = dicm_bh_est_saved_dicm_bh_trade_best_set
+    }
+}
+
+# Country scope. Restore all variables and flags saved before the estimate refresh.
+# Restore each flag's previous value and clear its temporary backup flag.
+# Cached estimates/readiness remain available to the GUI.
+dicm_bh_restore_trade_report = {
+    set_variable = { which = dicm_bh_minimum which = dicm_bh_est_saved_dicm_bh_minimum }
+    set_variable = { which = dicm_bh_budget_percent which = dicm_bh_est_saved_dicm_bh_budget_percent }
+    set_variable = { which = dicm_bh_trade_count which = dicm_bh_est_saved_dicm_bh_trade_count }
+    set_variable = { which = dicm_bh_trade_eligible which = dicm_bh_est_saved_dicm_bh_trade_eligible }
+    set_variable = { which = dicm_bh_trade_budget_skips which = dicm_bh_est_saved_dicm_bh_trade_budget_skips }
+    set_variable = { which = dicm_bh_trade_failed which = dicm_bh_est_saved_dicm_bh_trade_failed }
+    set_variable = { which = dicm_bh_trade_spent which = dicm_bh_est_saved_dicm_bh_trade_spent }
+    set_variable = { which = dicm_bh_trade_cash_start which = dicm_bh_est_saved_dicm_bh_trade_cash_start }
+    set_variable = { which = dicm_bh_trade_budget which = dicm_bh_est_saved_dicm_bh_trade_budget }
+    set_variable = { which = dicm_bh_trade_remaining which = dicm_bh_est_saved_dicm_bh_trade_remaining }
+    set_variable = { which = dicm_bh_trade_country_power which = dicm_bh_est_saved_dicm_bh_trade_country_power }
+    set_variable = { which = dicm_bh_trade_country_cost which = dicm_bh_est_saved_dicm_bh_trade_country_cost }
+    set_variable = { which = dicm_bh_trade_old_bonus which = dicm_bh_est_saved_dicm_bh_trade_old_bonus }
+    set_variable = { which = dicm_bh_trade_old_cost which = dicm_bh_est_saved_dicm_bh_trade_old_cost }
+    set_variable = { which = dicm_bh_trade_power which = dicm_bh_est_saved_dicm_bh_trade_power }
+    set_variable = { which = dicm_bh_trade_local_power which = dicm_bh_est_saved_dicm_bh_trade_local_power }
+    set_variable = { which = dicm_bh_trade_denominator which = dicm_bh_est_saved_dicm_bh_trade_denominator }
+    set_variable = { which = dicm_bh_trade_delta which = dicm_bh_est_saved_dicm_bh_trade_delta }
+    set_variable = { which = dicm_bh_trade_gain which = dicm_bh_est_saved_dicm_bh_trade_gain }
+    set_variable = { which = dicm_bh_trade_local_cost which = dicm_bh_est_saved_dicm_bh_trade_local_cost }
+    set_variable = { which = dicm_bh_trade_cost_factor which = dicm_bh_est_saved_dicm_bh_trade_cost_factor }
+    set_variable = { which = dicm_bh_trade_cost which = dicm_bh_est_saved_dicm_bh_trade_cost }
+    set_variable = { which = dicm_bh_trade_cash which = dicm_bh_est_saved_dicm_bh_trade_cash }
+    set_variable = { which = dicm_bh_trade_cost_copy which = dicm_bh_est_saved_dicm_bh_trade_cost_copy }
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_preview }
+        set_country_flag = dicm_bh_trade_preview
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_preview
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_preview
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_upgrade_mode }
+        set_country_flag = dicm_bh_trade_upgrade_mode
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_upgrade_mode
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_upgrade_mode
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_cost_mismatch }
+        set_country_flag = dicm_bh_trade_cost_mismatch
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_cost_mismatch
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_cost_mismatch
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_supported }
+        set_country_flag = dicm_bh_trade_supported
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_supported
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_supported
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_tech_ready }
+        set_country_flag = dicm_bh_trade_tech_ready
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_tech_ready
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_tech_ready
+    if = {
+        limit = { has_country_flag = dicm_bh_est_saved_dicm_bh_trade_best_set }
+        set_country_flag = dicm_bh_trade_best_set
+    }
+    else = {
+        clr_country_flag = dicm_bh_trade_best_set
+    }
+    clr_country_flag = dicm_bh_est_saved_dicm_bh_trade_best_set
+}
+
+# Country scope; ROOT is the acting country.
+# Caller sets Build/Upgrade mode first. Initialize an independent budget and dispatch
+# the selected unlocked trade/tax building through the read-only estimation helpers.
+# Caller copies totals to its Build or Upgrade cache before starting another pass.
+dicm_bh_estimate_selected_trade_building = {
+    dicm_bh_initialize_trade_run = yes
+    dicm_bh_clear_trade_candidates = yes
+    dicm_bh_clear_administration_plans = yes
+    if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 5 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { dip_tech = 4 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_trade_candidates = { BUILDING = marketplace BONUS = 0.5 BASE_COST = 100 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = marketplace }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 6 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { dip_tech = 17 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_trade_candidates = { BUILDING = trade_depot BONUS = 1 BASE_COST = 300 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = trade_depot }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 7 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { dip_tech = 22 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_trade_candidates = { BUILDING = stock_exchange BONUS = 1.25 BASE_COST = 400 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = stock_exchange }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 1 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 4 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_tax_candidates = { BUILDING = temple GAIN = dicm_bh_tax_church_gain BASE_COST = 100 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = temple }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 2 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 19 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_tax_candidates = { BUILDING = cathedral GAIN = dicm_bh_tax_cathedral_gain BASE_COST = 300 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = cathedral }
+        }
+    }
+
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 3 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 6 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_production_candidates = { BUILDING = workshop GAIN = dicm_bh_production_workshop_gain BASE_COST = 100 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = workshop }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 4 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 24 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_production_candidates = { BUILDING = counting_house GAIN = dicm_bh_production_counting_house_gain BASE_COST = 400 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = counting_house }
+        }
+    }
+
+
+        # Manpower and sailors: additional maximum pool size.
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 8 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 6 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_resource_candidates = { BUILDING = barracks LOWER = barracks UPPER = training_fields RESOURCE = manpower BONUS = 0.5 BASE_COST = 100 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = barracks }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 9 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 16 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_resource_candidates = { BUILDING = training_fields LOWER = barracks UPPER = training_fields RESOURCE = manpower BONUS = 1 BASE_COST = 300 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = training_fields }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 10 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 6 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_resource_candidates = { BUILDING = dock LOWER = dock UPPER = drydock RESOURCE = sailors BONUS = 0.5 BASE_COST = 100 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = dock }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 11 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 19 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_resource_candidates = { BUILDING = drydock LOWER = dock UPPER = drydock RESOURCE = sailors BONUS = 1 BASE_COST = 300 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = drydock }
+            }
+        }
+
+        # Army/navy force limit: marginal national capacity after autonomy.
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 12 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 8 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_force_candidates = { BUILDING = regimental_camp LOWER = regimental_camp UPPER = conscription_center TYPE = land BONUS = 1 LOWER_BONUS = 1 UPPER_BONUS = 2 BASE_COST = 200 LOWER_COST = 200 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = regimental_camp }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 13 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 22 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_force_candidates = { BUILDING = conscription_center LOWER = regimental_camp UPPER = conscription_center TYPE = land BONUS = 2 LOWER_BONUS = 1 UPPER_BONUS = 2 BASE_COST = 400 LOWER_COST = 200 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = conscription_center }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 14 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 8 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_force_candidates = { BUILDING = shipyard LOWER = shipyard UPPER = grand_shipyard TYPE = naval BONUS = 2 LOWER_BONUS = 2 UPPER_BONUS = 4 BASE_COST = 100 LOWER_COST = 100 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = shipyard }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 15 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 24 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_force_candidates = { BUILDING = grand_shipyard LOWER = shipyard UPPER = grand_shipyard TYPE = naval BONUS = 4 LOWER_BONUS = 2 UPPER_BONUS = 4 BASE_COST = 300 LOWER_COST = 100 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = grand_shipyard }
+            }
+        }
+
+        # Manufactories: native completion effects, no replacement or upgrades.
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 25 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 11 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = weapons KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = weapons }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 26 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 11 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = textile KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = textile }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 27 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 6 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = farm_estate KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = farm_estate }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 28 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 14 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = tradecompany KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = tradecompany }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 29 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 7 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = impressment_offices KIND = sailors }
+                dicm_bh_estimate_trade_candidates = { BUILDING = impressment_offices }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 31 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 15 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = soldier_households KIND = manpower }
+                dicm_bh_estimate_trade_candidates = { BUILDING = soldier_households }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 32 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 21 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = furnace KIND = furnace }
+                dicm_bh_estimate_trade_candidates = { BUILDING = furnace }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 33 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 11 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = wharf KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = wharf }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 34 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 14 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = plantations KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = plantations }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 35 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 16 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = mills KIND = goods }
+                dicm_bh_estimate_trade_candidates = { BUILDING = mills }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 36 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { adm_tech = 6 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_manufactory_candidates = { BUILDING = ramparts KIND = ramparts }
+                dicm_bh_estimate_trade_candidates = { BUILDING = ramparts }
+            }
+        }
+
+        # Coastal defence: strategic tier first, development second.
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 23 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 5 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_coastal_candidates = { BUILDING = coastal_defence BASE_COST = 100 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = coastal_defence }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 24 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { dip_tech = 12 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_coastal_candidates = { BUILDING = naval_battery BASE_COST = 200 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = naval_battery }
+            }
+        }
+
+        # Forts: prefer the highest land-neighbour count; new sites require spacing.
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 19 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 1 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_fort_candidates = { BUILDING = fort_15th BASE_COST = 200 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = fort_15th }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 20 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 14 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_fort_candidates = { BUILDING = fort_16th BASE_COST = 400 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = fort_16th }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 21 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 19 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_fort_candidates = { BUILDING = fort_17th BASE_COST = 600 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = fort_17th }
+            }
+        }
+        else_if = {
+            limit = { is_variable_equal = { which = dicm_bh_selection value = 22 } }
+            set_country_flag = dicm_bh_trade_supported
+            if = {
+                limit = { mil_tech = 24 }
+                set_country_flag = dicm_bh_trade_tech_ready
+                dicm_bh_collect_fort_candidates = { BUILDING = fort_18th BASE_COST = 800 }
+                dicm_bh_estimate_trade_candidates = { BUILDING = fort_18th }
+            }
+        }
+
+
+    # Administration: rank by governing capacity saved, retaining fractions.
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 16 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 8 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_administration_candidates = { BUILDING = courthouse BONUS = .25 BASE_COST = 100 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = courthouse }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 17 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 22 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_administration_candidates = { BUILDING = town_hall BONUS = .5 BASE_COST = 200 }
+            dicm_bh_estimate_trade_candidates = { BUILDING = town_hall }
+        }
+    }
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 30 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 12 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_state_house_candidates = yes
+            dicm_bh_estimate_trade_candidates = { BUILDING = state_house }
+        }
+    }
+
+    else_if = {
+        limit = { is_variable_equal = { which = dicm_bh_selection value = 18 } }
+        set_country_flag = dicm_bh_trade_supported
+        if = {
+            limit = { adm_tech = 17 }
+            set_country_flag = dicm_bh_trade_tech_ready
+            dicm_bh_collect_university_candidates = yes
+            dicm_bh_estimate_trade_candidates = { BUILDING = university }
+        }
+    }
+
+    dicm_bh_clear_administration_plans = yes
+    dicm_bh_clear_fort_plans = yes
+    dicm_bh_clear_trade_candidates = yes
+    clr_country_flag = dicm_bh_trade_best_set
+}
+
+# Country scope. VALUE is the source variable name, supplied as a literal parameter.
+# Write VALUE_fmt_* groups used by comma-separated money localisation.
+# Preserve the source amount; rounding and zero padding are for display only.
+# Example: dicm_bh_format_money = { VALUE = dicm_bh_est_build_cost }
+dicm_bh_format_money = {
+    set_variable = { which = $VALUE$_fmt_whole which = $VALUE$ }
+    round_variable = { which = $VALUE$_fmt_whole value = -1 }
+    set_variable = { which = $VALUE$_fmt_cents which = $VALUE$ }
+    subtract_variable = { which = $VALUE$_fmt_cents which = $VALUE$_fmt_whole }
+    multiply_variable = { which = $VALUE$_fmt_cents value = 100 }
+    round_variable = { which = $VALUE$_fmt_cents value = 0 }
+    if = {
+        limit = { check_variable = { which = $VALUE$_fmt_cents value = 100 } }
+        change_variable = { which = $VALUE$_fmt_whole value = 1 }
+        set_variable = { which = $VALUE$_fmt_cents value = 0 }
+    }
+    set_variable = { which = $VALUE$_fmt_thousands which = $VALUE$_fmt_whole }
+    divide_variable = { which = $VALUE$_fmt_thousands value = 1000 }
+    round_variable = { which = $VALUE$_fmt_thousands value = -1 }
+    set_variable = { which = $VALUE$_fmt_ones which = $VALUE$_fmt_thousands }
+    multiply_variable = { which = $VALUE$_fmt_ones value = 1000 }
+    subtract_variable = { which = $VALUE$_fmt_ones which = $VALUE$_fmt_whole }
+    multiply_variable = { which = $VALUE$_fmt_ones value = -1 }
+    set_variable = { which = $VALUE$_fmt_millions which = $VALUE$_fmt_thousands }
+    divide_variable = { which = $VALUE$_fmt_millions value = 1000 }
+    round_variable = { which = $VALUE$_fmt_millions value = -1 }
+    set_variable = { which = $VALUE$_fmt_middle which = $VALUE$_fmt_millions }
+    multiply_variable = { which = $VALUE$_fmt_middle value = 1000 }
+    subtract_variable = { which = $VALUE$_fmt_middle which = $VALUE$_fmt_thousands }
+    multiply_variable = { which = $VALUE$_fmt_middle value = -1 }
+}

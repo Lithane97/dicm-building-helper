@@ -1,0 +1,45 @@
+# Country scope; ROOT is the acting country. Literal parameters: BUILDING, GAIN, BASE_COST.
+# GAIN is the selected monthly production-gain variable name.
+# Production collection feeds the tested shared ordering, payment and estimate helpers.
+# Historical trade_* names are shared scratch slots, reset for every synchronous pass.
+# Estimates preserve the last report. Production gain excludes conditional on_built effects.
+
+dicm_bh_collect_production_candidates = {
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            NOT = { trade_goods = gold }
+            NOT = { is_owned_by_trade_company = yes }
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = {
+                    owner = {
+                        has_country_flag = dicm_bh_trade_upgrade_mode
+                    }
+                    has_building = workshop
+                }
+                AND = {
+                    owner = {
+                        NOT = { has_country_flag = dicm_bh_trade_upgrade_mode }
+                    }
+                    NOT = {
+                        OR = { has_building = workshop has_building = counting_house }
+                    }
+                }
+            }
+        }
+        dicm_bh_calculate_automatic_production_gains = yes
+        set_variable = { which = dicm_bh_trade_gain which = $GAIN$ }
+        set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+        if = {
+            limit = { has_building = workshop }
+            set_variable = { which = dicm_bh_trade_old_cost value = 100 }
+        }
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        dicm_bh_mark_trade_candidate = yes
+    }
+}
+

@@ -1,0 +1,53 @@
+# Read-only diagnosis, then dispatch the native baseline without a console event window.
+# No power, development, buildings or reserves are changed.
+log = "DICM BH STEP CHECK BEGIN"
+export_to_variable = { which = dicm_bh_sp_probe_power value = trigger_value:adm_power }
+set_variable = { which = dicm_bh_sp_probe_reserve which = dicm_bh_dm_adm_reserve }
+set_variable = { which = dicm_bh_sp_probe_evaluated value = 0 }
+set_variable = { which = dicm_bh_sp_probe_adm value = 0 }
+set_variable = { which = dicm_bh_sp_probe_supported value = 0 }
+set_variable = { which = dicm_bh_sp_probe_affordable value = 0 }
+set_variable = { which = dicm_bh_sp_probe_primitive value = 0 }
+set_variable = { which = dicm_bh_sp_probe_estates value = 0 }
+if = { limit = { is_primitive = yes } set_variable = { which = dicm_bh_sp_probe_primitive value = 1 } }
+if = { limit = { dicm_bh_sp_estates_supported = yes } set_variable = { which = dicm_bh_sp_probe_estates value = 1 } }
+every_owned_province = {
+    if = { limit = { has_province_flag = dicm_bh_dev_evaluated } owner = { change_variable = { which = dicm_bh_sp_probe_evaluated value = 1 } } }
+    if = { limit = { has_province_flag = dicm_bh_dev_adm_candidate } owner = { change_variable = { which = dicm_bh_sp_probe_adm value = 1 } } }
+    if = { limit = { has_province_flag = dicm_bh_dev_adm_candidate dicm_bh_sp_site_supported = yes } owner = { change_variable = { which = dicm_bh_sp_probe_supported value = 1 } } }
+    if = {
+        limit = { has_province_flag = dicm_bh_dev_adm_candidate dicm_bh_sp_site_supported = yes }
+        set_variable = { which = dicm_bh_sp_probe_reserve which = ROOT }
+        set_variable = { which = dicm_bh_sp_probe_power which = ROOT }
+        change_variable = { which = dicm_bh_sp_probe_reserve which = dicm_bh_dev_cost }
+        if = {
+            limit = { check_variable = { which = dicm_bh_sp_probe_power which = dicm_bh_sp_probe_reserve } }
+            owner = { change_variable = { which = dicm_bh_sp_probe_affordable value = 1 } }
+        }
+    }
+}
+log = "DICM BH STEP CHECK power: [Root.dicm_bh_sp_probe_power.GetValue]"
+log = "DICM BH STEP CHECK reserve: [Root.dicm_bh_sp_probe_reserve.GetValue]"
+log = "DICM BH STEP CHECK evaluated: [Root.dicm_bh_sp_probe_evaluated.GetValue]"
+log = "DICM BH STEP CHECK adm: [Root.dicm_bh_sp_probe_adm.GetValue]"
+log = "DICM BH STEP CHECK supported: [Root.dicm_bh_sp_probe_supported.GetValue]"
+log = "DICM BH STEP CHECK affordable: [Root.dicm_bh_sp_probe_affordable.GetValue]"
+log = "DICM BH STEP CHECK primitive: [Root.dicm_bh_sp_probe_primitive.GetValue]"
+log = "DICM BH STEP CHECK estates: [Root.dicm_bh_sp_probe_estates.GetValue]"
+if = { limit = { has_estate_privilege = estate_rajput_development_of_rajput_lands } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_rajput_development_of_rajput_lands" }
+if = { limit = { has_estate_privilege = estate_brahmins_development_of_temples } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_brahmins_development_of_temples" }
+if = { limit = { has_estate_privilege = estate_maratha_development_of_marathi_lands } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_maratha_development_of_marathi_lands" }
+if = { limit = { has_estate_privilege = estate_vaisyas_development_of_cities } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_vaisyas_development_of_cities" }
+if = { limit = { has_estate_privilege = estate_church_development_of_temples } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_church_development_of_temples" }
+if = { limit = { has_estate_privilege = estate_nobles_english_villeinage } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_nobles_english_villeinage" }
+if = { limit = { has_estate_privilege = estate_nobles_development_of_castles } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_nobles_development_of_castles" }
+if = { limit = { has_estate_privilege = estate_burghers_rise_of_the_burghers } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_burghers_rise_of_the_burghers" }
+if = { limit = { has_estate_privilege = estate_burghers_development_of_cities } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_burghers_development_of_cities" }
+if = { limit = { has_estate_privilege = estate_burghers_hungarian_royal_cities } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_burghers_hungarian_royal_cities" }
+if = { limit = { has_estate_privilege = estate_cossacks_freedom_of_the_steppes } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_cossacks_freedom_of_the_steppes" }
+if = { limit = { has_estate_privilege = estate_nomadic_tribes_freedom_of_the_steppes } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_nomadic_tribes_freedom_of_the_steppes" }
+if = { limit = { has_estate_privilege = estate_dhimmi_development_of_communities } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_dhimmi_development_of_communities" }
+if = { limit = { has_estate_privilege = estate_jains_development_of_cities } log = "DICM BH STEP CHECK PROTECTED PRIVILEGE: estate_jains_development_of_cities" }
+log = "DICM BH STEP CHECK DISPATCH BASELINE"
+country_event = { id = dicm_bh_development_spend.90 }
+log = "DICM BH STEP CHECK END"

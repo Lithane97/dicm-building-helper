@@ -1,0 +1,124 @@
+# Goods: marginal monthly production income for one additional flat goods unit.
+# Current national/local goods bonuses, price, efficiency and applied autonomy
+# are retained in the engine income sample. Trade income and conditional EE
+# completion rewards are not included. Gold and trade companies are unsupported.
+dicm_bh_prepare_manufactory_goods = { }
+dicm_bh_prepare_manufactory_manpower = { }
+dicm_bh_prepare_manufactory_sailors = { }
+dicm_bh_prepare_manufactory_ramparts = { }
+dicm_bh_calculate_manufactory_goods = {
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    export_to_variable = { which = dicm_bh_mfg_flat_goods value = modifier:trade_goods_size }
+    if = {
+        limit = {
+            NOT = { trade_goods = gold }
+            NOT = { is_owned_by_trade_company = yes }
+            check_variable = { which = dicm_bh_mfg_flat_goods value = 0.001 }
+        }
+        dicm_bh_calculate_automatic_production_gains = yes
+        if = {
+            limit = { has_province_flag = dicm_bh_income_valid }
+            set_variable = { which = dicm_bh_trade_gain which = dicm_bh_income_payment }
+            divide_variable = { which = dicm_bh_trade_gain which = dicm_bh_mfg_flat_goods }
+            divide_variable = { which = dicm_bh_trade_gain value = 12 }
+        }
+    }
+}
+# Furnace replaces the default local goods bonus with a national +5% modifier.
+# Its direct production gain is identical at all legal sites in the same country.
+# Sum currently supported non-gold, non-TC provincial production contributions.
+dicm_bh_prepare_manufactory_furnace = {
+    set_variable = { which = dicm_bh_mfg_national_gain value = 0 }
+    every_owned_province = {
+        limit = { is_city = yes NOT = { trade_goods = gold } NOT = { is_owned_by_trade_company = yes } }
+        dicm_bh_calculate_automatic_production_gains = yes
+        if = {
+            limit = { has_province_flag = dicm_bh_income_valid }
+            export_to_variable = { which = dicm_bh_mfg_goods_factor value = modifier:trade_goods_size_modifier }
+            owner = {
+                export_to_variable = { which = dicm_bh_mfg_country_goods value = modifier:global_trade_goods_size_modifier }
+                PREV = { set_variable = { which = dicm_bh_mfg_country_goods which = PREV } }
+            }
+            change_variable = { which = dicm_bh_mfg_goods_factor which = dicm_bh_mfg_country_goods }
+            change_variable = { which = dicm_bh_mfg_goods_factor value = 1 }
+            if = {
+                limit = { check_variable = { which = dicm_bh_mfg_goods_factor value = 0.001 } }
+                set_variable = { which = dicm_bh_mfg_contribution which = dicm_bh_income_payment }
+                divide_variable = { which = dicm_bh_mfg_contribution which = dicm_bh_mfg_goods_factor }
+                multiply_variable = { which = dicm_bh_mfg_contribution value = 0.05 }
+                divide_variable = { which = dicm_bh_mfg_contribution value = 12 }
+                owner = {
+                    set_variable = { which = dicm_bh_mfg_contribution which = PREV }
+                    change_variable = { which = dicm_bh_mfg_national_gain which = dicm_bh_mfg_contribution }
+                }
+            }
+        }
+    }
+}
+dicm_bh_calculate_manufactory_furnace = {
+    set_variable = { which = dicm_bh_mfg_national_gain which = ROOT }
+    set_variable = { which = dicm_bh_trade_gain which = dicm_bh_mfg_national_gain }
+}
+# Flat resource bonuses are multiplied by the existing local + national modifiers
+# and autonomy; they do not use the base-pool formula for Barracks/Docks.
+dicm_bh_mfg_resource_factor = {
+    export_to_variable = { which = dicm_bh_mfg_autonomy value = local_autonomy }
+    divide_variable = { which = dicm_bh_mfg_autonomy value = 100 }
+    multiply_variable = { which = dicm_bh_mfg_autonomy value = -1 }
+    change_variable = { which = dicm_bh_mfg_autonomy value = 1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_mfg_autonomy value = 0 } } }
+        set_variable = { which = dicm_bh_mfg_autonomy value = 0 }
+    }
+    if = {
+        limit = { check_variable = { which = dicm_bh_mfg_autonomy value = 1 } }
+        set_variable = { which = dicm_bh_mfg_autonomy value = 1 }
+    }
+    export_to_variable = { which = dicm_bh_mfg_resource_factor value = modifier:local_$RESOURCE$_modifier }
+    owner = {
+        export_to_variable = { which = dicm_bh_mfg_country_resource value = modifier:global_$RESOURCE$_modifier }
+        PREV = { set_variable = { which = dicm_bh_mfg_country_resource which = PREV } }
+    }
+    change_variable = { which = dicm_bh_mfg_resource_factor which = dicm_bh_mfg_country_resource }
+    # Native exports include the land/coast and core base contributions.
+    # As in the validated development evaluator, do not add another base 1.
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_mfg_resource_factor value = 0 } } }
+        set_variable = { which = dicm_bh_mfg_resource_factor value = 0 }
+    }
+    multiply_variable = { which = dicm_bh_trade_gain which = dicm_bh_mfg_resource_factor }
+    multiply_variable = { which = dicm_bh_trade_gain which = dicm_bh_mfg_autonomy }
+}
+dicm_bh_calculate_manufactory_manpower = {
+    set_variable = { which = dicm_bh_trade_gain value = 750 }
+    if = {
+        limit = { OR = { trade_goods = grain trade_goods = fish trade_goods = livestock trade_goods = wine } }
+        set_variable = { which = dicm_bh_trade_gain value = 1500 }
+    }
+    dicm_bh_mfg_resource_factor = { RESOURCE = manpower }
+}
+dicm_bh_calculate_manufactory_sailors = {
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    if = {
+        limit = { has_port = yes }
+        set_variable = { which = dicm_bh_trade_gain value = 250 }
+        if = {
+            limit = { OR = { trade_goods = salt trade_goods = fish trade_goods = naval_supplies trade_goods = tropical_wood } }
+            set_variable = { which = dicm_bh_trade_gain value = 500 }
+        }
+        dicm_bh_mfg_resource_factor = { RESOURCE = sailors }
+    }
+}
+# Ramparts are restricted to existing land-fort sites. Higher fort tiers first;
+# within a tier, border provinces precede other sites. This is a heuristic score.
+dicm_bh_calculate_manufactory_ramparts = {
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    if = {
+        limit = { dicm_bh_has_fort_building = yes }
+        set_variable = { which = dicm_bh_trade_gain value = 2 }
+        if = { limit = { has_building = fort_16th } set_variable = { which = dicm_bh_trade_gain value = 4 } }
+        if = { limit = { has_building = fort_17th } set_variable = { which = dicm_bh_trade_gain value = 6 } }
+        if = { limit = { has_building = fort_18th } set_variable = { which = dicm_bh_trade_gain value = 8 } }
+        if = { limit = { dicm_bh_fort_border_province = yes } change_variable = { which = dicm_bh_trade_gain value = 1 } }
+    }
+}

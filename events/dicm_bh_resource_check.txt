@@ -1,0 +1,216 @@
+# Read-only resource building diagnostic. Saves/restores settings and report.
+namespace = dicm_bh_resource_check
+country_event = {
+    id = dicm_bh_resource_check.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_save_trade_report = yes
+            set_variable = { which = dicm_bh_resource_saved_selection which = dicm_bh_selection }
+            export_to_variable = { which = dicm_bh_resource_check_before value = treasury }
+            set_variable = { which = dicm_bh_minimum value = 0 }
+            log = "DICM BH RESOURCE CHECK BEGIN: [Root.GetName]"
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 8 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: barracks NEW"
+            if = {
+                limit = { mil_tech = 6 }
+                dicm_bh_collect_resource_candidates = { BUILDING = barracks LOWER = barracks UPPER = training_fields RESOURCE = manpower BONUS = 0.5 BASE_COST = 100 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: mil tech 6 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 9 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: training_fields NEW"
+            if = {
+                limit = { mil_tech = 16 }
+                dicm_bh_collect_resource_candidates = { BUILDING = training_fields LOWER = barracks UPPER = training_fields RESOURCE = manpower BONUS = 1 BASE_COST = 300 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: mil tech 16 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 9 }
+            set_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: training_fields UPGRADE"
+            if = {
+                limit = { mil_tech = 16 }
+                dicm_bh_collect_resource_candidates = { BUILDING = training_fields LOWER = barracks UPPER = training_fields RESOURCE = manpower BONUS = 1 BASE_COST = 300 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: mil tech 16 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 10 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: dock NEW"
+            if = {
+                limit = { dip_tech = 6 }
+                dicm_bh_collect_resource_candidates = { BUILDING = dock LOWER = dock UPPER = drydock RESOURCE = sailors BONUS = 0.5 BASE_COST = 100 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: dip tech 6 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 11 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: drydock NEW"
+            if = {
+                limit = { dip_tech = 19 }
+                dicm_bh_collect_resource_candidates = { BUILDING = drydock LOWER = dock UPPER = drydock RESOURCE = sailors BONUS = 1 BASE_COST = 300 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: dip tech 19 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 11 }
+            set_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH RESOURCE CASE: drydock UPGRADE"
+            if = {
+                limit = { dip_tech = 19 }
+                dicm_bh_collect_resource_candidates = { BUILDING = drydock LOWER = dock UPPER = drydock RESOURCE = sailors BONUS = 1 BASE_COST = 300 }
+                dicm_bh_select_best_trade_candidate = yes
+                log = "DICM BH RESOURCE ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                if = {
+                    limit = { has_country_flag = dicm_bh_trade_best_set }
+                    event_target:dicm_bh_trade_best = {
+                        owner = {
+                            set_variable = { which = dicm_bh_trade_gain which = PREV }
+                            set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            set_variable = { which = dicm_bh_resource_flat which = PREV }
+                            set_variable = { which = dicm_bh_resource_basis which = PREV }
+                            set_variable = { which = dicm_bh_resource_autonomy which = PREV }
+                            set_variable = { which = dicm_bh_resource_delta which = PREV }
+                        }
+                    }
+                    log = "DICM BH RESOURCE TARGET: [dicm_bh_trade_best.GetName]"
+                    log = "DICM BH RESOURCE GAIN: [Root.dicm_bh_trade_gain.GetValue]"
+                    log = "DICM BH RESOURCE COST: [Root.dicm_bh_trade_cost.GetValue]"
+                    log = "DICM BH RESOURCE FLAT EXPORT: [Root.dicm_bh_resource_flat.GetValue]"
+                    log = "DICM BH RESOURCE BASIS: [Root.dicm_bh_resource_basis.GetValue]"
+                    log = "DICM BH RESOURCE AUTONOMY: [Root.dicm_bh_resource_autonomy.GetValue]"
+                    log = "DICM BH RESOURCE BONUS DELTA: [Root.dicm_bh_resource_delta.GetValue]"
+                }
+            }
+            else = { log = "DICM BH RESOURCE LOCKED: dip tech 19 required" }
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection which = dicm_bh_resource_saved_selection }
+            dicm_bh_restore_trade_report = yes
+            export_to_variable = { which = dicm_bh_resource_check_drift value = treasury }
+            subtract_variable = { which = dicm_bh_resource_check_drift which = dicm_bh_resource_check_before }
+            log = "DICM BH RESOURCE CHECK TREASURY DRIFT: [Root.dicm_bh_resource_check_drift.GetValue]"
+            log = "DICM BH RESOURCE CHECK END"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

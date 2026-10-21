@@ -1,0 +1,1348 @@
+custom_window = {
+    name = dicm_bh_window
+    potential = {
+        has_country_flag = upgrade_building_toggle_active
+        has_country_flag = dicm_bh_active
+    }
+}
+custom_button = {
+    name = dicm_bh_open
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_open_tt
+    effect = {
+        hidden_effect = {
+            dicm_bh_open_builder = yes
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_active_tab
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    effect = {
+        hidden_effect = {
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+    tooltip = dicm_bh_open_tt
+    frame = {
+        number = 2
+        trigger = {
+            always = yes
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_back
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    effect = {
+        hidden_effect = {
+            clr_country_flag = dicm_bh_active
+            clr_country_flag = dicm_bh_dev_active
+            predict_build_costs = { scope = every_owned_province }
+        }
+    }
+    tooltip = dicm_bh_back_tt
+}
+custom_button = {
+    name = dicm_bh_close
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    effect = {
+        hidden_effect = {
+            clr_country_flag = dicm_bh_active
+            clr_country_flag = upgrade_building_toggle_active
+        }
+    }
+    tooltip = dicm_bh_close_tt
+}
+custom_text_box = {
+    name = dicm_bh_selected
+    potential = {
+
+    }
+}
+custom_text_box = {
+    name = dicm_bh_threshold
+    potential = {
+
+    }
+    tooltip = dicm_bh_scale_tt
+}
+custom_button = {
+    name = dicm_bh_select_temple
+    potential = {
+
+    }
+    trigger = {
+        adm_tech = 4
+    }
+    tooltip = dicm_bh_select_temple_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 1
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_cathedral
+    potential = {
+
+    }
+    trigger = {
+        adm_tech = 19
+    }
+    tooltip = dicm_bh_select_cathedral_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 2
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_workshop
+    potential = {
+
+    }
+    trigger = {
+        adm_tech = 6
+    }
+    tooltip = dicm_bh_select_workshop_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 3
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_counting_house
+    potential = {
+
+    }
+    trigger = {
+        adm_tech = 24
+    }
+    tooltip = dicm_bh_select_counting_house_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 4
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_marketplace
+    potential = {
+
+    }
+    trigger = {
+        dip_tech = 4
+    }
+    tooltip = dicm_bh_select_marketplace_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 5
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_trade_depot
+    potential = {
+
+    }
+    trigger = {
+        dip_tech = 17
+    }
+    tooltip = dicm_bh_select_trade_depot_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 6
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_stock_exchange
+    potential = {
+
+    }
+    trigger = {
+        dip_tech = 22
+    }
+    tooltip = dicm_bh_select_stock_exchange_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 7
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_barracks
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_barracks_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 8
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_training_fields
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_training_fields_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 9
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_dock
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_dock_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 10
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_drydock
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_drydock_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 11
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_regimental_camp
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_regimental_camp_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 12
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_conscription_center
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_conscription_center_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 13
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_shipyard
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_shipyard_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 14
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_grand_shipyard
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_grand_shipyard_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 15
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_courthouse
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_courthouse_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 16
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_town_hall
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_town_hall_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 17
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_university
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_university_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 18
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_fort_15th
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_fort_15th_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 19
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_fort_16th
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_fort_16th_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 20
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_fort_17th
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_fort_17th_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 21
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_fort_18th
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_fort_18th_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 22
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_coastal_defence
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_coastal_defence_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 23
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_naval_battery
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_naval_battery_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 24
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_weapons
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_weapons_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 25
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_textile
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_textile_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 26
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_farm_estate
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_farm_estate_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 27
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_tradecompany
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_tradecompany_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 28
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_minus10
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_scale
+                value = 0
+            }
+        }
+        check_variable = {
+            which = dicm_bh_minimum
+            value = 0.001
+        }
+    }
+    tooltip = dicm_bh_scale_tt
+    effect = {
+        hidden_effect = {
+            subtract_variable = {
+                which = dicm_bh_minimum
+                which = dicm_bh_step_large
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_minimum
+                            value = 0
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_minimum
+                    value = 0
+                }
+            }
+            dicm_bh_save_minimum = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_minus1
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_scale
+                value = 0
+            }
+        }
+        check_variable = {
+            which = dicm_bh_minimum
+            value = 0.001
+        }
+    }
+    tooltip = dicm_bh_scale_tt
+    effect = {
+        hidden_effect = {
+            subtract_variable = {
+                which = dicm_bh_minimum
+                which = dicm_bh_step_small
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_minimum
+                            value = 0
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_minimum
+                    value = 0
+                }
+            }
+            dicm_bh_save_minimum = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_plus1
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_scale
+                value = 0
+            }
+        }
+    }
+    tooltip = dicm_bh_scale_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_minimum
+                which = dicm_bh_step_small
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_minimum
+                            value = 0
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_minimum
+                    value = 0
+                }
+            }
+            dicm_bh_save_minimum = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_plus10
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_scale
+                value = 0
+            }
+        }
+    }
+    tooltip = dicm_bh_scale_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_minimum
+                which = dicm_bh_step_large
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_minimum
+                            value = 0
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_minimum
+                    value = 0
+                }
+            }
+            dicm_bh_save_minimum = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_build
+    potential = {
+
+    }
+    trigger = {
+        custom_trigger_tooltip = {
+            tooltip = dicm_bh_trade_build_ready_tt
+            hidden_trigger = {
+                treasury = 0.001
+                OR = {
+                    dicm_bh_trade_build_available = yes
+                    dicm_bh_tax_build_available = yes
+                    dicm_bh_resource_build_available = yes
+                    dicm_bh_force_build_available = yes
+                    dicm_bh_coastal_build_available = yes
+                    dicm_bh_manufactory_build_available = yes
+                    dicm_bh_production_build_available = yes
+                    dicm_bh_fort_build_available = yes
+                    dicm_bh_administration_build_available = yes
+                    dicm_bh_university_build_available = yes
+                }
+            }
+        }
+    }
+    effect = {
+        hidden_effect = {
+            country_event = {
+                id = dicm_bh_trade.4
+            }
+        }
+    }
+    tooltip = dicm_bh_trade_build_tt
+}
+custom_button = {
+    name = dicm_bh_upgrade
+    potential = {
+
+    }
+    trigger = {
+        custom_trigger_tooltip = {
+            tooltip = dicm_bh_trade_upgrade_ready_tt
+            hidden_trigger = {
+                treasury = 0.001
+                OR = {
+                    dicm_bh_trade_upgrade_available = yes
+                    dicm_bh_tax_upgrade_available = yes
+                    dicm_bh_resource_upgrade_available = yes
+                    dicm_bh_force_upgrade_available = yes
+                    dicm_bh_coastal_upgrade_available = yes
+                    dicm_bh_production_upgrade_available = yes
+                    dicm_bh_fort_upgrade_available = yes
+                    dicm_bh_administration_upgrade_available = yes
+                }
+            }
+        }
+    }
+    effect = {
+        hidden_effect = {
+            country_event = {
+                id = dicm_bh_trade.5
+            }
+        }
+    }
+    tooltip = dicm_bh_trade_upgrade_tt
+}
+custom_text_box = {
+    name = dicm_bh_budget_value
+    potential = {
+
+    }
+    tooltip = dicm_bh_budget_tt
+}
+custom_button = {
+    name = dicm_bh_budget_minus10
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_budget_percent
+                value = 1
+            }
+        }
+    }
+    tooltip = dicm_bh_budget_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_budget_percent
+                value = -10
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_budget_percent
+                            value = 1
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 1
+                }
+            }
+            if = {
+                limit = {
+                    check_variable = {
+                        which = dicm_bh_budget_percent
+                        value = 100
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 100
+                }
+            }
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_budget_minus1
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            is_variable_equal = {
+                which = dicm_bh_budget_percent
+                value = 1
+            }
+        }
+    }
+    tooltip = dicm_bh_budget_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_budget_percent
+                value = -1
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_budget_percent
+                            value = 1
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 1
+                }
+            }
+            if = {
+                limit = {
+                    check_variable = {
+                        which = dicm_bh_budget_percent
+                        value = 100
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 100
+                }
+            }
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_budget_plus1
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            check_variable = {
+                which = dicm_bh_budget_percent
+                value = 100
+            }
+        }
+    }
+    tooltip = dicm_bh_budget_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_budget_percent
+                value = 1
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_budget_percent
+                            value = 1
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 1
+                }
+            }
+            if = {
+                limit = {
+                    check_variable = {
+                        which = dicm_bh_budget_percent
+                        value = 100
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 100
+                }
+            }
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_budget_plus10
+    potential = {
+
+    }
+    trigger = {
+        NOT = {
+            check_variable = {
+                which = dicm_bh_budget_percent
+                value = 100
+            }
+        }
+    }
+    tooltip = dicm_bh_budget_tt
+    effect = {
+        hidden_effect = {
+            change_variable = {
+                which = dicm_bh_budget_percent
+                value = 10
+            }
+            if = {
+                limit = {
+                    NOT = {
+                        check_variable = {
+                            which = dicm_bh_budget_percent
+                            value = 1
+                        }
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 1
+                }
+            }
+            if = {
+                limit = {
+                    check_variable = {
+                        which = dicm_bh_budget_percent
+                        value = 100
+                    }
+                }
+                set_variable = {
+                    which = dicm_bh_budget_percent
+                    value = 100
+                }
+            }
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_impressment_offices
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_impressment_offices_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 29
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_state_house
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_state_house_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 30
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_soldier_households
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_soldier_households_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 31
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_furnace
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_select_furnace_tt
+    effect = {
+        hidden_effect = {
+            set_variable = {
+                which = dicm_bh_selection
+                value = 32
+            }
+            dicm_bh_load_selected_scale = yes
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_text_box = {
+    name = dicm_bh_step_minus10
+    potential = {
+
+    }
+}
+custom_text_box = {
+    name = dicm_bh_step_minus1
+    potential = {
+
+    }
+}
+custom_text_box = {
+    name = dicm_bh_step_plus1
+    potential = {
+
+    }
+}
+custom_text_box = {
+    name = dicm_bh_step_plus10
+    potential = {
+
+    }
+}
+custom_text_box = {
+    name = dicm_bh_min_label
+    potential = {
+
+    }
+    tooltip = dicm_bh_scale_tt
+}
+custom_button = {
+    name = dicm_bh_refresh_estimates
+    potential = {
+
+    }
+    trigger = {
+
+    }
+    tooltip = dicm_bh_refresh_estimates_tt
+    effect = {
+        hidden_effect = {
+            country_event = {
+                id = dicm_bh_estimate.1
+            }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_wharf
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_select_wharf_tt
+    effect = {
+        hidden_effect = {
+            set_variable = { which = dicm_bh_selection value = 33 }
+            dicm_bh_load_selected_scale = yes
+            country_event = { id = dicm_bh_estimate.1 }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_plantations
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_select_plantations_tt
+    effect = {
+        hidden_effect = {
+            set_variable = { which = dicm_bh_selection value = 34 }
+            dicm_bh_load_selected_scale = yes
+            country_event = { id = dicm_bh_estimate.1 }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_mills
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_select_mills_tt
+    effect = {
+        hidden_effect = {
+            set_variable = { which = dicm_bh_selection value = 35 }
+            dicm_bh_load_selected_scale = yes
+            country_event = { id = dicm_bh_estimate.1 }
+        }
+    }
+}
+custom_button = {
+    name = dicm_bh_select_ramparts
+    potential = { }
+    trigger = { }
+    tooltip = dicm_bh_select_ramparts_tt
+    effect = {
+        hidden_effect = {
+            set_variable = { which = dicm_bh_selection value = 36 }
+            dicm_bh_load_selected_scale = yes
+            country_event = { id = dicm_bh_estimate.1 }
+        }
+    }
+}

@@ -1,0 +1,119 @@
+# Manual validation only. .1 evaluates capital; .2 ranks owned provinces.
+# Never called by building buttons/on_actions and never spends monarch power.
+namespace = dicm_bh_development_check
+country_event = {
+    id = dicm_bh_development_check.1
+    title = dicm_bh_dev_check_title
+    desc = dicm_bh_dev_check_desc
+    picture = TRADE_eventPicture
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+        export_to_variable = { which = dicm_bh_dev_check_cash value = treasury }
+        capital_scope = {
+            save_event_target_as = dicm_bh_dev_check_province
+            dicm_bh_evaluate_development = yes
+            set_variable = { which = dicm_bh_dev_check_university value = 0 }
+            if = {
+                limit = { has_building = university }
+                set_variable = { which = dicm_bh_dev_check_university value = 1 }
+            }
+            owner = {
+                set_variable = { which = dicm_bh_dev_development which = PREV }
+                set_variable = { which = dicm_bh_dev_tax which = PREV }
+                set_variable = { which = dicm_bh_dev_production which = PREV }
+                set_variable = { which = dicm_bh_dev_manpower which = PREV }
+                set_variable = { which = dicm_bh_dev_autonomy which = PREV }
+                set_variable = { which = dicm_bh_dev_local_cost which = PREV }
+                set_variable = { which = dicm_bh_dev_country_cost which = PREV }
+                set_variable = { which = dicm_bh_dev_all_power which = PREV }
+                set_variable = { which = dicm_bh_dev_country_efficiency which = PREV }
+                set_variable = { which = dicm_bh_dev_local_efficiency which = PREV }
+                set_variable = { which = dicm_bh_dev_cost which = PREV }
+                set_variable = { which = dicm_bh_dev_uni_cost which = PREV }
+                set_variable = { which = dicm_bh_dev_uni_saved which = PREV }
+                set_variable = { which = dicm_bh_dev_adm_benefit which = PREV }
+                set_variable = { which = dicm_bh_dev_dip_benefit which = PREV }
+                set_variable = { which = dicm_bh_dev_mil_benefit which = PREV }
+                set_variable = { which = dicm_bh_dev_extra_goods which = PREV }
+                set_variable = { which = dicm_bh_dev_extra_governing which = PREV }
+                set_variable = { which = dicm_bh_dev_adm_score which = PREV }
+                set_variable = { which = dicm_bh_dev_dip_score which = PREV }
+                set_variable = { which = dicm_bh_dev_mil_score which = PREV }
+                set_variable = { which = dicm_bh_dev_adm_uni_score which = PREV }
+                set_variable = { which = dicm_bh_dev_dip_uni_score which = PREV }
+                set_variable = { which = dicm_bh_dev_mil_uni_score which = PREV }
+                set_variable = { which = dicm_bh_dev_local_tax which = PREV }
+                set_variable = { which = dicm_bh_dev_country_tax which = PREV }
+                set_variable = { which = dicm_bh_dev_local_manpower which = PREV }
+                set_variable = { which = dicm_bh_dev_country_manpower which = PREV }
+                set_variable = { which = dicm_bh_dev_check_university which = PREV }
+            }
+        }
+        export_to_variable = { which = dicm_bh_dev_check_drift value = treasury }
+        subtract_variable = { which = dicm_bh_dev_check_drift which = dicm_bh_dev_check_cash }
+        log = "DICM BH DEVELOPMENT TARGET: [dicm_bh_dev_check_province.GetName] university=[Root.dicm_bh_dev_check_university.GetValue]"
+        log = "DICM BH DEVELOPMENT BASE: development=[Root.dicm_bh_dev_development.GetValue] tax=[Root.dicm_bh_dev_tax.GetValue] production=[Root.dicm_bh_dev_production.GetValue] manpower=[Root.dicm_bh_dev_manpower.GetValue] autonomy=[Root.dicm_bh_dev_autonomy.GetValue]"
+        log = "DICM BH DEVELOPMENT COST INPUT: local_cost=[Root.dicm_bh_dev_local_cost.GetValue] country_cost=[Root.dicm_bh_dev_country_cost.GetValue] all_power=[Root.dicm_bh_dev_all_power.GetValue] country_efficiency=[Root.dicm_bh_dev_country_efficiency.GetValue] local_efficiency=[Root.dicm_bh_dev_local_efficiency.GetValue]"
+        log = "DICM BH DEVELOPMENT COST: cost=[Root.dicm_bh_dev_cost.GetValue] uni_cost=[Root.dicm_bh_dev_uni_cost.GetValue] uni_saved=[Root.dicm_bh_dev_uni_saved.GetValue]"
+        log = "DICM BH DEVELOPMENT BENEFIT: adm_benefit=[Root.dicm_bh_dev_adm_benefit.GetValue] dip_benefit=[Root.dicm_bh_dev_dip_benefit.GetValue] mil_benefit=[Root.dicm_bh_dev_mil_benefit.GetValue] extra_goods=[Root.dicm_bh_dev_extra_goods.GetValue] extra_governing=[Root.dicm_bh_dev_extra_governing.GetValue]"
+        log = "DICM BH DEVELOPMENT OUTPUT INPUT: local_tax=[Root.dicm_bh_dev_local_tax.GetValue] country_tax=[Root.dicm_bh_dev_country_tax.GetValue] local_manpower=[Root.dicm_bh_dev_local_manpower.GetValue] country_manpower=[Root.dicm_bh_dev_country_manpower.GetValue]"
+        log = "DICM BH DEVELOPMENT SCORE: adm_score=[Root.dicm_bh_dev_adm_score.GetValue] dip_score=[Root.dicm_bh_dev_dip_score.GetValue] mil_score=[Root.dicm_bh_dev_mil_score.GetValue]"
+        log = "DICM BH DEVELOPMENT UNIVERSITY SCORE: adm_uni_score=[Root.dicm_bh_dev_adm_uni_score.GetValue] dip_uni_score=[Root.dicm_bh_dev_dip_uni_score.GetValue] mil_uni_score=[Root.dicm_bh_dev_mil_uni_score.GetValue]"
+        log = "DICM BH DEVELOPMENT CASH DRIFT: [Root.dicm_bh_dev_check_drift.GetValue]"
+            }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_check.2
+    title = dicm_bh_dev_rank_title
+    desc = dicm_bh_dev_rank_desc
+    picture = TRADE_eventPicture
+    is_triggered_only = yes
+    immediate = {
+        country_event = { id = dicm_bh_development_check.3 }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+
+# Execute rankings without a visible effect preview. Direct execution was
+# verified warning-free; visible scan preview emitted province-scope warnings.
+country_event = {
+    id = dicm_bh_development_check.3
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+        export_to_variable = { which = dicm_bh_dev_check_cash value = treasury }
+        dicm_bh_evaluate_country_development = yes
+        export_to_variable = { which = dicm_bh_dev_check_drift value = treasury }
+        subtract_variable = { which = dicm_bh_dev_check_drift which = dicm_bh_dev_check_cash }
+        log = "DICM BH DEVELOPMENT RANK: provinces=[Root.dicm_bh_dev_provinces_evaluated.GetValue] cash_drift=[Root.dicm_bh_dev_check_drift.GetValue]"
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_best_adm_set }
+            log = "DICM BH DEVELOPMENT BEST ADM: [dicm_bh_dev_best_adm.GetName]"
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_uni_adm_set }
+            log = "DICM BH DEVELOPMENT UNIVERSITY ADM: [dicm_bh_dev_uni_adm.GetName]"
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_best_dip_set }
+            log = "DICM BH DEVELOPMENT BEST DIP: [dicm_bh_dev_best_dip.GetName]"
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_uni_dip_set }
+            log = "DICM BH DEVELOPMENT UNIVERSITY DIP: [dicm_bh_dev_uni_dip.GetName]"
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_best_mil_set }
+            log = "DICM BH DEVELOPMENT BEST MIL: [dicm_bh_dev_best_mil.GetName]"
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_dev_uni_mil_set }
+            log = "DICM BH DEVELOPMENT UNIVERSITY MIL: [dicm_bh_dev_uni_mil.GetName]"
+        }
+            }
+    }
+}

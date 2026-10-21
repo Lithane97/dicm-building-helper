@@ -1,0 +1,2 @@
+# Current integrated read-only cost check. Replaces the pre-restart preview.
+country_event = { id = dicm_bh_development_check.1 }

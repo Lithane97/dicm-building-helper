@@ -1,0 +1,81 @@
+# Province-scope production math. The basis/manual helpers below are read-only.
+# The automatic entry point samples engine income and reverses the payment synchronously.
+# The basis formula below serves manual input and approximate fallback only.
+# It includes goods output, current price and trade-value modifiers from the native UI.
+# Gain = annual trade value * autonomy factor * additional efficiency / 12.
+# National/local production efficiency cancels in the marginal building calculation.
+# Excludes conditional on_built effects. Trade-company autonomy treatment is not validated.
+# Basis/manual helpers have no construction or treasury effects.
+dicm_bh_calculate_production_gains_from_basis = {
+    export_to_variable = { which = dicm_bh_production_base value = base_production }
+    export_to_variable = { which = dicm_bh_production_autonomy value = local_autonomy }
+    export_to_variable = { which = dicm_bh_production_local_efficiency value = modifier:local_production_efficiency }
+    set_variable = { which = dicm_bh_production_autonomy_fraction which = dicm_bh_production_autonomy }
+    divide_variable = { which = dicm_bh_production_autonomy_fraction value = 100 }
+    set_variable = { which = dicm_bh_production_factor value = 1 }
+    subtract_variable = { which = dicm_bh_production_factor which = dicm_bh_production_autonomy_fraction }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_production_factor value = 0 } } }
+        set_variable = { which = dicm_bh_production_factor value = 0 }
+    }
+    if = {
+        limit = { check_variable = { which = dicm_bh_production_factor value = 1 } }
+        set_variable = { which = dicm_bh_production_factor value = 1 }
+    }
+    set_variable = { which = dicm_bh_production_old_bonus value = 0 }
+    if = {
+        limit = { has_building = counting_house }
+        set_variable = { which = dicm_bh_production_old_bonus value = 1 }
+    }
+    else_if = {
+        limit = { has_building = workshop }
+        set_variable = { which = dicm_bh_production_old_bonus value = 0.5 }
+    }
+    set_variable = { which = dicm_bh_production_workshop_delta value = 0.5 }
+    subtract_variable = { which = dicm_bh_production_workshop_delta which = dicm_bh_production_old_bonus }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_production_workshop_delta value = 0 } } }
+        set_variable = { which = dicm_bh_production_workshop_delta value = 0 }
+    }
+    set_variable = { which = dicm_bh_production_counting_house_delta value = 1 }
+    subtract_variable = { which = dicm_bh_production_counting_house_delta which = dicm_bh_production_old_bonus }
+    set_variable = { which = dicm_bh_production_workshop_gain which = dicm_bh_production_basis }
+    multiply_variable = { which = dicm_bh_production_workshop_gain which = dicm_bh_production_factor }
+    multiply_variable = { which = dicm_bh_production_workshop_gain which = dicm_bh_production_workshop_delta }
+    divide_variable = { which = dicm_bh_production_workshop_gain value = 12 }
+    set_variable = { which = dicm_bh_production_counting_house_gain which = dicm_bh_production_basis }
+    multiply_variable = { which = dicm_bh_production_counting_house_gain which = dicm_bh_production_factor }
+    multiply_variable = { which = dicm_bh_production_counting_house_gain which = dicm_bh_production_counting_house_delta }
+    divide_variable = { which = dicm_bh_production_counting_house_gain value = 12 }
+}
+
+# Preserve the manual diagnostic entry point and its saved input.
+dicm_bh_calculate_production_gains = {
+    set_variable = { which = dicm_bh_production_basis which = dicm_bh_production_annual_value }
+    dicm_bh_calculate_production_gains_from_basis = yes
+}
+
+# Province scope. ROOT may be the acting country (construction/estimate) or province.
+# Fallback only: exported goods Candidate A, historical flag-based prices.
+# No manual input required or overwritten. Normal trade-company cases remain unvalidated.
+dicm_bh_calculate_approximate_production_gains = {
+    dicm_bh_probe_reconstruct_goods_value = yes
+    set_variable = { which = dicm_bh_production_basis which = dicm_bh_auto_annual_a_history }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_production_basis value = 0 } } }
+        set_variable = { which = dicm_bh_production_basis value = 0 }
+    }
+    dicm_bh_calculate_production_gains_from_basis = yes
+}
+
+# Shared production entry point for tooltip estimates and live Build/Upgrade All.
+# Sampled income already includes autonomy; do not run the basis/autonomy formula again.
+dicm_bh_calculate_automatic_production_gains = {
+    set_variable = { which = dicm_bh_production_basis value = 0 }
+    dicm_bh_calculate_production_gains_from_basis = yes
+    dicm_bh_try_engine_production_gains = yes
+    if = {
+        limit = { NOT = { has_province_flag = dicm_bh_income_valid } }
+        dicm_bh_calculate_approximate_production_gains = yes
+    }
+}

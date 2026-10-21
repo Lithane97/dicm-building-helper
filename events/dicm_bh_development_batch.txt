@@ -1,0 +1,53 @@
+# Bounded reserve-aware development batches.
+namespace = dicm_bh_development_batch
+country_event = {
+    id = dicm_bh_development_batch.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_sp_spend_batch = { TYPE = adm STEP = 1 }
+            log = "DICM BH DEVELOPMENT BATCH TYPE: ADM"
+            log = "DICM BH DEVELOPMENT BATCH STEPS: [Root.dicm_bh_db_steps.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH SPENT: [Root.dicm_bh_db_spent.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH REMAINING: [Root.dicm_bh_db_power_after.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH RESERVE: [Root.dicm_bh_db_reserve.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH STOP: [Root.dicm_bh_db_stop.GetValue]"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_batch.2
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_sp_spend_batch = { TYPE = dip STEP = 2 }
+            log = "DICM BH DEVELOPMENT BATCH TYPE: DIP"
+            log = "DICM BH DEVELOPMENT BATCH STEPS: [Root.dicm_bh_db_steps.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH SPENT: [Root.dicm_bh_db_spent.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH REMAINING: [Root.dicm_bh_db_power_after.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH RESERVE: [Root.dicm_bh_db_reserve.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH STOP: [Root.dicm_bh_db_stop.GetValue]"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+country_event = {
+    id = dicm_bh_development_batch.3
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_sp_spend_batch = { TYPE = mil STEP = 3 }
+            log = "DICM BH DEVELOPMENT BATCH TYPE: MIL"
+            log = "DICM BH DEVELOPMENT BATCH STEPS: [Root.dicm_bh_db_steps.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH SPENT: [Root.dicm_bh_db_spent.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH REMAINING: [Root.dicm_bh_db_power_after.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH RESERVE: [Root.dicm_bh_db_reserve.GetValue]"
+            log = "DICM BH DEVELOPMENT BATCH STOP: [Root.dicm_bh_db_stop.GetValue]"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

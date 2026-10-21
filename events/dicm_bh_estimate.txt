@@ -1,0 +1,47 @@
+# Cached previews. Each pass gets an independent budget.
+# Production samples native income and reverses it synchronously; no buildings are constructed.
+# Report state is preserved; money formatting changes display variables only.
+namespace = dicm_bh_estimate
+country_event = {
+    id = dicm_bh_estimate.1
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+
+        # 1. Preserve the previous construction report and UI settings.
+        dicm_bh_save_trade_report = yes
+
+        # 2. Estimate new buildings with a fresh spending budget.
+        set_country_flag = dicm_bh_trade_preview
+        clr_country_flag = dicm_bh_trade_upgrade_mode
+        dicm_bh_estimate_selected_trade_building = yes
+        set_variable = { which = dicm_bh_est_build_cost which = dicm_bh_trade_spent }
+        set_variable = { which = dicm_bh_est_build_count which = dicm_bh_trade_count }
+        set_variable = { which = dicm_bh_est_limit which = dicm_bh_trade_budget }
+
+        # 3. Estimate upgrades independently using the same starting treasury.
+        set_country_flag = dicm_bh_trade_preview
+        set_country_flag = dicm_bh_trade_upgrade_mode
+        dicm_bh_estimate_selected_trade_building = yes
+        set_variable = { which = dicm_bh_est_upgrade_cost which = dicm_bh_trade_spent }
+        set_variable = { which = dicm_bh_est_upgrade_count which = dicm_bh_trade_count }
+
+        # Publish readiness and the treasury snapshot before restoring report flags.
+        clr_country_flag = dicm_bh_est_ready
+        if = {
+            limit = { has_country_flag = dicm_bh_trade_supported has_country_flag = dicm_bh_trade_tech_ready }
+            set_country_flag = dicm_bh_est_ready
+        }
+        export_to_variable = { which = dicm_bh_est_treasury value = treasury }
+
+        # 4. Restore the last live report; retain the newly cached estimates.
+        dicm_bh_restore_trade_report = yes
+
+        # 5. Prepare display-only comma and decimal groups for the tooltips.
+        dicm_bh_format_money = { VALUE = dicm_bh_est_build_cost }
+        dicm_bh_format_money = { VALUE = dicm_bh_est_upgrade_cost }
+        dicm_bh_format_money = { VALUE = dicm_bh_est_limit }
+    }
+    option = { name = dicm_bh_trade_close }
+}
+

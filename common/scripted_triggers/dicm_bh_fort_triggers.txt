@@ -1,0 +1,126 @@
+# Province fort buildings, excluding the capital's intrinsic level-one fort.
+dicm_bh_has_fort_building = {
+    OR = { has_building = fort_15th has_building = fort_16th has_building = fort_17th has_building = fort_18th }
+}
+# Country selection; direct trigger is also used inside shared pipeline hooks.
+dicm_bh_fort_selected = {
+    OR = {
+        is_variable_equal = { which = dicm_bh_selection value = 19 }
+        is_variable_equal = { which = dicm_bh_selection value = 20 }
+        is_variable_equal = { which = dicm_bh_selection value = 21 }
+        is_variable_equal = { which = dicm_bh_selection value = 22 }
+    }
+}
+# Province scope; ROOT is the acting country. Border means a land neighbour
+# owned by another country. Coastlines and unowned land do not create a border.
+dicm_bh_fort_border_province = {
+    any_neighbor_province = {
+        NOT = { is_sea = yes }
+        is_empty = no
+        NOT = { owned_by = ROOT }
+    }
+}
+# Province scope. Only ROOT-owned completed/planned/helper-queued forts reserve spacing.
+# A border site may neighbour an inland fort owned by ROOT. Foreign forts are ignored.
+# Reservations without current construction do not block new sites.
+dicm_bh_fort_site_clear = {
+    NOT = {
+        any_neighbor_province = {
+            owned_by = ROOT
+            NOT = { is_sea = yes }
+            OR = {
+                dicm_bh_has_fort_building = yes
+                AND = { has_province_flag = dicm_bh_fort_queued has_construction = building }
+                has_province_flag = dicm_bh_fort_planned
+            }
+            OR = {
+                dicm_bh_fort_border_province = yes
+                PREV = { NOT = { dicm_bh_fort_border_province = yes } }
+            }
+        }
+    }
+}
+
+dicm_bh_fort_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 19 }
+            mil_tech = 1
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_15th
+                NOT = { has_building = fort_15th }
+                NOT = { dicm_bh_has_fort_building = yes }
+                dicm_bh_fort_site_clear = yes
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 20 }
+            mil_tech = 14
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_16th
+                NOT = { has_building = fort_16th }
+                NOT = { dicm_bh_has_fort_building = yes }
+                dicm_bh_fort_site_clear = yes
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 21 }
+            mil_tech = 19
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_17th
+                NOT = { has_building = fort_17th }
+                NOT = { dicm_bh_has_fort_building = yes }
+                dicm_bh_fort_site_clear = yes
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 22 }
+            mil_tech = 24
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_18th
+                NOT = { has_building = fort_18th }
+                NOT = { dicm_bh_has_fort_building = yes }
+                dicm_bh_fort_site_clear = yes
+            }
+        }
+    }
+}
+
+dicm_bh_fort_upgrade_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 20 }
+            mil_tech = 14
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_16th
+                NOT = { has_building = fort_16th }
+                dicm_bh_has_fort_building = yes
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 21 }
+            mil_tech = 19
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_17th
+                NOT = { has_building = fort_17th }
+                dicm_bh_has_fort_building = yes
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 22 }
+            mil_tech = 24
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = fort_18th
+                NOT = { has_building = fort_18th }
+                dicm_bh_has_fort_building = yes
+            }
+        }
+    }
+}

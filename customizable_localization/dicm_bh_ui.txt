@@ -1,0 +1,84 @@
+defined_text = {
+    name = GetDICMBHBuilding
+    random = no
+    text = { localisation_key = dicm_bh_name_temple trigger = { is_variable_equal = { which = dicm_bh_selection value = 1 } } }
+    text = { localisation_key = dicm_bh_name_cathedral trigger = { is_variable_equal = { which = dicm_bh_selection value = 2 } } }
+    text = { localisation_key = dicm_bh_name_workshop trigger = { is_variable_equal = { which = dicm_bh_selection value = 3 } } }
+    text = { localisation_key = dicm_bh_name_counting_house trigger = { is_variable_equal = { which = dicm_bh_selection value = 4 } } }
+    text = { localisation_key = dicm_bh_name_marketplace trigger = { is_variable_equal = { which = dicm_bh_selection value = 5 } } }
+    text = { localisation_key = dicm_bh_name_trade_depot trigger = { is_variable_equal = { which = dicm_bh_selection value = 6 } } }
+    text = { localisation_key = dicm_bh_name_stock_exchange trigger = { is_variable_equal = { which = dicm_bh_selection value = 7 } } }
+    text = { localisation_key = dicm_bh_name_barracks trigger = { is_variable_equal = { which = dicm_bh_selection value = 8 } } }
+    text = { localisation_key = dicm_bh_name_training_fields trigger = { is_variable_equal = { which = dicm_bh_selection value = 9 } } }
+    text = { localisation_key = dicm_bh_name_dock trigger = { is_variable_equal = { which = dicm_bh_selection value = 10 } } }
+    text = { localisation_key = dicm_bh_name_drydock trigger = { is_variable_equal = { which = dicm_bh_selection value = 11 } } }
+    text = { localisation_key = dicm_bh_name_regimental_camp trigger = { is_variable_equal = { which = dicm_bh_selection value = 12 } } }
+    text = { localisation_key = dicm_bh_name_conscription_center trigger = { is_variable_equal = { which = dicm_bh_selection value = 13 } } }
+    text = { localisation_key = dicm_bh_name_shipyard trigger = { is_variable_equal = { which = dicm_bh_selection value = 14 } } }
+    text = { localisation_key = dicm_bh_name_grand_shipyard trigger = { is_variable_equal = { which = dicm_bh_selection value = 15 } } }
+    text = { localisation_key = dicm_bh_name_courthouse trigger = { is_variable_equal = { which = dicm_bh_selection value = 16 } } }
+    text = { localisation_key = dicm_bh_name_town_hall trigger = { is_variable_equal = { which = dicm_bh_selection value = 17 } } }
+    text = { localisation_key = dicm_bh_name_university trigger = { is_variable_equal = { which = dicm_bh_selection value = 18 } } }
+    text = { localisation_key = dicm_bh_name_fort_15th trigger = { is_variable_equal = { which = dicm_bh_selection value = 19 } } }
+    text = { localisation_key = dicm_bh_name_fort_16th trigger = { is_variable_equal = { which = dicm_bh_selection value = 20 } } }
+    text = { localisation_key = dicm_bh_name_fort_17th trigger = { is_variable_equal = { which = dicm_bh_selection value = 21 } } }
+    text = { localisation_key = dicm_bh_name_fort_18th trigger = { is_variable_equal = { which = dicm_bh_selection value = 22 } } }
+    text = { localisation_key = dicm_bh_name_coastal_defence trigger = { is_variable_equal = { which = dicm_bh_selection value = 23 } } }
+    text = { localisation_key = dicm_bh_name_naval_battery trigger = { is_variable_equal = { which = dicm_bh_selection value = 24 } } }
+    text = { localisation_key = dicm_bh_name_weapons trigger = { is_variable_equal = { which = dicm_bh_selection value = 25 } } }
+    text = { localisation_key = dicm_bh_name_textile trigger = { is_variable_equal = { which = dicm_bh_selection value = 26 } } }
+    text = { localisation_key = dicm_bh_name_farm_estate trigger = { is_variable_equal = { which = dicm_bh_selection value = 27 } } }
+    text = { localisation_key = dicm_bh_name_tradecompany trigger = { is_variable_equal = { which = dicm_bh_selection value = 28 } } }
+    text = { localisation_key = dicm_bh_name_impressment_offices trigger = { is_variable_equal = { which = dicm_bh_selection value = 29 } } }
+    text = { localisation_key = dicm_bh_name_state_house trigger = { is_variable_equal = { which = dicm_bh_selection value = 30 } } }
+    text = { localisation_key = dicm_bh_name_soldier_households trigger = { is_variable_equal = { which = dicm_bh_selection value = 31 } } }
+    text = { localisation_key = dicm_bh_name_furnace trigger = { is_variable_equal = { which = dicm_bh_selection value = 32 } } }
+    text = { localisation_key = dicm_bh_name_wharf trigger = { is_variable_equal = { which = dicm_bh_selection value = 33 } } }
+    text = { localisation_key = dicm_bh_name_plantations trigger = { is_variable_equal = { which = dicm_bh_selection value = 34 } } }
+    text = { localisation_key = dicm_bh_name_mills trigger = { is_variable_equal = { which = dicm_bh_selection value = 35 } } }
+    text = { localisation_key = dicm_bh_name_ramparts trigger = { is_variable_equal = { which = dicm_bh_selection value = 36 } } }
+    text = { localisation_key = dicm_bh_name_workshop trigger = { always = yes } }
+}
+
+defined_text = {
+    name = GetDICMBHUnit
+    random = no
+    text = { localisation_key = dicm_bh_unit_ramparts trigger = { is_variable_equal = { which = dicm_bh_scale value = 12 } } }
+    text = { localisation_key = dicm_bh_unit_coastal trigger = { is_variable_equal = { which = dicm_bh_scale value = 11 } } }
+    text = { localisation_key = dicm_bh_unit_university trigger = { is_variable_equal = { which = dicm_bh_scale value = 10 } } }
+    text = { localisation_key = dicm_bh_unit_tax trigger = { is_variable_equal = { which = dicm_bh_scale value = 1 } } }
+    text = { localisation_key = dicm_bh_unit_production trigger = { is_variable_equal = { which = dicm_bh_scale value = 2 } } }
+    text = { localisation_key = dicm_bh_unit_trade trigger = { is_variable_equal = { which = dicm_bh_scale value = 3 } } }
+    text = { localisation_key = dicm_bh_unit_manpower trigger = { is_variable_equal = { which = dicm_bh_scale value = 4 } } }
+    text = { localisation_key = dicm_bh_unit_sailors trigger = { is_variable_equal = { which = dicm_bh_scale value = 5 } } }
+    text = { localisation_key = dicm_bh_unit_army trigger = { is_variable_equal = { which = dicm_bh_scale value = 6 } } }
+    text = { localisation_key = dicm_bh_unit_navy trigger = { is_variable_equal = { which = dicm_bh_scale value = 7 } } }
+    text = { localisation_key = dicm_bh_unit_governing trigger = { is_variable_equal = { which = dicm_bh_scale value = 8 } } }
+    text = { localisation_key = dicm_bh_unit_forts trigger = { is_variable_equal = { which = dicm_bh_scale value = 9 } } }
+    text = { localisation_key = dicm_bh_unit_none trigger = { is_variable_equal = { which = dicm_bh_scale value = 0 } } }
+    text = { localisation_key = dicm_bh_unit_none trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUnitHelp
+    random = no
+    text = { localisation_key = dicm_bh_unit_help_ramparts trigger = { is_variable_equal = { which = dicm_bh_scale value = 12 } } }
+    text = { localisation_key = dicm_bh_unit_help_coastal trigger = { is_variable_equal = { which = dicm_bh_scale value = 11 } } }
+    text = { localisation_key = dicm_bh_unit_help_university trigger = { is_variable_equal = { which = dicm_bh_scale value = 10 } } }
+    text = { localisation_key = dicm_bh_unit_help_tax trigger = { is_variable_equal = { which = dicm_bh_scale value = 1 } } }
+    text = { localisation_key = dicm_bh_unit_help_production trigger = { is_variable_equal = { which = dicm_bh_scale value = 2 } } }
+    text = { localisation_key = dicm_bh_unit_help_trade trigger = { is_variable_equal = { which = dicm_bh_scale value = 3 } } }
+    text = { localisation_key = dicm_bh_unit_help_manpower trigger = { is_variable_equal = { which = dicm_bh_scale value = 4 } } }
+    text = { localisation_key = dicm_bh_unit_help_sailors trigger = { is_variable_equal = { which = dicm_bh_scale value = 5 } } }
+    text = { localisation_key = dicm_bh_unit_help_army trigger = { is_variable_equal = { which = dicm_bh_scale value = 6 } } }
+    text = { localisation_key = dicm_bh_unit_help_navy trigger = { is_variable_equal = { which = dicm_bh_scale value = 7 } } }
+    text = { localisation_key = dicm_bh_unit_help_governing trigger = { is_variable_equal = { which = dicm_bh_scale value = 8 } } }
+    text = { localisation_key = dicm_bh_unit_help_forts trigger = { is_variable_equal = { which = dicm_bh_scale value = 9 } } }
+    text = { localisation_key = dicm_bh_unit_help_none trigger = { is_variable_equal = { which = dicm_bh_scale value = 0 } } }
+    text = { localisation_key = dicm_bh_unit_help_none trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHMinimum
+    random = no
+    text = { localisation_key = dicm_bh_minimum_na trigger = { is_variable_equal = { which = dicm_bh_scale value = 0 } } }
+    text = { localisation_key = dicm_bh_minimum_number trigger = { always = yes } }
+}

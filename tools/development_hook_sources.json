@@ -1,0 +1,212 @@
+{
+  "sources": [
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\on_actions\\00_on_actions.txt",
+      "sha256": "5427e045160382e366b10d4721119dcb0b10adb7e380d7ab67a0a8f8ba3dfbc8"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\on_actions\\missions_expanded_on_actions.txt",
+      "sha256": "f3a7d34e4032c11a56b90cbb3bf4f04effac6a0362e5a88a31d489fed35449e2"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\0002_rajput_privileges.txt",
+      "sha256": "48f590283251c0140ec77de20d77da363c9474ac4fc6c495cfe72f64ee11b1ec"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\001_brahmin_privileges.txt",
+      "sha256": "a1af53410aa44532a7a9fb1637b29c6d81d33702a1d7aa0c7811faf08ac51b15"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\002_maratha_privileges.txt",
+      "sha256": "2f8d65d83b10ea267d7d74c120ee03306115c5ccbc9e4e2ff3d3df8d936c6f0c"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\003_vaisya_privileges.txt",
+      "sha256": "94680e840a2c33467444f48486839e3c59841892a0b919175d484472acc74753"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estate_privileges\\01_church_privileges.txt",
+      "sha256": "40938a4e15ce9f5b3cec8e13cb0ba8315ea1ff7cf3cdd448e75a4ef435f4f695"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estate_privileges\\02_noble_privileges.txt",
+      "sha256": "cae3db98b3867f989fb8243c8635703404f5c1347a433ce00bfd0c892628956a"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estate_privileges\\03_burgher_privileges.txt",
+      "sha256": "85f288847eca26d04a04006355044478e82e6926b82712cb91f45cff07f2d5ea"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\04_cossack_privileges.txt",
+      "sha256": "95595260ca555b1c305265608e154f9df7c3b7b222994805ea8f3f0fd909f80f"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\05_nomadic_tribe_privileges.txt",
+      "sha256": "96840ba4e94370afce8e3488508b7f3b38bb810df7dd5f46f3ca11f6e1f18e1a"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estate_privileges\\06_dhimmi_privileges.txt",
+      "sha256": "96b82c422cd53cf22910d3a0985a2aaf505ba51669aba5fbc4cb9eeb61355492"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estate_privileges\\07_jain_privileges.txt",
+      "sha256": "c18b9bd23c0d8cac99ba03c046a9c599145c625fd99942dd2e4febb59e5c38d3"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\001_brahmins.txt",
+      "sha256": "a7324323133e6a0ebcf1c85caf8199e720e15d1c519d637dc607b93b9c685527"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\0022_rajput.txt",
+      "sha256": "9c49369154621268a5c3d03949b7fe5548cee09fb6595f630351e9c53a6d1436"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\002_maratha.txt",
+      "sha256": "290b9296a572f072fd79aae89d7da285b0c32fe43b104db091b71e4b854013dd"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\003_vaisyas.txt",
+      "sha256": "867561d5e871ba694adf5a46022e9db0a7419de6be076d7e1195b7d222168873"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\01_church.txt",
+      "sha256": "cca37f3f5b30595cc2a2db9fb833a53f1f4551c188eb6341cd0c2fb54c6bf42b"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\02_nobility.txt",
+      "sha256": "78beb182b60985a46e99f8bff84a46ccce274cc3944031c7366fe9a71428d9be"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\03_burghers.txt",
+      "sha256": "2dd634cef4522ee8e43e6e34005779b90a806735a6c88b11831bcc30f7034dcd"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\04_cossacks.txt",
+      "sha256": "af1f8d7126cd32c0fee944c6016c375264f905e4cb5bcbfc01a6b6674736907a"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\05_nomadic_tribes.txt",
+      "sha256": "0fb311c33871abe4584e976f20bf30c13f18fee801d405e49e262c5f153b0e9c"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\06_dhimmi.txt",
+      "sha256": "9be46f477ca04f34e4ff9e3de242c23b083dd8ae45d7eba8ec723413375ab72e"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\07_jains.txt",
+      "sha256": "2123e512570b210c486b3c2e17600ddeeb2a7af316001636e14965c7fe05f088"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\08_janissaries.txt",
+      "sha256": "d5d6f8eab5cc156d9cd6a4a948134d91e6a61733062ef516ef11d9efc3d51fdb"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\1680127708\\common\\estates\\08_nationalist.txt",
+      "sha256": "87242fd1b99af4f7dcf38fd66efd5d23b0babbfc6433843a1857f2e9bb4d29fd"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\09_eunuchs.txt",
+      "sha256": "9cb683ec48071401685c61ade4bda1be307854bd67a4388ef05faa5a909d3b38"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\10_qizilbash.txt",
+      "sha256": "f800e19177db55a7c9cbe1095223cb7b69e37366b7caaff63d7c1b6970373d16"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\11_ghulams.txt",
+      "sha256": "b50bc324297b9cf153c5a772aa5c189be20f14fbf79463aee23146b8b0650f39"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\common\\Europa Universalis IV\\common\\estates\\999_special.txt",
+      "sha256": "3ed48f29b8ebbd00449ee348bd9eb8b859a387b6dabb94d85f5af5774b59f6d5"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\ZZZ_ME_privileges.txt",
+      "sha256": "d5e60808707fddf17811e6e6b8fc90214aadae7b50663380927644d6e21cb6b7"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_berbers.txt",
+      "sha256": "7310e426a10b34acc90bfa675fb9dd66f2adcdae73f549fce780f14f4b6c92a2"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_clans.txt",
+      "sha256": "bbff288061fe801558e6348a4ae053bc50e8a7c182cc5cd5adb39bab3ef1b3d3"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_cultural_minorities.txt",
+      "sha256": "e7223ea3d6a05071e434d4a2ea6ec09c249a9592beb9fa5b949c055495feb526"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_french.txt",
+      "sha256": "26945d486a0d06b0b2514258ef27c619a232ba1b77eb5725662fe0c8fd1a6b57"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_industrial.txt",
+      "sha256": "06a3d2d647830cfbcfe7db35e6565f2750b69212b7eaa7fd1bc26f5b379edfee"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_maya.txt",
+      "sha256": "dffe3800bb7d53d1198d06dae8a9b22c35eb5091a580b5729b7e3f4ec3742476"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_parliament.txt",
+      "sha256": "5f3a4fdee6f428bc8727943fc2f8b2ab1ed58bdfa6779a7a648ddc26b7354a3d"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_settlers.txt",
+      "sha256": "042174cad5099890265e7aefddccefdcc2d9ef00a1ed8745d6895321e4faa6e3"
+    },
+    {
+      "path": "D:\\SteamLibrary\\steamapps\\workshop\\content\\236850\\2164202838\\common\\estates\\estate_turkic_tribes.txt",
+      "sha256": "a2134538ee26d5eff39ef6865413c02dab2b9cc9613ef53cadc349e10b048799"
+    }
+  ],
+  "protected_privileges": [
+    "estate_rajput_development_of_rajput_lands",
+    "estate_brahmins_development_of_temples",
+    "estate_maratha_development_of_marathi_lands",
+    "estate_vaisyas_development_of_cities",
+    "estate_church_development_of_temples",
+    "estate_nobles_english_villeinage",
+    "estate_nobles_development_of_castles",
+    "estate_burghers_rise_of_the_burghers",
+    "estate_burghers_development_of_cities",
+    "estate_burghers_hungarian_royal_cities",
+    "estate_cossacks_freedom_of_the_steppes",
+    "estate_nomadic_tribes_freedom_of_the_steppes",
+    "estate_dhimmi_development_of_communities",
+    "estate_jains_development_of_cities"
+  ],
+  "archives_checked": [
+    "D:/SteamLibrary/steamapps/workshop/content/236850/1504975040/959721580496599218_legacy.bin",
+    "D:/SteamLibrary/steamapps/workshop/content/236850/1542140964/946217391648122178_legacy.bin"
+  ],
+  "estates": [
+    "estate_berbers",
+    "estate_brahmins",
+    "estate_burghers",
+    "estate_church",
+    "estate_clans",
+    "estate_cossacks",
+    "estate_dhimmi",
+    "estate_eunuchs",
+    "estate_french",
+    "estate_ghulams",
+    "estate_industrial",
+    "estate_jains",
+    "estate_janissaries",
+    "estate_maratha",
+    "estate_maya",
+    "estate_nationalist",
+    "estate_nobles",
+    "estate_nomadic_tribes",
+    "estate_parliament",
+    "estate_qizilbash",
+    "estate_rajput",
+    "estate_settlers",
+    "estate_special",
+    "estate_turkic_tribes",
+    "estate_vaisyas",
+    "me_estate_cultural_minorities"
+  ]
+}

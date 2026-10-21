@@ -1,0 +1,18 @@
+# Conservative first-step support boundary, additional to evaluator category gates.
+# Province scope; country ROOT while collecting. Rechecked under province worker.
+dicm_bh_sp_site_supported = {
+    controlled_by = owner
+    is_city = yes
+    is_colony = no
+    is_core = owner
+    has_siege = no
+    dicm_bh_trade_province_free = yes
+    NOT = { AND = {
+        owner = { has_country_flag = ME_tim_deny_developing_arabian_provinces }
+        region = arabia_region
+    } }
+    owner = {
+        is_primitive = no
+        dicm_bh_sp_estates_supported = yes
+    }
+}

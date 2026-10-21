@@ -1,0 +1,2 @@
+# Read-only native fractional influence threshold test.
+country_event = { id = dicm_bh_estate_probe.2 }

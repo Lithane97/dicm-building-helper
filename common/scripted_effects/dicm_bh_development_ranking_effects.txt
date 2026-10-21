@@ -1,0 +1,63 @@
+# Country-scope advisory rankings. Each TYPE has its own units and event targets.
+# This scan spends no monarch power and never starts construction/development.
+# Re-run after a development click; previous scores are not future-cost forecasts.
+dicm_bh_dev_consider_rank = {
+    if = {
+        limit = { has_province_flag = dicm_bh_dev_$TYPE$_candidate }
+        if = {
+            limit = { owner = { NOT = { has_country_flag = dicm_bh_dev_best_$TYPE$_set } } }
+            save_event_target_as = dicm_bh_dev_best_$TYPE$
+            owner = { set_country_flag = dicm_bh_dev_best_$TYPE$_set }
+        }
+        else_if = {
+            limit = {
+                check_variable = { which = dicm_bh_dev_$TYPE$_score which = event_target:dicm_bh_dev_best_$TYPE$ }
+                OR = {
+                    NOT = { is_variable_equal = { which = dicm_bh_dev_$TYPE$_score which = event_target:dicm_bh_dev_best_$TYPE$ } }
+                    NOT = { check_variable = { which = dicm_bh_dev_cost which = event_target:dicm_bh_dev_best_$TYPE$ } }
+                }
+            }
+            save_event_target_as = dicm_bh_dev_best_$TYPE$
+        }
+        if = {
+            limit = {
+                can_build = university
+                NOT = { has_building = university }
+                check_variable = { which = dicm_bh_dev_uni_saved value = 1 }
+                check_variable = { which = dicm_bh_dev_$TYPE$_uni_gain value = 0.001 }
+            }
+            if = {
+                limit = { owner = { NOT = { has_country_flag = dicm_bh_dev_uni_$TYPE$_set } } }
+                save_event_target_as = dicm_bh_dev_uni_$TYPE$
+                owner = { set_country_flag = dicm_bh_dev_uni_$TYPE$_set }
+            }
+            else_if = {
+                limit = {
+                    check_variable = { which = dicm_bh_dev_$TYPE$_uni_gain which = event_target:dicm_bh_dev_uni_$TYPE$ }
+                    NOT = { is_variable_equal = { which = dicm_bh_dev_$TYPE$_uni_gain which = event_target:dicm_bh_dev_uni_$TYPE$ } }
+                }
+                save_event_target_as = dicm_bh_dev_uni_$TYPE$
+            }
+        }
+    }
+}
+dicm_bh_evaluate_country_development = {
+    set_variable = { which = dicm_bh_dev_provinces_evaluated value = 0 }
+    clr_country_flag = dicm_bh_dev_best_adm_set
+    clr_country_flag = dicm_bh_dev_uni_adm_set
+    clr_country_flag = dicm_bh_dev_best_dip_set
+    clr_country_flag = dicm_bh_dev_uni_dip_set
+    clr_country_flag = dicm_bh_dev_best_mil_set
+    clr_country_flag = dicm_bh_dev_uni_mil_set
+    every_owned_province = {
+        limit = { owner = { NOT = { has_country_flag = dicm_bh_trade_cost_mismatch } } }
+        dicm_bh_evaluate_development = yes
+        if = {
+            limit = { has_province_flag = dicm_bh_dev_evaluated }
+            owner = { change_variable = { which = dicm_bh_dev_provinces_evaluated value = 1 } }
+            dicm_bh_dev_consider_rank = { TYPE = adm }
+            dicm_bh_dev_consider_rank = { TYPE = dip }
+            dicm_bh_dev_consider_rank = { TYPE = mil }
+        }
+    }
+}

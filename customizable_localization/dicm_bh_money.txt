@@ -1,0 +1,85 @@
+# Comma-separated cached money values, with optional two-digit fractional part.
+defined_text = {
+    name = GetDICMBHBuildCost
+    random = no
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_millions trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_whole value = 1000000 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_thousands trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_whole value = 1000 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_plain trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHBuildCostOnes
+    random = no
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_ones_3 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_ones value = 100 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_ones_2 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_ones value = 10 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_ones_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHBuildCostMiddle
+    random = no
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_middle_3 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_middle value = 100 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_middle_2 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_middle value = 10 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_middle_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHBuildCostCents
+    random = no
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_cents_2 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_cents value = 10 } } }
+    text = { localisation_key = dicm_bh_est_build_cost_fmt_cents_1 trigger = { check_variable = { which = dicm_bh_est_build_cost_fmt_cents value = 1 } } }
+    text = { localisation_key = dicm_bh_money_no_fraction trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUpgradeCost
+    random = no
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_millions trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_whole value = 1000000 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_thousands trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_whole value = 1000 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_plain trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUpgradeCostOnes
+    random = no
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_ones_3 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_ones value = 100 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_ones_2 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_ones value = 10 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_ones_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUpgradeCostMiddle
+    random = no
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_middle_3 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_middle value = 100 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_middle_2 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_middle value = 10 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_middle_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHUpgradeCostCents
+    random = no
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_cents_2 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_cents value = 10 } } }
+    text = { localisation_key = dicm_bh_est_upgrade_cost_fmt_cents_1 trigger = { check_variable = { which = dicm_bh_est_upgrade_cost_fmt_cents value = 1 } } }
+    text = { localisation_key = dicm_bh_money_no_fraction trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHLimit
+    random = no
+    text = { localisation_key = dicm_bh_est_limit_fmt_millions trigger = { check_variable = { which = dicm_bh_est_limit_fmt_whole value = 1000000 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_thousands trigger = { check_variable = { which = dicm_bh_est_limit_fmt_whole value = 1000 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_plain trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHLimitOnes
+    random = no
+    text = { localisation_key = dicm_bh_est_limit_fmt_ones_3 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_ones value = 100 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_ones_2 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_ones value = 10 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_ones_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHLimitMiddle
+    random = no
+    text = { localisation_key = dicm_bh_est_limit_fmt_middle_3 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_middle value = 100 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_middle_2 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_middle value = 10 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_middle_1 trigger = { always = yes } }
+}
+defined_text = {
+    name = GetDICMBHLimitCents
+    random = no
+    text = { localisation_key = dicm_bh_est_limit_fmt_cents_2 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_cents value = 10 } } }
+    text = { localisation_key = dicm_bh_est_limit_fmt_cents_1 trigger = { check_variable = { which = dicm_bh_est_limit_fmt_cents value = 1 } } }
+    text = { localisation_key = dicm_bh_money_no_fraction trigger = { always = yes } }
+}

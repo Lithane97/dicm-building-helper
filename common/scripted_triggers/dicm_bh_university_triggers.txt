@@ -1,0 +1,19 @@
+# Province scope; country ROOT. Evaluation is refreshed before candidate collection.
+dicm_bh_university_site = {
+    dicm_bh_trade_province_free = yes
+    can_build = university
+    NOT = { has_building = university }
+    has_province_flag = dicm_bh_dev_evaluated
+    check_variable = { which = dicm_bh_dev_uni_saved value = 1 }
+}
+
+# Country scope. Availability remains cheap; scores/minimum/budget refresh on click.
+dicm_bh_university_build_available = {
+    is_variable_equal = { which = dicm_bh_selection value = 18 }
+    adm_tech = 17
+    any_owned_province = {
+        dicm_bh_trade_province_free = yes
+        can_build = university
+        NOT = { has_building = university }
+    }
+}

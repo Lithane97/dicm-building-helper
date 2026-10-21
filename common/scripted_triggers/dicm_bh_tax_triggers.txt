@@ -1,0 +1,33 @@
+# Country scope. Minimum and budget are checked in the shared processing pipeline.
+dicm_bh_tax_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 1 }
+            adm_tech = 4
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = temple
+                NOT = { OR = { has_building = temple has_building = cathedral } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 2 }
+            adm_tech = 19
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = cathedral
+                NOT = { OR = { has_building = temple has_building = cathedral } }
+            }
+        }
+    }
+}
+dicm_bh_tax_upgrade_available = {
+    is_variable_equal = { which = dicm_bh_selection value = 2 }
+    adm_tech = 19
+    any_owned_province = {
+        dicm_bh_trade_province_free = yes
+        can_build = cathedral
+        has_building = temple
+        NOT = { has_building = cathedral }
+    }
+}

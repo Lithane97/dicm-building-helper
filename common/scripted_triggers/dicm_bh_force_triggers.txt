@@ -1,0 +1,64 @@
+dicm_bh_force_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 12 }
+            mil_tech = 8
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = regimental_camp
+                NOT = { OR = { has_building = regimental_camp has_building = conscription_center } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 13 }
+            mil_tech = 22
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = conscription_center
+                NOT = { OR = { has_building = regimental_camp has_building = conscription_center } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 14 }
+            dip_tech = 8
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = shipyard
+                NOT = { OR = { has_building = shipyard has_building = grand_shipyard } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 15 }
+            dip_tech = 24
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = grand_shipyard
+                NOT = { OR = { has_building = shipyard has_building = grand_shipyard } }
+            }
+        }
+    }
+}
+dicm_bh_force_upgrade_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 13 }
+            mil_tech = 22
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = conscription_center
+                has_building = regimental_camp
+                NOT = { has_building = conscription_center }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 15 }
+            dip_tech = 24
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = grand_shipyard
+                has_building = shipyard
+                NOT = { has_building = grand_shipyard }
+            }
+        }
+    }
+}

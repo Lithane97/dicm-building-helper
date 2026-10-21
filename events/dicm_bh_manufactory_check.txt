@@ -1,0 +1,369 @@
+# Balanced production samples, no construction/development or net spending.
+namespace = dicm_bh_manufactory_check
+country_event = {
+    id = dicm_bh_manufactory_check.1
+    title = dicm_bh_trade_preview_title
+    desc = dicm_bh_trade_close
+    picture = TRADE_eventPicture
+    hidden = yes
+    is_triggered_only = yes
+    immediate = {
+        hidden_effect = {
+            dicm_bh_save_trade_report = yes
+            set_variable = { which = dicm_bh_mfg_saved_selection which = dicm_bh_selection }
+            export_to_variable = { which = dicm_bh_mfg_before value = treasury }
+            set_variable = { which = dicm_bh_minimum value = 0 }
+            clr_country_flag = dicm_bh_trade_upgrade_mode
+            log = "DICM BH MANUFACTORY CHECK BEGIN: [Root.GetName]"
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 25 }
+            log = "DICM BH MANUFACTORY CASE: weapons unit=goods"
+            if = {
+                limit = { mil_tech = 11 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = weapons KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: mil technology 11 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 26 }
+            log = "DICM BH MANUFACTORY CASE: textile unit=goods"
+            if = {
+                limit = { adm_tech = 11 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = textile KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 11 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 27 }
+            log = "DICM BH MANUFACTORY CASE: farm_estate unit=goods"
+            if = {
+                limit = { adm_tech = 6 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = farm_estate KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 6 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 28 }
+            log = "DICM BH MANUFACTORY CASE: tradecompany unit=goods"
+            if = {
+                limit = { dip_tech = 14 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = tradecompany KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: dip technology 14 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 29 }
+            log = "DICM BH MANUFACTORY CASE: impressment_offices unit=sailors"
+            if = {
+                limit = { dip_tech = 7 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = impressment_offices KIND = sailors }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: dip technology 7 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 31 }
+            log = "DICM BH MANUFACTORY CASE: soldier_households unit=manpower"
+            if = {
+                limit = { adm_tech = 15 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = soldier_households KIND = manpower }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 15 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 32 }
+            log = "DICM BH MANUFACTORY CASE: furnace unit=furnace"
+            if = {
+                limit = { adm_tech = 21 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = furnace KIND = furnace }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 21 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 33 }
+            log = "DICM BH MANUFACTORY CASE: wharf unit=goods"
+            if = {
+                limit = { dip_tech = 11 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = wharf KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: dip technology 11 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 34 }
+            log = "DICM BH MANUFACTORY CASE: plantations unit=goods"
+            if = {
+                limit = { adm_tech = 14 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = plantations KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 14 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 35 }
+            log = "DICM BH MANUFACTORY CASE: mills unit=goods"
+            if = {
+                limit = { adm_tech = 16 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = mills KIND = goods }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 16 required" }
+            dicm_bh_initialize_trade_run = yes
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection value = 36 }
+            log = "DICM BH MANUFACTORY CASE: ramparts unit=ramparts"
+            if = {
+                limit = { adm_tech = 6 }
+                dicm_bh_collect_manufactory_candidates = { BUILDING = ramparts KIND = ramparts }
+                log = "DICM BH MANUFACTORY ELIGIBLE: [Root.dicm_bh_trade_eligible.GetValue]"
+                set_variable = { which = dicm_bh_mfg_rank value = 0 }
+                while = {
+                    limit = {
+                        NOT = { check_variable = { which = dicm_bh_mfg_rank value = 3 } }
+                        any_owned_province = { has_province_flag = dicm_bh_trade_candidate }
+                    }
+                    dicm_bh_select_best_trade_candidate = yes
+                    if = {
+                        limit = { has_country_flag = dicm_bh_trade_best_set }
+                        change_variable = { which = dicm_bh_mfg_rank value = 1 }
+                        event_target:dicm_bh_trade_best = {
+                            clr_province_flag = dicm_bh_trade_candidate
+                            owner = {
+                                set_variable = { which = dicm_bh_trade_gain which = PREV }
+                                set_variable = { which = dicm_bh_trade_cost which = PREV }
+                            }
+                        }
+                        log = "DICM BH MANUFACTORY TARGET: rank=[Root.dicm_bh_mfg_rank.GetValue] province=[dicm_bh_trade_best.GetName] gain=[Root.dicm_bh_trade_gain.GetValue] cost=[Root.dicm_bh_trade_cost.GetValue]"
+                    }
+                    else = { dicm_bh_clear_trade_candidates = yes }
+                }
+            }
+            else = { log = "DICM BH MANUFACTORY LOCKED: adm technology 6 required" }
+            dicm_bh_clear_trade_candidates = yes
+            set_variable = { which = dicm_bh_selection which = dicm_bh_mfg_saved_selection }
+            dicm_bh_restore_trade_report = yes
+            export_to_variable = { which = dicm_bh_mfg_drift value = treasury }
+            subtract_variable = { which = dicm_bh_mfg_drift which = dicm_bh_mfg_before }
+            log = "DICM BH MANUFACTORY TREASURY DRIFT: [Root.dicm_bh_mfg_drift.GetValue]"
+            log = "DICM BH MANUFACTORY CHECK END"
+        }
+    }
+    option = { name = dicm_bh_trade_close }
+}

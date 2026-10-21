@@ -1,0 +1,30 @@
+# Read cached University preview values only. No evaluation, spending or construction.
+# Run after selecting University and refreshing estimates.
+log = "DICM BH UNI PROBE BEGIN"
+log = "DICM BH UNI MAX ADM: [Root.dicm_bh_uni_max_adm.GetValue]"
+log = "DICM BH UNI MAX DIP: [Root.dicm_bh_uni_max_dip.GetValue]"
+log = "DICM BH UNI MAX MIL: [Root.dicm_bh_uni_max_mil.GetValue]"
+every_owned_province = {
+    limit = {
+        dicm_bh_trade_province_free = yes
+        can_build = university
+        NOT = { has_building = university }
+        has_province_flag = dicm_bh_dev_evaluated
+        check_variable = { which = dicm_bh_dev_uni_saved value = 1 }
+    }
+    save_event_target_as = dicm_bh_uni_probe_site
+    owner = {
+        set_variable = { which = dicm_bh_trade_gain which = PREV }
+        set_variable = { which = dicm_bh_trade_cost which = PREV }
+        set_variable = { which = dicm_bh_dev_adm_uni_gain which = PREV }
+        set_variable = { which = dicm_bh_dev_dip_uni_gain which = PREV }
+        set_variable = { which = dicm_bh_dev_mil_uni_gain which = PREV }
+        log = "DICM BH UNI SITE: [dicm_bh_uni_probe_site.GetName]"
+        log = "DICM BH UNI SCORE: [Root.dicm_bh_trade_gain.GetValue]"
+        log = "DICM BH UNI COST: [Root.dicm_bh_trade_cost.GetValue]"
+        log = "DICM BH UNI ADM: [Root.dicm_bh_dev_adm_uni_gain.GetValue]"
+        log = "DICM BH UNI DIP: [Root.dicm_bh_dev_dip_uni_gain.GetValue]"
+        log = "DICM BH UNI MIL: [Root.dicm_bh_dev_mil_uni_gain.GetValue]"
+    }
+}
+log = "DICM BH UNI PROBE END"

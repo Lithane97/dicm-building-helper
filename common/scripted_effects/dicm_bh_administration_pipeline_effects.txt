@@ -1,0 +1,65 @@
+# Country scope. Clear only scratch state; each estimate reserves its own areas.
+dicm_bh_clear_administration_plans = {
+    every_owned_province = {
+        clr_province_flag = dicm_bh_admin_area_reserved
+        clr_province_flag = dicm_bh_admin_state_house_site
+    }
+}
+# Country scope. Parameters are literal target building ID, reduction, and base cost.
+dicm_bh_collect_administration_candidates = {
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = { owner = { has_country_flag = dicm_bh_trade_upgrade_mode } has_building = courthouse }
+                AND = {
+                    owner = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+                    NOT = { OR = { has_building = courthouse has_building = town_hall } }
+                }
+            }
+        }
+        dicm_bh_calculate_administration_gain = { BONUS = $BONUS$ }
+        set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+        if = {
+            limit = { has_building = courthouse }
+            set_variable = { which = dicm_bh_trade_old_cost value = 100 }
+        }
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        dicm_bh_mark_trade_candidate = yes
+    }
+}
+dicm_bh_collect_state_house_candidates = {
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+        every_owned_province = {
+            limit = {
+                dicm_bh_trade_province_free = yes
+                can_build = state_house
+                NOT = { has_building = state_house }
+                dicm_bh_state_house_area_free = yes
+            }
+            dicm_bh_calculate_state_house_gain = yes
+            set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+            dicm_bh_calculate_trade_cost_factor = yes
+            set_variable = { which = dicm_bh_trade_cost value = 500 }
+            dicm_bh_apply_trade_cost_factor = yes
+            dicm_bh_mark_trade_candidate = yes
+        }
+    }
+}
+# Province scope. After a successful State House action, remove every other site
+# in this owned portion of the area. Failed/unaffordable sites reserve nothing.
+dicm_bh_reserve_administration_area = {
+    if = {
+        limit = { owner = { is_variable_equal = { which = dicm_bh_selection value = 30 } } }
+        area = {
+            limit = { owned_by = ROOT }
+            set_province_flag = dicm_bh_admin_area_reserved
+            clr_province_flag = dicm_bh_trade_candidate
+        }
+    }
+}

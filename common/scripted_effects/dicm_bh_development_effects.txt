@@ -1,0 +1,235 @@
+# Shared NEXT-CLICK development evaluation. Country ROOT; caller enters an owned
+# province. Net treasury is preserved by the tested production-income sampler.
+# No development, power, buildings, settings or construction are changed.
+# Cost/benefit models passed initial Paris/Lille native-tooltip validation.
+# University selection uses these estimates; no automatic point spender calls this.
+# ADM/DIP score = annual province ducats per 100 power; MIL = manpower per 100 power.
+# Scores of different power types must never be added or directly compared.
+
+dicm_bh_dev_read_country = {
+    export_to_variable = { which = dicm_bh_dev_country_cost value = modifier:development_cost }
+    export_to_variable = { which = dicm_bh_dev_country_efficiency value = modifier:development_cost_modifier }
+    # Technology efficiency is not included in the modifier export. Native ADM
+    # technology (also inherited by Europa Expanded) grants -10% at 17/23/27.
+    if = { limit = { adm_tech = 17 } subtract_variable = { which = dicm_bh_dev_country_efficiency value = 0.1 } }
+    if = { limit = { adm_tech = 23 } subtract_variable = { which = dicm_bh_dev_country_efficiency value = 0.1 } }
+    if = { limit = { adm_tech = 27 } subtract_variable = { which = dicm_bh_dev_country_efficiency value = 0.1 } }
+    export_to_variable = { which = dicm_bh_dev_country_development value = trigger_value:total_development }
+    # Divide before multiplying to keep the intermediate small. -5% per 100
+    # country development, capped at -50%; applied only in the capital below.
+    set_variable = { which = dicm_bh_dev_capital_discount which = dicm_bh_dev_country_development }
+    divide_variable = { which = dicm_bh_dev_capital_discount value = 100 }
+    multiply_variable = { which = dicm_bh_dev_capital_discount value = 0.05 }
+    if = {
+        limit = { check_variable = { which = dicm_bh_dev_capital_discount value = 0.5 } }
+        set_variable = { which = dicm_bh_dev_capital_discount value = 0.5 }
+    }
+    export_to_variable = { which = dicm_bh_dev_all_power value = modifier:all_power_cost }
+    export_to_variable = { which = dicm_bh_dev_country_tax value = modifier:global_tax_modifier }
+    export_to_variable = { which = dicm_bh_dev_country_manpower value = modifier:global_manpower_modifier }
+    export_to_variable = { which = dicm_bh_dev_country_goods value = modifier:global_trade_goods_size_modifier }
+}
+
+dicm_bh_dev_read_province = {
+    owner = {
+        dicm_bh_dev_read_country = yes
+        PREV = {
+            set_variable = { which = dicm_bh_dev_country_cost which = PREV }
+            set_variable = { which = dicm_bh_dev_country_efficiency which = PREV }
+            set_variable = { which = dicm_bh_dev_capital_discount which = PREV }
+            set_variable = { which = dicm_bh_dev_all_power which = PREV }
+            set_variable = { which = dicm_bh_dev_country_tax which = PREV }
+            set_variable = { which = dicm_bh_dev_country_manpower which = PREV }
+            set_variable = { which = dicm_bh_dev_country_goods which = PREV }
+        }
+    }
+    export_to_variable = { which = dicm_bh_dev_development value = development }
+    export_to_variable = { which = dicm_bh_dev_tax value = base_tax }
+    export_to_variable = { which = dicm_bh_dev_production value = base_production }
+    export_to_variable = { which = dicm_bh_dev_manpower value = base_manpower }
+    export_to_variable = { which = dicm_bh_dev_autonomy value = local_autonomy }
+    export_to_variable = { which = dicm_bh_dev_local_cost value = modifier:local_development_cost }
+    export_to_variable = { which = dicm_bh_dev_local_efficiency value = modifier:local_development_cost_modifier }
+    export_to_variable = { which = dicm_bh_dev_local_tax value = modifier:local_tax_modifier }
+    export_to_variable = { which = dicm_bh_dev_local_manpower value = modifier:local_manpower_modifier }
+    export_to_variable = { which = dicm_bh_dev_local_goods value = modifier:trade_goods_size_modifier }
+    export_to_variable = { which = dicm_bh_dev_flat_goods value = modifier:trade_goods_size }
+}
+
+# Local development export is expected to include terrain, province status,
+# development scaling and other engine-applied local discounts. Do not add
+# hand-built terrain/development tables on top of it. Validate against the UI.
+dicm_bh_dev_calculate_cost = {
+    set_variable = { which = dicm_bh_dev_base_factor which = dicm_bh_dev_country_efficiency }
+    change_variable = { which = dicm_bh_dev_base_factor which = dicm_bh_dev_local_efficiency }
+    change_variable = { which = dicm_bh_dev_base_factor value = 1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_base_factor value = 0.01 } } }
+        set_variable = { which = dicm_bh_dev_base_factor value = 0.01 }
+    }
+    set_variable = { which = dicm_bh_dev_effective_base value = 50 }
+    multiply_variable = { which = dicm_bh_dev_effective_base which = dicm_bh_dev_base_factor }
+    set_variable = { which = dicm_bh_dev_discount_factor which = dicm_bh_dev_local_cost }
+    change_variable = { which = dicm_bh_dev_discount_factor which = dicm_bh_dev_country_cost }
+    change_variable = { which = dicm_bh_dev_discount_factor which = dicm_bh_dev_all_power }
+    change_variable = { which = dicm_bh_dev_discount_factor value = 1 }
+    if = {
+        limit = { is_capital = yes }
+        subtract_variable = { which = dicm_bh_dev_discount_factor which = dicm_bh_dev_capital_discount }
+    }
+    set_variable = { which = dicm_bh_dev_uni_factor which = dicm_bh_dev_discount_factor }
+    if = {
+        limit = { NOT = { has_building = university } }
+        subtract_variable = { which = dicm_bh_dev_uni_factor value = 0.2 }
+    }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_discount_factor value = 0.1 } } }
+        set_variable = { which = dicm_bh_dev_discount_factor value = 0.1 }
+    }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_uni_factor value = 0.1 } } }
+        set_variable = { which = dicm_bh_dev_uni_factor value = 0.1 }
+    }
+    set_variable = { which = dicm_bh_dev_cost which = dicm_bh_dev_effective_base }
+    multiply_variable = { which = dicm_bh_dev_cost which = dicm_bh_dev_discount_factor }
+    round_variable = { which = dicm_bh_dev_cost value = -1 }
+    set_variable = { which = dicm_bh_dev_uni_cost which = dicm_bh_dev_effective_base }
+    multiply_variable = { which = dicm_bh_dev_uni_cost which = dicm_bh_dev_uni_factor }
+    round_variable = { which = dicm_bh_dev_uni_cost value = -1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_cost value = 1 } } }
+        set_variable = { which = dicm_bh_dev_cost value = 1 }
+    }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_uni_cost value = 1 } } }
+        set_variable = { which = dicm_bh_dev_uni_cost value = 1 }
+    }
+    set_variable = { which = dicm_bh_dev_uni_saved which = dicm_bh_dev_cost }
+    subtract_variable = { which = dicm_bh_dev_uni_saved which = dicm_bh_dev_uni_cost }
+}
+
+# Benefits are marginal outputs, not current total province income/manpower.
+# Production uses income / flat goods * .2, retaining the engine's goods price,
+# efficiency and applied autonomy. Gold and trade-company production are skipped
+# until separately validated. Extra goods are reported separately from income;
+# no assumption is made about how much node trade value the owner collects.
+dicm_bh_dev_calculate_benefits = {
+    set_variable = { which = dicm_bh_dev_autonomy_factor which = dicm_bh_dev_autonomy }
+    divide_variable = { which = dicm_bh_dev_autonomy_factor value = 100 }
+    multiply_variable = { which = dicm_bh_dev_autonomy_factor value = -1 }
+    change_variable = { which = dicm_bh_dev_autonomy_factor value = 1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_autonomy_factor value = 0 } } }
+        set_variable = { which = dicm_bh_dev_autonomy_factor value = 0 }
+    }
+    set_variable = { which = dicm_bh_dev_adm_benefit which = dicm_bh_dev_local_tax }
+    change_variable = { which = dicm_bh_dev_adm_benefit which = dicm_bh_dev_country_tax }
+    # Native local tax export already includes the base/core contribution.
+    multiply_variable = { which = dicm_bh_dev_adm_benefit which = dicm_bh_dev_autonomy_factor }
+    set_variable = { which = dicm_bh_dev_mil_benefit which = dicm_bh_dev_local_manpower }
+    change_variable = { which = dicm_bh_dev_mil_benefit which = dicm_bh_dev_country_manpower }
+    # Native local manpower export already includes the base/core contribution.
+    multiply_variable = { which = dicm_bh_dev_mil_benefit value = 250 }
+    multiply_variable = { which = dicm_bh_dev_mil_benefit which = dicm_bh_dev_autonomy_factor }
+    set_variable = { which = dicm_bh_dev_dip_benefit value = 0 }
+    set_variable = { which = dicm_bh_dev_extra_goods which = dicm_bh_dev_local_goods }
+    change_variable = { which = dicm_bh_dev_extra_goods which = dicm_bh_dev_country_goods }
+    change_variable = { which = dicm_bh_dev_extra_goods value = 1 }
+    multiply_variable = { which = dicm_bh_dev_extra_goods value = 0.2 }
+    clr_province_flag = dicm_bh_dev_production_supported
+    if = {
+        limit = {
+            NOT = { trade_goods = gold }
+            NOT = { is_owned_by_trade_company = yes }
+            check_variable = { which = dicm_bh_dev_flat_goods value = 0.001 }
+        }
+        dicm_bh_calculate_automatic_production_gains = yes
+        if = {
+            limit = { has_province_flag = dicm_bh_income_valid }
+            set_province_flag = dicm_bh_dev_production_supported
+            set_variable = { which = dicm_bh_dev_dip_benefit which = dicm_bh_income_payment }
+            divide_variable = { which = dicm_bh_dev_dip_benefit which = dicm_bh_dev_flat_goods }
+            multiply_variable = { which = dicm_bh_dev_dip_benefit value = 0.2 }
+        }
+    }
+    dicm_bh_admin_read_current_cost = yes
+    change_variable = { which = dicm_bh_admin_dev value = 1 }
+    dicm_bh_admin_evaluate_cost = yes
+    set_variable = { which = dicm_bh_dev_extra_governing which = dicm_bh_admin_cost }
+    subtract_variable = { which = dicm_bh_dev_extra_governing which = dicm_bh_admin_before }
+}
+
+# TYPE is adm/dip/mil. SCORE is native benefit per 100 power, compared only
+# against the same power type. Eligibility checks the basic category balance;
+# these are advisory candidates, not a substitute for a native spending check.
+dicm_bh_dev_score_category = {
+    clr_province_flag = dicm_bh_dev_$TYPE$_candidate
+    set_variable = { which = dicm_bh_dev_$TYPE$_score value = 0 }
+    set_variable = { which = dicm_bh_dev_$TYPE$_uni_score value = 0 }
+    set_variable = { which = dicm_bh_dev_$TYPE$_uni_gain value = 0 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_dev_$TYPE$_benefit value = 0 } } }
+        set_variable = { which = dicm_bh_dev_$TYPE$_benefit value = 0 }
+    }
+    if = {
+        limit = {
+            OR = {
+                NOT = { check_variable = { which = dicm_bh_dev_$BASE$ which = dicm_bh_dev_other_base } }
+                is_variable_equal = { which = dicm_bh_dev_$BASE$ which = dicm_bh_dev_other_base }
+            }
+            check_variable = { which = dicm_bh_dev_$TYPE$_benefit value = 0.001 }
+            NOT = { check_variable = { which = dicm_bh_dev_$TYPE$_benefit value = 20000 } }
+        }
+        set_province_flag = dicm_bh_dev_$TYPE$_candidate
+        set_variable = { which = dicm_bh_dev_$TYPE$_score which = dicm_bh_dev_$TYPE$_benefit }
+        multiply_variable = { which = dicm_bh_dev_$TYPE$_score value = 100 }
+        divide_variable = { which = dicm_bh_dev_$TYPE$_score which = dicm_bh_dev_cost }
+        set_variable = { which = dicm_bh_dev_$TYPE$_uni_score which = dicm_bh_dev_$TYPE$_benefit }
+        multiply_variable = { which = dicm_bh_dev_$TYPE$_uni_score value = 100 }
+        divide_variable = { which = dicm_bh_dev_$TYPE$_uni_score which = dicm_bh_dev_uni_cost }
+        set_variable = { which = dicm_bh_dev_$TYPE$_uni_gain which = dicm_bh_dev_$TYPE$_uni_score }
+        subtract_variable = { which = dicm_bh_dev_$TYPE$_uni_gain which = dicm_bh_dev_$TYPE$_score }
+    }
+}
+
+# Public province entry point. Country ROOT; evaluate afresh after any changes.
+dicm_bh_evaluate_development = {
+    set_variable = { which = dicm_bh_dev_cost value = 0 }
+    set_variable = { which = dicm_bh_dev_uni_cost value = 0 }
+    set_variable = { which = dicm_bh_dev_uni_saved value = 0 }
+    set_variable = { which = dicm_bh_dev_adm_benefit value = 0 }
+    set_variable = { which = dicm_bh_dev_dip_benefit value = 0 }
+    set_variable = { which = dicm_bh_dev_mil_benefit value = 0 }
+    set_variable = { which = dicm_bh_dev_extra_goods value = 0 }
+    set_variable = { which = dicm_bh_dev_extra_governing value = 0 }
+    clr_province_flag = dicm_bh_dev_adm_candidate
+    set_variable = { which = dicm_bh_dev_adm_score value = 0 }
+    set_variable = { which = dicm_bh_dev_adm_uni_score value = 0 }
+    set_variable = { which = dicm_bh_dev_adm_uni_gain value = 0 }
+    clr_province_flag = dicm_bh_dev_dip_candidate
+    set_variable = { which = dicm_bh_dev_dip_score value = 0 }
+    set_variable = { which = dicm_bh_dev_dip_uni_score value = 0 }
+    set_variable = { which = dicm_bh_dev_dip_uni_gain value = 0 }
+    clr_province_flag = dicm_bh_dev_mil_candidate
+    set_variable = { which = dicm_bh_dev_mil_score value = 0 }
+    set_variable = { which = dicm_bh_dev_mil_uni_score value = 0 }
+    set_variable = { which = dicm_bh_dev_mil_uni_gain value = 0 }
+    clr_province_flag = dicm_bh_dev_production_supported
+    clr_province_flag = dicm_bh_dev_evaluated
+    if = {
+        limit = { owned_by = ROOT controlled_by = owner is_city = yes is_colony = no }
+        dicm_bh_dev_read_province = yes
+        dicm_bh_dev_calculate_cost = yes
+        dicm_bh_dev_calculate_benefits = yes
+        set_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_production }
+        change_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_manpower }
+        dicm_bh_dev_score_category = { TYPE = adm BASE = tax }
+        set_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_tax }
+        change_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_manpower }
+        dicm_bh_dev_score_category = { TYPE = dip BASE = production }
+        set_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_tax }
+        change_variable = { which = dicm_bh_dev_other_base which = dicm_bh_dev_production }
+        dicm_bh_dev_score_category = { TYPE = mil BASE = manpower }
+        set_province_flag = dicm_bh_dev_evaluated
+    }
+}

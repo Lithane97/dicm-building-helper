@@ -1,0 +1,27 @@
+spriteTypes = {
+    # A helper-owned name avoids the engine's culture-specific GFX_ramparts remap.
+    spriteType = {
+        name = "GFX_dicm_bh_ramparts"
+        texturefile = "gfx/interface/buildings/latin_march.tga"
+    }
+    spriteType = {
+        name = "GFX_dicm_bh_small"
+        texturefile = "gfx/interface/dicm_bh/small.tga"
+        effectFile = "gfx/FX/buttonstate.lua"
+    }
+    spriteType = {
+        name = "GFX_dicm_bh_action"
+        texturefile = "gfx/interface/dicm_bh/action.tga"
+        effectFile = "gfx/FX/buttonstate.lua"
+    }
+    spriteType = {
+        name = "GFX_dicm_bh_compact"
+        texturefile = "gfx/interface/dicm_bh/compact.tga"
+        effectFile = "gfx/FX/buttonstate.lua"
+    }
+    spriteType = { name = "GFX_dicm_bh_step" texturefile = "gfx/interface/dicm_bh/step.tga" effectFile = "gfx/FX/buttonstate.lua" }
+    spriteType = {
+        name = "GFX_dicm_bh_refresh"
+        texturefile = "gfx/interface/browser_refresh.dds"
+        effectFile = "gfx/FX/buttonstate.lua"
+    }}

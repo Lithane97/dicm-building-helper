@@ -1,0 +1,23 @@
+# Country ROOT. Native construction preserves EE's completion effects.
+# Previews never add/remove buildings or development. Standard goods estimators
+# use the existing balanced income sampler; no approximate price fallback is used.
+dicm_bh_collect_manufactory_candidates = {
+    if = {
+        limit = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+        dicm_bh_prepare_manufactory_$KIND$ = yes
+        every_owned_province = {
+            limit = {
+                dicm_bh_trade_province_free = yes
+                dicm_bh_manufactory_slot_clear = yes
+                can_build = $BUILDING$
+                NOT = { has_building = $BUILDING$ }
+            }
+            dicm_bh_calculate_manufactory_$KIND$ = yes
+            set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+            dicm_bh_calculate_trade_cost_factor = yes
+            set_variable = { which = dicm_bh_trade_cost value = 500 }
+            dicm_bh_apply_trade_cost_factor = yes
+            dicm_bh_mark_trade_candidate = yes
+        }
+    }
+}

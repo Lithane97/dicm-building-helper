@@ -1,0 +1,6 @@
+defined_text = {
+    name = GetDICMBHFortNote
+    random = no
+    text = { localisation_key = dicm_bh_fort_note trigger = { dicm_bh_fort_selected = yes } }
+    text = { localisation_key = dicm_bh_fort_note_none trigger = { always = yes } }
+}

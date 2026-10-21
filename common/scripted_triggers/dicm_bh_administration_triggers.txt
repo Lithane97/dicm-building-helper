@@ -1,0 +1,58 @@
+# Province scope; ROOT is the acting country. One State House per owned area,
+# including existing construction and reservations in the current estimate.
+dicm_bh_state_house_area_free = {
+    NOT = {
+        area_for_scope_province = {
+            owned_by = ROOT
+            OR = {
+                has_building = state_house
+                has_construction = state_house
+                has_province_flag = dicm_bh_admin_area_reserved
+            }
+        }
+    }
+}
+dicm_bh_administration_build_available = {
+    OR = {
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 16 }
+            adm_tech = 8
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = courthouse
+                NOT = { has_building = courthouse }
+                NOT = { OR = { has_building = courthouse has_building = town_hall } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 17 }
+            adm_tech = 22
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = town_hall
+                NOT = { has_building = town_hall }
+                NOT = { OR = { has_building = courthouse has_building = town_hall } }
+            }
+        }
+        AND = {
+            is_variable_equal = { which = dicm_bh_selection value = 30 }
+            adm_tech = 12
+            any_owned_province = {
+                dicm_bh_trade_province_free = yes
+                can_build = state_house
+                NOT = { has_building = state_house }
+                dicm_bh_state_house_area_free = yes
+            }
+        }
+    }
+}
+dicm_bh_administration_upgrade_available = {
+    is_variable_equal = { which = dicm_bh_selection value = 17 }
+    adm_tech = 22
+    any_owned_province = {
+        dicm_bh_trade_province_free = yes
+        can_build = town_hall
+        has_building = courthouse
+        NOT = { has_building = town_hall }
+    }
+}

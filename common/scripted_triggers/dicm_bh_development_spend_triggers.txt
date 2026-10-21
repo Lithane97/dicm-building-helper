@@ -1,0 +1,150 @@
+# Initial parity implementation rejects protected-estate mechanics.
+# Native proportional estate deductions need a separate comparison.
+dicm_bh_sp_estates_supported = {
+    NOT = { OR = {
+        has_estate_privilege = estate_brahmins_development_of_temples
+        has_estate_privilege = estate_burghers_development_of_cities
+        has_estate_privilege = estate_burghers_hungarian_royal_cities
+        has_estate_privilege = estate_burghers_rise_of_the_burghers
+        has_estate_privilege = estate_church_development_of_temples
+        has_estate_privilege = estate_cossacks_freedom_of_the_steppes
+        has_estate_privilege = estate_dhimmi_development_of_communities
+        has_estate_privilege = estate_jains_development_of_cities
+        has_estate_privilege = estate_maratha_development_of_marathi_lands
+        has_estate_privilege = estate_nobles_development_of_castles
+        has_estate_privilege = estate_nobles_english_villeinage
+        has_estate_privilege = estate_nomadic_tribes_freedom_of_the_steppes
+        has_estate_privilege = estate_rajput_development_of_rajput_lands
+        has_estate_privilege = estate_vaisyas_development_of_cities
+    } }
+    NOT = { AND = {
+        has_estate = estate_berbers
+        OR = { estate_influence = { estate = estate_berbers influence = 256 }
+            NOT = { estate_influence = { estate = estate_berbers influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_brahmins
+        OR = { estate_influence = { estate = estate_brahmins influence = 256 }
+            NOT = { estate_influence = { estate = estate_brahmins influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_burghers
+        OR = { estate_influence = { estate = estate_burghers influence = 256 }
+            NOT = { estate_influence = { estate = estate_burghers influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_church
+        OR = { estate_influence = { estate = estate_church influence = 256 }
+            NOT = { estate_influence = { estate = estate_church influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_clans
+        OR = { estate_influence = { estate = estate_clans influence = 256 }
+            NOT = { estate_influence = { estate = estate_clans influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_cossacks
+        OR = { estate_influence = { estate = estate_cossacks influence = 256 }
+            NOT = { estate_influence = { estate = estate_cossacks influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_dhimmi
+        OR = { estate_influence = { estate = estate_dhimmi influence = 256 }
+            NOT = { estate_influence = { estate = estate_dhimmi influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_eunuchs
+        OR = { estate_influence = { estate = estate_eunuchs influence = 256 }
+            NOT = { estate_influence = { estate = estate_eunuchs influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_french
+        OR = { estate_influence = { estate = estate_french influence = 256 }
+            NOT = { estate_influence = { estate = estate_french influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_ghulams
+        OR = { estate_influence = { estate = estate_ghulams influence = 256 }
+            NOT = { estate_influence = { estate = estate_ghulams influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_industrial
+        OR = { estate_influence = { estate = estate_industrial influence = 256 }
+            NOT = { estate_influence = { estate = estate_industrial influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_jains
+        OR = { estate_influence = { estate = estate_jains influence = 256 }
+            NOT = { estate_influence = { estate = estate_jains influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_janissaries
+        OR = { estate_influence = { estate = estate_janissaries influence = 256 }
+            NOT = { estate_influence = { estate = estate_janissaries influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_maratha
+        OR = { estate_influence = { estate = estate_maratha influence = 256 }
+            NOT = { estate_influence = { estate = estate_maratha influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_maya
+        OR = { estate_influence = { estate = estate_maya influence = 256 }
+            NOT = { estate_influence = { estate = estate_maya influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_nationalist
+        OR = { estate_influence = { estate = estate_nationalist influence = 256 }
+            NOT = { estate_influence = { estate = estate_nationalist influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_nobles
+        OR = { estate_influence = { estate = estate_nobles influence = 256 }
+            NOT = { estate_influence = { estate = estate_nobles influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_nomadic_tribes
+        OR = { estate_influence = { estate = estate_nomadic_tribes influence = 256 }
+            NOT = { estate_influence = { estate = estate_nomadic_tribes influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_parliament
+        OR = { estate_influence = { estate = estate_parliament influence = 256 }
+            NOT = { estate_influence = { estate = estate_parliament influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_qizilbash
+        OR = { estate_influence = { estate = estate_qizilbash influence = 256 }
+            NOT = { estate_influence = { estate = estate_qizilbash influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_rajput
+        OR = { estate_influence = { estate = estate_rajput influence = 256 }
+            NOT = { estate_influence = { estate = estate_rajput influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_settlers
+        OR = { estate_influence = { estate = estate_settlers influence = 256 }
+            NOT = { estate_influence = { estate = estate_settlers influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_special
+        OR = { estate_influence = { estate = estate_special influence = 256 }
+            NOT = { estate_influence = { estate = estate_special influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_turkic_tribes
+        OR = { estate_influence = { estate = estate_turkic_tribes influence = 256 }
+            NOT = { estate_influence = { estate = estate_turkic_tribes influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = estate_vaisyas
+        OR = { estate_influence = { estate = estate_vaisyas influence = 256 }
+            NOT = { estate_influence = { estate = estate_vaisyas influence = 0 } } }
+    } }
+    NOT = { AND = {
+        has_estate = me_estate_cultural_minorities
+        OR = { estate_influence = { estate = me_estate_cultural_minorities influence = 256 }
+            NOT = { estate_influence = { estate = me_estate_cultural_minorities influence = 0 } } }
+    } }
+}

@@ -1,0 +1,96 @@
+# Country scope. Clear per-pass plans and discard finished/cancelled queue reservations.
+dicm_bh_clear_fort_plans = {
+    every_owned_province = {
+        clr_province_flag = dicm_bh_fort_planned
+        if = {
+            limit = { NOT = { has_construction = building } }
+            clr_province_flag = dicm_bh_fort_queued
+        }
+    }
+}
+# Province scope. Count all adjacent land provinces regardless of ownership.
+# PREV is the candidate province inside the neighbour scope.
+dicm_bh_calculate_fort_control = {
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    every_neighbor_province = {
+        limit = { NOT = { is_sea = yes } }
+        PREV = { change_variable = { which = dicm_bh_trade_gain value = 1 } }
+    }
+}
+# Country scope; target constants are supplied literally by building dispatch.
+dicm_bh_collect_fort_candidates = {
+    dicm_bh_clear_fort_plans = yes
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = {
+                    owner = { has_country_flag = dicm_bh_trade_upgrade_mode }
+                    dicm_bh_has_fort_building = yes
+                }
+                AND = {
+                    owner = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+                    NOT = { dicm_bh_has_fort_building = yes }
+                    dicm_bh_fort_site_clear = yes
+                }
+            }
+        }
+        dicm_bh_calculate_fort_control = yes
+        set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+        if = {
+            limit = { has_building = fort_17th }
+            set_variable = { which = dicm_bh_trade_old_cost value = 600 }
+        }
+        else_if = {
+            limit = { has_building = fort_16th }
+            set_variable = { which = dicm_bh_trade_old_cost value = 400 }
+        }
+        else_if = {
+            limit = { has_building = fort_15th }
+            set_variable = { which = dicm_bh_trade_old_cost value = 200 }
+        }
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_minimum which = ROOT }
+        # A zero-neighbour island remains eligible when the chosen minimum is zero.
+        if = {
+            limit = {
+                check_variable = { which = dicm_bh_trade_gain which = dicm_bh_minimum }
+                check_variable = { which = dicm_bh_trade_cost value = 0.001 }
+            }
+            set_province_flag = dicm_bh_trade_candidate
+            owner = { change_variable = { which = dicm_bh_trade_eligible value = 1 } }
+        }
+    }
+}
+# Province scope. Called only after successful construction or an accepted estimate.
+# Re-evaluate adjacent candidates after each accepted site using the same border
+# exception as existing forts. Only candidates whose spacing is now invalid are removed.
+# Simulated plans are cleared between Build and Upgrade estimates; queued markers
+# remain while real construction runs, so repeated clicks retain spacing.
+dicm_bh_reserve_fort_site = {
+    if = {
+        limit = {
+            owner = {
+                dicm_bh_fort_selected = yes
+                NOT = { has_country_flag = dicm_bh_trade_upgrade_mode }
+            }
+        }
+        if = {
+            limit = { owner = { has_country_flag = dicm_bh_trade_preview } }
+            set_province_flag = dicm_bh_fort_planned
+        }
+        else = { set_province_flag = dicm_bh_fort_queued }
+        every_neighbor_province = {
+            limit = {
+                owned_by = ROOT
+                NOT = { is_sea = yes }
+                NOT = { dicm_bh_fort_site_clear = yes }
+            }
+            clr_province_flag = dicm_bh_trade_candidate
+        }
+    }
+}

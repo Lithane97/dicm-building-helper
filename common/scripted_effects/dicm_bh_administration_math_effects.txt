@@ -1,0 +1,77 @@
+# Province scope; ROOT is the acting country. Savings retain fractional precision.
+# Percentage cost has a 1% development floor; flat changes apply afterwards and
+# can reduce the final cost to zero. Conditional on_built effects are excluded.
+dicm_bh_admin_evaluate_cost = {
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_admin_factor value = 0.01 } } }
+        set_variable = { which = dicm_bh_admin_factor value = 0.01 }
+    }
+    set_variable = { which = dicm_bh_admin_cost which = dicm_bh_admin_dev }
+    multiply_variable = { which = dicm_bh_admin_cost which = dicm_bh_admin_factor }
+    change_variable = { which = dicm_bh_admin_cost which = dicm_bh_admin_flat }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_admin_cost value = 0 } } }
+        set_variable = { which = dicm_bh_admin_cost value = 0 }
+    }
+}
+dicm_bh_admin_read_current_cost = {
+    export_to_variable = { which = dicm_bh_admin_dev value = development }
+    export_to_variable = { which = dicm_bh_admin_local value = modifier:local_governing_cost }
+    export_to_variable = { which = dicm_bh_admin_state value = modifier:statewide_governing_cost }
+    export_to_variable = { which = dicm_bh_admin_flat value = modifier:local_governing_cost_increase }
+    set_variable = { which = dicm_bh_admin_factor which = dicm_bh_admin_local }
+    change_variable = { which = dicm_bh_admin_factor which = dicm_bh_admin_state }
+    change_variable = { which = dicm_bh_admin_factor value = 1 }
+    dicm_bh_admin_evaluate_cost = yes
+    set_variable = { which = dicm_bh_admin_before which = dicm_bh_admin_cost }
+}
+# BONUS is the target reduction magnitude, .25 Courthouse / .50 Town Hall.
+dicm_bh_calculate_administration_gain = {
+    dicm_bh_admin_read_current_cost = yes
+    set_variable = { which = dicm_bh_admin_delta value = $BONUS$ }
+    if = {
+        limit = { has_building = courthouse }
+        subtract_variable = { which = dicm_bh_admin_delta value = 0.25 }
+    }
+    subtract_variable = { which = dicm_bh_admin_factor which = dicm_bh_admin_delta }
+    dicm_bh_admin_evaluate_cost = yes
+    set_variable = { which = dicm_bh_trade_gain which = dicm_bh_admin_before }
+    subtract_variable = { which = dicm_bh_trade_gain which = dicm_bh_admin_cost }
+}
+# Province scope. Total effect on ROOT-owned provinces in this area; non-owned
+# land never contributes savings. Trade-good checks are compiled by the events.
+dicm_bh_calculate_state_house_gain = {
+    save_event_target_as = dicm_bh_admin_site
+    set_province_flag = dicm_bh_admin_state_house_site
+    set_variable = { which = dicm_bh_trade_gain value = 0 }
+    set_variable = { which = dicm_bh_admin_area_delta value = 0.2 }
+    set_variable = { which = dicm_bh_admin_site_delta value = 0.15 }
+    set_variable = { which = dicm_bh_admin_flat_delta value = 10 }
+    if = {
+        limit = { OR = { trade_goods = paper trade_goods = glass trade_goods = gems } }
+        set_variable = { which = dicm_bh_admin_area_delta value = 0.4 }
+        set_variable = { which = dicm_bh_admin_site_delta value = 0.3 }
+        set_variable = { which = dicm_bh_admin_flat_delta value = 20 }
+    }
+    area = {
+        limit = { owned_by = ROOT }
+        dicm_bh_admin_read_current_cost = yes
+        set_variable = { which = dicm_bh_admin_area_delta which = event_target:dicm_bh_admin_site }
+        subtract_variable = { which = dicm_bh_admin_factor which = dicm_bh_admin_area_delta }
+        if = {
+            limit = { has_province_flag = dicm_bh_admin_state_house_site }
+            set_variable = { which = dicm_bh_admin_site_delta which = event_target:dicm_bh_admin_site }
+            set_variable = { which = dicm_bh_admin_flat_delta which = event_target:dicm_bh_admin_site }
+            subtract_variable = { which = dicm_bh_admin_factor which = dicm_bh_admin_site_delta }
+            subtract_variable = { which = dicm_bh_admin_flat which = dicm_bh_admin_flat_delta }
+        }
+        dicm_bh_admin_evaluate_cost = yes
+        set_variable = { which = dicm_bh_admin_member_saving which = dicm_bh_admin_before }
+        subtract_variable = { which = dicm_bh_admin_member_saving which = dicm_bh_admin_cost }
+        event_target:dicm_bh_admin_site = {
+            set_variable = { which = dicm_bh_admin_member_saving which = PREV }
+            change_variable = { which = dicm_bh_trade_gain which = dicm_bh_admin_member_saving }
+        }
+    }
+    clr_province_flag = dicm_bh_admin_state_house_site
+}

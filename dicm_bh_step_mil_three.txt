@@ -1,0 +1,7 @@
+# Disposable-save test: three single-step MIL attempts with native reranking each time.
+# Uses existing verified worker; no reserve changes. Each attempt checks affordability.
+log = "DICM BH THREE MIL STEPS BEGIN"
+country_event = { id = dicm_bh_development_spend.3 }
+country_event = { id = dicm_bh_development_spend.3 }
+country_event = { id = dicm_bh_development_spend.3 }
+log = "DICM BH THREE MIL STEPS END"

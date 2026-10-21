@@ -1,0 +1,190 @@
+# Income samples follow the engine's applied autonomy, including its monthly refresh.
+# Country scope. Reverse the signed measured treasury change in literal 0.001-ducat steps.
+# Largest payment is 100; every loop makes progress and has an explicit bound.
+# 32 batches of 1000 hundreds cover the full signed fixed-point variable range.
+dicm_bh_refund_production_income = {
+    clr_country_flag = dicm_bh_income_refund_credit
+    set_variable = { which = dicm_bh_income_refund_left which = dicm_bh_income_payment }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_income_refund_left value = 0 } } }
+        multiply_variable = { which = dicm_bh_income_refund_left value = -1 }
+        set_country_flag = dicm_bh_income_refund_credit
+    }
+    set_variable = { which = dicm_bh_income_refund_batches value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 100 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_batches value = 32 } }
+        }
+        set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+        while = {
+            limit = {
+                check_variable = { which = dicm_bh_income_refund_left value = 100 }
+                NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+            }
+            if = {
+                limit = { has_country_flag = dicm_bh_income_refund_credit }
+                add_treasury = 100
+            }
+            else = { add_treasury = -100 }
+            subtract_variable = { which = dicm_bh_income_refund_left value = 100 }
+            change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+        }
+        change_variable = { which = dicm_bh_income_refund_batches value = 1 }
+    }
+    set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 10 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_income_refund_credit }
+            add_treasury = 10
+        }
+        else = { add_treasury = -10 }
+        subtract_variable = { which = dicm_bh_income_refund_left value = 10 }
+        change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+    }
+    set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 1 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_income_refund_credit }
+            add_treasury = 1
+        }
+        else = { add_treasury = -1 }
+        subtract_variable = { which = dicm_bh_income_refund_left value = 1 }
+        change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+    }
+    set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 0.1 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_income_refund_credit }
+            add_treasury = 0.1
+        }
+        else = { add_treasury = -0.1 }
+        subtract_variable = { which = dicm_bh_income_refund_left value = 0.1 }
+        change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+    }
+    set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 0.01 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_income_refund_credit }
+            add_treasury = 0.01
+        }
+        else = { add_treasury = -0.01 }
+        subtract_variable = { which = dicm_bh_income_refund_left value = 0.01 }
+        change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+    }
+    set_variable = { which = dicm_bh_income_refund_steps value = 0 }
+    while = {
+        limit = {
+            check_variable = { which = dicm_bh_income_refund_left value = 0.001 }
+            NOT = { check_variable = { which = dicm_bh_income_refund_steps value = 1000 } }
+        }
+        if = {
+            limit = { has_country_flag = dicm_bh_income_refund_credit }
+            add_treasury = 0.001
+        }
+        else = { add_treasury = -0.001 }
+        subtract_variable = { which = dicm_bh_income_refund_left value = 0.001 }
+        change_variable = { which = dicm_bh_income_refund_steps value = 1 }
+    }
+    clr_country_flag = dicm_bh_income_refund_credit
+}
+# Province scope. Works with either country or province ROOT; cross-scope copies use PREV.
+# Input deltas/local efficiency come from calculate_production_gains_from_basis.
+# The payout already contains autonomy: remove efficiency, then apply only the new bonus.
+# No buildings are added/removed. Each native payout is reversed synchronously.
+dicm_bh_try_engine_production_gains = {
+    clr_province_flag = dicm_bh_income_valid
+    set_variable = { which = dicm_bh_income_method value = 0 }
+    set_variable = { which = dicm_bh_income_payment value = 0 }
+    set_variable = { which = dicm_bh_income_drift value = 0 }
+    owner = {
+        export_to_variable = { which = dicm_bh_income_country_bonus value = trigger_value:production_efficiency }
+        export_to_variable = { which = dicm_bh_income_cash_scaled value = treasury }
+        divide_variable = { which = dicm_bh_income_cash_scaled value = 1000 }
+        PREV = {
+            set_variable = { which = dicm_bh_income_country_bonus which = PREV }
+            set_variable = { which = dicm_bh_income_cash_scaled which = PREV }
+        }
+    }
+    set_variable = { which = dicm_bh_income_factor value = 1 }
+    change_variable = { which = dicm_bh_income_factor which = dicm_bh_income_country_bonus }
+    change_variable = { which = dicm_bh_income_factor which = dicm_bh_production_local_efficiency }
+    if = {
+        limit = {
+            is_city = yes
+            NOT = { trade_goods = gold }
+            NOT = { is_owned_by_trade_company = yes }
+            check_variable = { which = dicm_bh_income_factor value = 0.001 }
+            NOT = { check_variable = { which = dicm_bh_income_factor value = 10 } }
+            owner = { treasury = 0 }
+            # Avoid treasury-cap clipping, using small constants instead of a million-ducat literal.
+            NOT = { check_variable = { which = dicm_bh_income_cash_scaled value = 999 } }
+        }
+        owner = {
+            # Defensive cleanup also makes standalone diagnostic calls select exactly one province.
+            every_owned_province = {
+                limit = { has_province_flag = dicm_bh_income_target }
+                clr_province_flag = dicm_bh_income_target
+            }
+            PREV = { set_province_flag = dicm_bh_income_target }
+            export_to_variable = { which = dicm_bh_income_cash_before value = treasury }
+            add_years_of_owned_provinces_production_income = {
+                years = 1
+                trigger = { has_province_flag = dicm_bh_income_target }
+                custom_tooltip = dicm_bh_production_income_sample
+            }
+            export_to_variable = { which = dicm_bh_income_payment value = treasury }
+            set_variable = { which = dicm_bh_income_peak_scaled which = dicm_bh_income_payment }
+            divide_variable = { which = dicm_bh_income_peak_scaled value = 1000 }
+            subtract_variable = { which = dicm_bh_income_payment which = dicm_bh_income_cash_before }
+            dicm_bh_refund_production_income = yes
+            export_to_variable = { which = dicm_bh_income_drift value = treasury }
+            subtract_variable = { which = dicm_bh_income_drift which = dicm_bh_income_cash_before }
+            if = {
+                limit = { NOT = { is_variable_equal = { which = dicm_bh_income_drift value = 0 } } }
+                # Existing processing loops stop on a treasury mismatch rather than spending further.
+                set_country_flag = dicm_bh_trade_cost_mismatch
+                log = "DICM BH PRODUCTION SAMPLE BALANCE ERROR: country=[This.GetName] drift=[This.dicm_bh_income_drift.GetValue]"
+            }
+            PREV = {
+                clr_province_flag = dicm_bh_income_target
+                set_variable = { which = dicm_bh_income_payment which = PREV }
+                set_variable = { which = dicm_bh_income_drift which = PREV }
+                set_variable = { which = dicm_bh_income_peak_scaled which = PREV }
+            }
+        }
+        if = {
+            limit = {
+                check_variable = { which = dicm_bh_income_payment value = 0 }
+                is_variable_equal = { which = dicm_bh_income_drift value = 0 }
+                NOT = { check_variable = { which = dicm_bh_income_peak_scaled value = 999 } }
+            }
+            set_province_flag = dicm_bh_income_valid
+            set_variable = { which = dicm_bh_income_method value = 1 }
+            set_variable = { which = dicm_bh_income_basis which = dicm_bh_income_payment }
+            divide_variable = { which = dicm_bh_income_basis which = dicm_bh_income_factor }
+            set_variable = { which = dicm_bh_production_workshop_gain which = dicm_bh_income_basis }
+            multiply_variable = { which = dicm_bh_production_workshop_gain which = dicm_bh_production_workshop_delta }
+            divide_variable = { which = dicm_bh_production_workshop_gain value = 12 }
+            set_variable = { which = dicm_bh_production_counting_house_gain which = dicm_bh_income_basis }
+            multiply_variable = { which = dicm_bh_production_counting_house_gain which = dicm_bh_production_counting_house_delta }
+            divide_variable = { which = dicm_bh_production_counting_house_gain value = 12 }
+        }
+    }
+}

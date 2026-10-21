@@ -1,0 +1,69 @@
+# Province scope, country ROOT. Tier is the primary key, development the second.
+# No packed score: even very high development cannot jump a strategic tier.
+dicm_bh_calculate_coastal_priority = {
+    export_to_variable = { which = dicm_bh_coastal_development value = development }
+    set_variable = { which = dicm_bh_trade_gain value = 1 }
+    if = {
+        limit = {
+            NOT = { OR = { has_building = coastal_defence has_building = naval_battery } }
+            dicm_bh_coastal_recently_raided = yes
+            dicm_bh_coastal_valuable = yes
+        }
+        set_variable = { which = dicm_bh_trade_gain value = 5 }
+    }
+    else_if = {
+        limit = {
+            OR = {
+                is_capital = yes
+                AND = {
+                    dicm_bh_has_fort_building = yes
+                    OR = {
+                        is_island = yes
+                        NOT = { any_neighbor_province = { is_sea = no owned_by = ROOT } }
+                    }
+                }
+            }
+        }
+        set_variable = { which = dicm_bh_trade_gain value = 4 }
+    }
+    else_if = {
+        limit = { dicm_bh_has_fort_building = yes }
+        set_variable = { which = dicm_bh_trade_gain value = 3 }
+    }
+    else_if = {
+        limit = { dicm_bh_coastal_valuable = yes }
+        set_variable = { which = dicm_bh_trade_gain value = 2 }
+    }
+}
+# Country ROOT. Preview and construction share costs, eligibility and ranking.
+# No spacing exclusion: coastal defences protect their own provinces.
+dicm_bh_collect_coastal_candidates = {
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            has_port = yes
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = {
+                    owner = { has_country_flag = dicm_bh_trade_upgrade_mode }
+                    has_building = coastal_defence
+                }
+                AND = {
+                    owner = { NOT = { has_country_flag = dicm_bh_trade_upgrade_mode } }
+                    NOT = { OR = { has_building = coastal_defence has_building = naval_battery } }
+                }
+            }
+        }
+        dicm_bh_calculate_coastal_priority = yes
+        set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+        if = {
+            limit = { has_building = coastal_defence }
+            set_variable = { which = dicm_bh_trade_old_cost value = 100 }
+        }
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        dicm_bh_mark_trade_candidate = yes
+    }
+}

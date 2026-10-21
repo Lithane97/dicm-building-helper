@@ -1,0 +1,58 @@
+# Province scope. Marginal maximum pool size, in individual men/sailors.
+# Percentage resource bonuses are additive, so existing/country bonuses cancel.
+# Includes flat local resource modifiers, autonomy and only the tier difference.
+# No sampling, building/development changes, resource payments or completion hooks.
+dicm_bh_calculate_resource_gain = {
+    export_to_variable = { which = dicm_bh_resource_autonomy value = local_autonomy }
+    set_variable = { which = dicm_bh_resource_autonomy_factor which = dicm_bh_resource_autonomy }
+    divide_variable = { which = dicm_bh_resource_autonomy_factor value = 100 }
+    multiply_variable = { which = dicm_bh_resource_autonomy_factor value = -1 }
+    change_variable = { which = dicm_bh_resource_autonomy_factor value = 1 }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_resource_autonomy_factor value = 0 } } }
+        set_variable = { which = dicm_bh_resource_autonomy_factor value = 0 }
+    }
+    if = {
+        limit = { check_variable = { which = dicm_bh_resource_autonomy_factor value = 1 } }
+        set_variable = { which = dicm_bh_resource_autonomy_factor value = 1 }
+    }
+    dicm_bh_read_$RESOURCE$_basis = yes
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_resource_basis value = 0 } } }
+        set_variable = { which = dicm_bh_resource_basis value = 0 }
+    }
+    set_variable = { which = dicm_bh_resource_old_bonus value = 0 }
+    if = {
+        limit = { has_building = $UPPER$ }
+        set_variable = { which = dicm_bh_resource_old_bonus value = 1 }
+    }
+    else_if = {
+        limit = { has_building = $LOWER$ }
+        set_variable = { which = dicm_bh_resource_old_bonus value = 0.5 }
+    }
+    set_variable = { which = dicm_bh_resource_delta value = $BONUS$ }
+    subtract_variable = { which = dicm_bh_resource_delta which = dicm_bh_resource_old_bonus }
+    if = {
+        limit = { NOT = { check_variable = { which = dicm_bh_resource_delta value = 0 } } }
+        set_variable = { which = dicm_bh_resource_delta value = 0 }
+    }
+    set_variable = { which = dicm_bh_trade_gain which = dicm_bh_resource_basis }
+    multiply_variable = { which = dicm_bh_trade_gain which = dicm_bh_resource_delta }
+    multiply_variable = { which = dicm_bh_trade_gain which = dicm_bh_resource_autonomy_factor }
+}
+
+# Base manpower: 250 men per manpower development plus flat modifiers in thousands.
+dicm_bh_read_manpower_basis = {
+    export_to_variable = { which = dicm_bh_resource_flat value = modifier:local_manpower }
+    set_variable = { which = dicm_bh_resource_basis which = dicm_bh_resource_flat }
+    multiply_variable = { which = dicm_bh_resource_basis value = 1000 }
+    export_to_variable = { which = dicm_bh_resource_base value = base_manpower }
+    multiply_variable = { which = dicm_bh_resource_base value = 250 }
+    change_variable = { which = dicm_bh_resource_basis which = dicm_bh_resource_base }
+}
+# Includes the development static modifier (60 per total development) and flat
+# sources such as Impressment Offices. Native tooltip verification is pending.
+dicm_bh_read_sailors_basis = {
+    export_to_variable = { which = dicm_bh_resource_flat value = modifier:local_sailors }
+    set_variable = { which = dicm_bh_resource_basis which = dicm_bh_resource_flat }
+}

@@ -1,0 +1,528 @@
+# Approximate price reconstruction; province scope, with either country or province ROOT.
+# Two candidates use the same global event flags, with live-event vs historical values.
+# Historical values reflect the installed Europa Expanded Austria history definitions.
+# This does NOT cover every temporary/flavour/mod price change, flag mismatch, or
+# the ambiguity between bookmark history and events occurring during a campaign.
+# Historical changes absent from the installed history contribute ZERO, rather than
+# inheriting live-event amounts (livestock Columbian Exchange; improved coal mining).
+# Used only as a fallback when native production income cannot be sampled safely.
+# Fallback uses Candidate A with historical prices.
+# Untracked price changes remain an estimation limitation, not an engine-cost override.
+dicm_bh_probe_reconstruct_goods_value = {
+    export_to_variable = { which = dicm_bh_auto_base value = base_production }
+    export_to_variable = { which = dicm_bh_auto_local_flat value = modifier:trade_goods_size }
+    export_to_variable = { which = dicm_bh_auto_local_mod value = modifier:trade_goods_size_modifier }
+    export_to_variable = { which = dicm_bh_auto_trade_flat value = modifier:trade_value }
+    export_to_variable = { which = dicm_bh_auto_trade_mod value = modifier:trade_value_modifier }
+    owner = {
+        export_to_variable = { which = dicm_bh_auto_country_mod value = modifier:global_trade_goods_size_modifier }
+        PREV = { set_variable = { which = dicm_bh_auto_country_mod which = PREV } }
+    }
+    set_variable = { which = dicm_bh_auto_goods_factor value = 1 }
+    change_variable = { which = dicm_bh_auto_goods_factor which = dicm_bh_auto_local_mod }
+    change_variable = { which = dicm_bh_auto_goods_factor which = dicm_bh_auto_country_mod }
+    # A: exported flat goods already includes development/manufactory contributions.
+    set_variable = { which = dicm_bh_auto_goods_a which = dicm_bh_auto_local_flat }
+    multiply_variable = { which = dicm_bh_auto_goods_a which = dicm_bh_auto_goods_factor }
+    # B: exported flat goods excludes development; add its standard 0.2 per point.
+    set_variable = { which = dicm_bh_auto_goods_b which = dicm_bh_auto_base }
+    multiply_variable = { which = dicm_bh_auto_goods_b value = 0.2 }
+    change_variable = { which = dicm_bh_auto_goods_b which = dicm_bh_auto_local_flat }
+    multiply_variable = { which = dicm_bh_auto_goods_b which = dicm_bh_auto_goods_factor }
+    set_variable = { which = dicm_bh_auto_base_price value = 0 }
+    clr_province_flag = dicm_bh_auto_known_good
+    if = {
+        limit = { trade_goods = grain }
+        set_variable = { which = dicm_bh_auto_base_price value = 2.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = wine }
+        set_variable = { which = dicm_bh_auto_base_price value = 2.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = wool }
+        set_variable = { which = dicm_bh_auto_base_price value = 2.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = cloth }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = fish }
+        set_variable = { which = dicm_bh_auto_base_price value = 2.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = fur }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = salt }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = naval_supplies }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = copper }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = iron }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = slaves }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = ivory }
+        set_variable = { which = dicm_bh_auto_base_price value = 4 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = tea }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = chinaware }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = spices }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = coffee }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = cotton }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = sugar }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = tobacco }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = cocoa }
+        set_variable = { which = dicm_bh_auto_base_price value = 4 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = silk }
+        set_variable = { which = dicm_bh_auto_base_price value = 4 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = tropical_wood }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = dyes }
+        set_variable = { which = dicm_bh_auto_base_price value = 4 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = livestock }
+        set_variable = { which = dicm_bh_auto_base_price value = 2 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = incense }
+        set_variable = { which = dicm_bh_auto_base_price value = 2.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = glass }
+        set_variable = { which = dicm_bh_auto_base_price value = 3 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = gems }
+        set_variable = { which = dicm_bh_auto_base_price value = 4 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = paper }
+        set_variable = { which = dicm_bh_auto_base_price value = 3.5 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = coal }
+        set_variable = { which = dicm_bh_auto_base_price value = 10 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    if = {
+        limit = { trade_goods = cloves }
+        set_variable = { which = dicm_bh_auto_base_price value = 8 }
+        set_province_flag = dicm_bh_auto_known_good
+    }
+    set_variable = { which = dicm_bh_auto_price_event_factor value = 1 }
+    set_variable = { which = dicm_bh_auto_price_history_factor value = 1 }
+    # TRIANGLE_TRADE: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = slaves has_global_flag = triangle_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # EUROPEANS_IN_CHINA: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = chinaware has_global_flag = europeans_in_china_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # JOHAN_FRIEDRICH_BOTTGER: live event -0.5; historical setup -0.5.
+    if = {
+        limit = { trade_goods = chinaware has_global_flag = bottger_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.5 }
+    }
+    # PROTESTANT_DONT_EAT_FISH: live event -0.1; historical setup -0.1.
+    if = {
+        limit = { trade_goods = fish has_global_flag = protestant_fish_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.1 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.1 }
+    }
+    # COFFEE_BOOM: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = coffee has_global_flag = coffee_boom_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # COTTON_IMPORTS: live event -0.10; historical setup -0.10.
+    if = {
+        limit = { trade_goods = wool has_global_flag = cotton_imports_global }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.10 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.10 }
+    }
+    # COTTON_IMPORTS: live event 0.20; historical setup 0.20.
+    if = {
+        limit = { trade_goods = cotton has_global_flag = cotton_imports_global }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.20 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.20 }
+    }
+    # TEA_AND_SUGAR: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = tea has_global_flag = tea_and_sugar_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # TEA_AND_SUGAR: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = sugar has_global_flag = tea_and_sugar_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # SPICE_TRADE: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = spices has_global_flag = spice_trade_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # ABOLITIONISM: live event -0.4; historical setup -0.4.
+    if = {
+        limit = { trade_goods = slaves has_global_flag = abolitionism_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.4 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.4 }
+    }
+    # WINE_CORKS: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = wine has_global_flag = wine_corks_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # WINE_CORKS: live event 0.15; historical setup 0.25.
+    if = {
+        limit = { trade_goods = glass has_global_flag = wine_corks_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.15 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # NEW_DRAPERIES: live event 0.20; historical setup 0.25.
+    if = {
+        limit = { trade_goods = cloth has_global_flag = new_draperies_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.20 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # NEW_DRAPERIES: live event -0.20; historical setup -0.25.
+    if = {
+        limit = { trade_goods = wool has_global_flag = new_draperies_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.20 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.25 }
+    }
+    # REGULATED_UNIFORMS: live event 0.15; historical setup 0.15.
+    if = {
+        limit = { trade_goods = cloth has_global_flag = regulated_uniforms_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.15 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.15 }
+    }
+    # REGULATED_UNIFORMS: live event 0.1; historical setup 0.1.
+    if = {
+        limit = { trade_goods = wool has_global_flag = regulated_uniforms_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.1 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.1 }
+    }
+    # REGULATED_UNIFORMS: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = dyes has_global_flag = regulated_uniforms_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # GREAT_FISHERIES: live event -0.1; historical setup -0.1.
+    if = {
+        limit = { trade_goods = fish has_global_flag = great_fisheries_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.1 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.1 }
+    }
+    # GREAT_FISHERIES: live event 0.1; historical setup 0.1.
+    if = {
+        limit = { trade_goods = salt has_global_flag = great_fisheries_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.1 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.1 }
+    }
+    # CALICOES: live event 0.45; historical setup 0.45.
+    if = {
+        limit = { trade_goods = cotton has_global_flag = calicoes_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.45 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.45 }
+    }
+    # DEPLETION_OF_EUROPEAN_BEAVER: live event 0.4; historical setup 0.4.
+    if = {
+        limit = { trade_goods = fur has_global_flag = depleted_beaver_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.4 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.4 }
+    }
+    # FELT_HATS: live event 0.35; historical setup 0.35.
+    if = {
+        limit = { trade_goods = fur has_global_flag = felt_hats_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.35 }
+    }
+    # PERMANENT_NAVIES: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = naval_supplies has_global_flag = permanent_navies_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # PERMANENT_NAVIES: live event 0.15; historical setup 0.15.
+    if = {
+        limit = { trade_goods = glass has_global_flag = permanent_navies_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.15 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.15 }
+    }
+    # PERMANENT_NAVIES: live event 0.10; historical setup 0.10.
+    if = {
+        limit = { trade_goods = livestock has_global_flag = permanent_navies_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.10 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.10 }
+    }
+    # BRONZE_CANNONS: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = copper has_global_flag = bronze_cannons_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # JAPANESE_TEA_CULTURE: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = tea has_global_flag = japanese_tea_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # JAPANESE_TEA_CULTURE: live event 0.10; historical setup 0.10.
+    if = {
+        limit = { trade_goods = incense has_global_flag = japanese_tea_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.10 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.10 }
+    }
+    # DECLINE_OF_SPICE_TRADE: live event -0.4; historical setup -0.4.
+    if = {
+        limit = { trade_goods = spices has_global_flag = decline_of_spices_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.4 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.4 }
+    }
+    # POPULARIZATION_OF_SUGAR: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = sugar has_global_flag = popularization_of_sugar_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # POPULAR_SILK_FABRICS: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = silk has_global_flag = popular_silk_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # VENEERING: live event 0.5; historical setup 0.35.
+    if = {
+        limit = { trade_goods = tropical_wood has_global_flag = veneering_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.35 }
+    }
+    # IVORY_SHORTAGE: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = ivory has_global_flag = ivory_shortage_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # IRON_WORKING: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = iron has_global_flag = iron_working_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # IRON_WORKING: live event -0.35; historical setup -0.35.
+    if = {
+        limit = { trade_goods = copper has_global_flag = iron_working_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.35 }
+    }
+    # HOT_CHOCOLATE: live event 0.35; historical setup 0.4.
+    if = {
+        limit = { trade_goods = cocoa has_global_flag = hot_chocolate_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.4 }
+    }
+    # POPULARIZATION_OF_TOBACCO: live event 0.5; historical setup 0.5.
+    if = {
+        limit = { trade_goods = tobacco has_global_flag = popularization_of_tobacco_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # JAVA_COFFEE: live event -0.4; historical setup -0.4.
+    if = {
+        limit = { trade_goods = coffee has_global_flag = mocha_killed }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.4 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.4 }
+    }
+    # INCREASED_PRINTING: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = paper has_global_flag = printing_paper_prices_rise }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # HOLLENDER_BEATER: live event -0.5; historical setup -0.5.
+    if = {
+        limit = { trade_goods = paper has_global_flag = hollender_beater_flag }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.5 }
+    }
+    # PAPER_IN_BUREAUCRACY: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = paper has_global_flag = paper_in_bureaucracies }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # LENDING_LIBRARIES: live event 0.35; historical setup 0.35.
+    if = {
+        limit = { trade_goods = paper has_global_flag = popular_literacy }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.35 }
+    }
+    # COLUMBIAN_EXCHANGE: live event -0.20; historical setup -0.20.
+    if = {
+        limit = { trade_goods = grain has_global_flag = columbian_exchange_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.20 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.20 }
+    }
+    # COLUMBIAN_EXCHANGE: live event 0.25; historical setup 0.
+    if = {
+        limit = { trade_goods = livestock has_global_flag = columbian_exchange_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0 }
+    }
+    # FACETING: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = gems has_global_flag = faceting_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # BRAZILIAN_DIAMONDS: live event -0.5; historical setup -0.5.
+    if = {
+        limit = { trade_goods = gems has_global_flag = brazilian_gems_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.5 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.5 }
+    }
+    # REFORMED_REJECTION_OF_INCENSE: live event -0.25; historical setup -0.25.
+    if = {
+        limit = { trade_goods = incense has_global_flag = incense_rejected }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = -0.25 }
+    }
+    # GROWTH_OF_PERFUME_BUSINESS: live event 0.35; historical setup 0.35.
+    if = {
+        limit = { trade_goods = incense has_global_flag = perfume_industry }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.35 }
+    }
+    # SELECTIVE_BREEDING: live event 0.35; historical setup 0.5.
+    if = {
+        limit = { trade_goods = livestock has_global_flag = selective_breeding_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.5 }
+    }
+    # SELECTIVE_BREEDING: live event 0.35; historical setup 0.25.
+    if = {
+        limit = { trade_goods = wool has_global_flag = selective_breeding_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.35 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # BOHEMIAN_GLASS: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = glass has_global_flag = bohemian_glass }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # MODERN_OPTICS: live event 0.25; historical setup 0.25.
+    if = {
+        limit = { trade_goods = glass has_global_flag = development_of_optics }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = 0.25 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # LEAD_CRYSTAL: live event -0.65; historical setup 0.25.
+    if = {
+        limit = { trade_goods = glass has_global_flag = lead_crystal_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.65 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0.25 }
+    }
+    # IMPROVED_COAL_MINING: live event -0.30; historical setup 0.
+    if = {
+        limit = { trade_goods = coal has_global_flag = steam_engine_happened }
+        change_variable = { which = dicm_bh_auto_price_event_factor value = -0.30 }
+        change_variable = { which = dicm_bh_auto_price_history_factor value = 0 }
+    }
+    set_variable = { which = dicm_bh_auto_price_event which = dicm_bh_auto_base_price }
+    multiply_variable = { which = dicm_bh_auto_price_event which = dicm_bh_auto_price_event_factor }
+    set_variable = { which = dicm_bh_auto_price_history which = dicm_bh_auto_base_price }
+    multiply_variable = { which = dicm_bh_auto_price_history which = dicm_bh_auto_price_history_factor }
+    set_variable = { which = dicm_bh_auto_annual_a_event which = dicm_bh_auto_goods_a }
+    multiply_variable = { which = dicm_bh_auto_annual_a_event which = dicm_bh_auto_price_event }
+    set_variable = { which = dicm_bh_auto_annual_a_history which = dicm_bh_auto_goods_a }
+    multiply_variable = { which = dicm_bh_auto_annual_a_history which = dicm_bh_auto_price_history }
+    set_variable = { which = dicm_bh_auto_annual_b_event which = dicm_bh_auto_goods_b }
+    multiply_variable = { which = dicm_bh_auto_annual_b_event which = dicm_bh_auto_price_event }
+    set_variable = { which = dicm_bh_auto_annual_b_history which = dicm_bh_auto_goods_b }
+    multiply_variable = { which = dicm_bh_auto_annual_b_history which = dicm_bh_auto_price_history }
+}

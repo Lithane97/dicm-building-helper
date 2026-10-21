@@ -1,0 +1,241 @@
+# Single-click selection, payment support and reproduced side effects.
+# Reserve-aware batches invoke the same native event workers; no scheduler.
+# Selection/evaluation: country ROOT. Replay worker: province ROOT, country FROM.
+dicm_bh_sp_collect_target = {
+    clr_country_flag = dicm_bh_sp_target_set
+    dicm_bh_evaluate_country_development = yes
+    export_to_variable = { which = dicm_bh_sp_power value = trigger_value:$TYPE$_power }
+    every_owned_province = {
+        limit = {
+            dicm_bh_sp_site_supported = yes
+            has_province_flag = dicm_bh_dev_$TYPE$_candidate
+            check_variable = { which = dicm_bh_dev_cost value = 1 }
+            NOT = { check_variable = { which = dicm_bh_dev_cost value = 2048 } }
+            owner = { NOT = { has_country_flag = dicm_bh_trade_cost_mismatch } }
+        }
+        set_variable = { which = dicm_bh_sp_required which = ROOT }
+        # Country required slot is initialized with the chosen reserve by caller.
+        change_variable = { which = dicm_bh_sp_required which = dicm_bh_dev_cost }
+        set_variable = { which = dicm_bh_sp_power which = ROOT }
+        if = {
+            limit = { check_variable = { which = dicm_bh_sp_power which = dicm_bh_sp_required } }
+            if = {
+                limit = { owner = { NOT = { has_country_flag = dicm_bh_sp_target_set } } }
+                save_event_target_as = dicm_bh_sp_target
+                owner = { set_country_flag = dicm_bh_sp_target_set }
+            }
+            else_if = {
+                limit = {
+                    check_variable = { which = dicm_bh_dev_$TYPE$_score which = event_target:dicm_bh_sp_target }
+                    OR = {
+                        NOT = { is_variable_equal = { which = dicm_bh_dev_$TYPE$_score which = event_target:dicm_bh_sp_target } }
+                        NOT = { check_variable = { which = dicm_bh_dev_cost which = event_target:dicm_bh_sp_target } }
+                    }
+                }
+                save_event_target_as = dicm_bh_sp_target
+            }
+        }
+    }
+}
+
+# Country scope. Literal denominations avoid assuming variable-valued power effects.
+dicm_bh_sp_power_piece = {
+    if = {
+        limit = { check_variable = { which = dicm_bh_sp_cost_left value = $VALUE$ } }
+        add_$TYPE$_power = $DELTA$
+        subtract_variable = { which = dicm_bh_sp_cost_left value = $VALUE$ }
+    }
+}
+
+# Province scope. Native add_devastation accepts whole numbers only.
+# User-approved approximation: nearest whole point, half values rounded upward.
+# Apply integer denominations only; fractional native effects silently truncate.
+dicm_bh_sp_devastation_piece = {
+    if = {
+        limit = { check_variable = { which = dicm_bh_sp_devastation_units value = $UNITS$ } }
+        add_devastation = $DELTA$
+        subtract_variable = { which = dicm_bh_sp_devastation_units value = $UNITS$ }
+    }
+}
+
+# Province scope, only after a verified paid +1. Raw base effects do not replay
+# development hooks (validated separately). The scaled institution effect includes
+# the next point itself, so briefly expose pre-click development, then restore it.
+# Keeping this after verification prevents institution progress on a failed +1.
+dicm_bh_sp_apply_institution_progress = {
+    add_base_$BASE$ = -1
+    export_to_variable = { which = dicm_bh_sp_institution_sample_dev value = development }
+    if = {
+        limit = { is_variable_equal = { which = dicm_bh_sp_institution_sample_dev which = dicm_bh_sp_dev_before } }
+        add_next_institution_embracement_scaled = 5
+        add_base_$BASE$ = 1
+    }
+    else = { owner = { set_variable = { which = dicm_bh_sp_status value = 3 } } }
+    export_to_variable = { which = dicm_bh_sp_institution_sample_dev value = development }
+    if = {
+        limit = { NOT = { is_variable_equal = { which = dicm_bh_sp_institution_sample_dev which = dicm_bh_sp_dev_after } } }
+        owner = { set_variable = { which = dicm_bh_sp_status value = 3 } }
+    }
+}
+
+dicm_bh_sp_apply_side_effects = {
+    # Estimated reduction: resulting development * native scale / 6.
+    # Round ONCE before integer effect dispatch; do not truncate each fraction.
+    set_variable = { which = dicm_bh_sp_devastation_units which = dicm_bh_sp_dev_after }
+    multiply_variable = { which = dicm_bh_sp_devastation_units value = 5 }
+    divide_variable = { which = dicm_bh_sp_devastation_units value = 6 }
+    if = {
+        limit = { check_variable = { which = dicm_bh_sp_devastation_units value = 100 } }
+        set_variable = { which = dicm_bh_sp_devastation_units value = 100 }
+    }
+    change_variable = { which = dicm_bh_sp_devastation_units value = 0.5 }
+    round_variable = { which = dicm_bh_sp_devastation_units value = -1 }
+    set_variable = { which = dicm_bh_sp_devastation_rounded which = dicm_bh_sp_devastation_units }
+    dicm_bh_sp_devastation_piece = { UNITS = 64 DELTA = -64 }
+    dicm_bh_sp_devastation_piece = { UNITS = 32 DELTA = -32 }
+    dicm_bh_sp_devastation_piece = { UNITS = 16 DELTA = -16 }
+    dicm_bh_sp_devastation_piece = { UNITS = 8 DELTA = -8 }
+    dicm_bh_sp_devastation_piece = { UNITS = 4 DELTA = -4 }
+    dicm_bh_sp_devastation_piece = { UNITS = 2 DELTA = -2 }
+    dicm_bh_sp_devastation_piece = { UNITS = 1 DELTA = -1 }
+    # Snapshot every estate's whole-number influence, then deduct weighted land.
+    owner = { dicm_bh_sp_apply_estate_land = yes }
+}
+
+# Province scope; stores observations in owner scratch, no game-state mutations.
+dicm_bh_sp_watch_snapshot = {
+    set_variable = { which = dicm_bh_sp_watch_province_from_counter which = num_of_times_developed_var }
+    export_to_variable = { which = dicm_bh_sp_watch_devastation value = trigger_value:devastation }
+    export_to_variable = { which = dicm_bh_sp_watch_tax value = base_tax }
+    export_to_variable = { which = dicm_bh_sp_watch_production value = base_production }
+    export_to_variable = { which = dicm_bh_sp_watch_manpower value = base_manpower }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_feudalism value = 0 }
+    if = {
+        limit = { feudalism = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_feudalism value = 100 }
+    }
+    else_if = {
+        limit = { feudalism = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_feudalism value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_renaissance value = 0 }
+    if = {
+        limit = { renaissance = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_renaissance value = 100 }
+    }
+    else_if = {
+        limit = { renaissance = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_renaissance value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_new_world_i value = 0 }
+    if = {
+        limit = { new_world_i = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_new_world_i value = 100 }
+    }
+    else_if = {
+        limit = { new_world_i = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_new_world_i value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_printing_press value = 0 }
+    if = {
+        limit = { printing_press = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_printing_press value = 100 }
+    }
+    else_if = {
+        limit = { printing_press = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_printing_press value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_global_trade value = 0 }
+    if = {
+        limit = { global_trade = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_global_trade value = 100 }
+    }
+    else_if = {
+        limit = { global_trade = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_global_trade value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_manufactories value = 0 }
+    if = {
+        limit = { manufactories = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_manufactories value = 100 }
+    }
+    else_if = {
+        limit = { manufactories = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_manufactories value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_enlightenment value = 0 }
+    if = {
+        limit = { enlightenment = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_enlightenment value = 100 }
+    }
+    else_if = {
+        limit = { enlightenment = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_enlightenment value = -1 }
+    }
+    # Institution state only: 100 = complete, -1 = partial, 0 = absent.
+    # Institution IDs are numeric triggers but are not exportable game values.
+    set_variable = { which = dicm_bh_sp_watch_inst_industrialization value = 0 }
+    if = {
+        limit = { industrialization = 100 }
+        set_variable = { which = dicm_bh_sp_watch_inst_industrialization value = 100 }
+    }
+    else_if = {
+        limit = { industrialization = 0.001 }
+        set_variable = { which = dicm_bh_sp_watch_inst_industrialization value = -1 }
+    }
+    owner = {
+        export_to_variable = { which = dicm_bh_sp_watch_adm_power value = trigger_value:adm_power }
+        export_to_variable = { which = dicm_bh_sp_watch_dip_power value = trigger_value:dip_power }
+        export_to_variable = { which = dicm_bh_sp_watch_mil_power value = trigger_value:mil_power }
+        export_to_variable = { which = dicm_bh_sp_watch_crown value = trigger_value:crown_land_share }
+        set_variable = { which = dicm_bh_sp_watch_native_counter which = num_of_times_developed }
+        set_variable = { which = dicm_bh_sp_watch_ee_adm_counter which = num_of_adm_clicks }
+        set_variable = { which = dicm_bh_sp_watch_from_counter which = num_of_times_developed_var }
+        set_variable = { which = dicm_bh_sp_watch_province_from_counter which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_devastation which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_tax which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_production which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_manpower which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_feudalism which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_renaissance which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_new_world_i which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_printing_press which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_global_trade which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_manufactories which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_enlightenment which = PREV }
+        set_variable = { which = dicm_bh_sp_watch_inst_industrialization which = PREV }
+    }
+}
+
+# Country scope; refund only observed payment after a failed base increase.
+dicm_bh_sp_refund_payment = {
+    set_variable = { which = dicm_bh_sp_cost_left which = dicm_bh_sp_spent }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 1024 DELTA = 1024 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 512 DELTA = 512 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 256 DELTA = 256 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 128 DELTA = 128 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 64 DELTA = 64 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 32 DELTA = 32 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 16 DELTA = 16 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 8 DELTA = 8 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 4 DELTA = 4 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 2 DELTA = 2 }
+    dicm_bh_sp_power_piece = { TYPE = $TYPE$ VALUE = 1 DELTA = 1 }
+    export_to_variable = { which = dicm_bh_sp_after value = trigger_value:$TYPE$_power }
+    set_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_before }
+    subtract_variable = { which = dicm_bh_sp_spent which = dicm_bh_sp_after }
+}

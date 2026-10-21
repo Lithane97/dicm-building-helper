@@ -1,0 +1,43 @@
+# Country scope; ROOT is the acting country. Literal parameters: BUILDING, GAIN, BASE_COST.
+# GAIN is the selected monthly tax-gain variable name.
+# Tax collection feeds the tested shared ordering, payment and estimate helpers.
+# Historical trade_* names are shared scratch slots, reset for every synchronous pass.
+# Estimates preserve the last report. Tax gain excludes conditional on_built effects.
+
+dicm_bh_collect_tax_candidates = {
+    every_owned_province = {
+        limit = {
+            dicm_bh_trade_province_free = yes
+            can_build = $BUILDING$
+            NOT = { has_building = $BUILDING$ }
+            OR = {
+                AND = {
+                    owner = {
+                        has_country_flag = dicm_bh_trade_upgrade_mode
+                    }
+                    has_building = temple
+                }
+                AND = {
+                    owner = {
+                        NOT = { has_country_flag = dicm_bh_trade_upgrade_mode }
+                    }
+                    NOT = {
+                        OR = { has_building = temple has_building = cathedral }
+                    }
+                }
+            }
+        }
+        dicm_bh_calculate_tax_gains = yes
+        set_variable = { which = dicm_bh_trade_gain which = $GAIN$ }
+        set_variable = { which = dicm_bh_trade_old_cost value = 0 }
+        if = {
+            limit = { has_building = temple }
+            set_variable = { which = dicm_bh_trade_old_cost value = 100 }
+        }
+        dicm_bh_calculate_trade_cost_factor = yes
+        set_variable = { which = dicm_bh_trade_cost value = $BASE_COST$ }
+        dicm_bh_apply_trade_cost_factor = yes
+        dicm_bh_mark_trade_candidate = yes
+    }
+}
+

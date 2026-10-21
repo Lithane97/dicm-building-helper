@@ -1,0 +1,11 @@
+defined_text = {
+    name = GetDICMBHTradeStatus
+    random = no
+    text = { localisation_key = dicm_bh_trade_unsupported trigger = { NOT = { has_country_flag = dicm_bh_trade_supported } } }
+    text = { localisation_key = dicm_bh_trade_locked trigger = { NOT = { has_country_flag = dicm_bh_trade_tech_ready } } }
+    text = { localisation_key = dicm_bh_trade_cost_changed trigger = { has_country_flag = dicm_bh_trade_cost_mismatch } }
+    text = { localisation_key = dicm_bh_trade_nothing trigger = { NOT = { check_variable = { which = dicm_bh_trade_eligible value = 1 } } } }
+    text = { localisation_key = dicm_bh_trade_preview_done trigger = { has_country_flag = dicm_bh_trade_preview } }
+    text = { localisation_key = dicm_bh_trade_finished trigger = { always = yes } }
+}
+
