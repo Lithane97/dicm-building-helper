@@ -1,2 +1,0 @@
-# Read-only ranking diagnostic.
-country_event = { id = dicm_bh_coastal_check.1 }

@@ -1,2 +1,0 @@
-# Read-only native diagnostic; no construction or spending.
-country_event = { id = dicm_bh_resource_check.1 }

@@ -1,2 +1,0 @@
-# Balanced income diagnostic; no construction or net spending.
-country_event = { id = dicm_bh_manufactory_check.1 }

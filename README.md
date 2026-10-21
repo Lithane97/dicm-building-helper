@@ -128,10 +128,10 @@ python -m unittest discover -s tools -p "test_*buildings.py"
 python -m unittest discover -s tools -p "test_development_spend.py"
 ```
 
-The `dicm_bh_*.txt` files at the root are developer console scripts. Some are
-diagnostics; others deliberately change buildings, development or resources in
-a test save. They are not required for normal play. Their comments describe
-their purpose.
+Temporary console probes, setup fixtures and diagnostic event windows have been
+removed. The in-game Build/Upgrade estimates and development previews remain
+part of the live menus. Offline regression tests and their small numeric
+fixtures are kept in `tools/`; raw local captures are not required to run them.
 
 Design notes and test history:
 
@@ -142,9 +142,9 @@ Design notes and test history:
 - [Development evaluation](DEVELOPMENT_EVALUATION.md)
 - [Development integration](NATIVE_DEVELOPMENT_INTEGRATION.md)
 
-These notes include historical implementation stages. Local save files and
-raw validation captures referenced by the notes are omitted from the public
-repository. Current status and limitations are summarized above.
+These notes include historical implementation stages and references to retired
+diagnostic scripts and local captures. Earlier console scripts remain available
+in Git history. Current status and limitations are summarized above.
 
 ## Credits
 

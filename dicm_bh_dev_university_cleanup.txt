@@ -1,7 +1,0 @@
-# Remove only Universities added by the marked test. Existing ones are preserved.
-every_owned_province = {
-    limit = { has_province_flag = dicm_bh_dev_university_test_added }
-    remove_building = university
-    clr_province_flag = dicm_bh_dev_university_test_added
-}
-country_event = { id = dicm_bh_development_check.1 }

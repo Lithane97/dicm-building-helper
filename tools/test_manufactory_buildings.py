@@ -25,8 +25,8 @@ class ManufactoryChecks(unittest.TestCase):
         self.assertRegex(native['soldier_households'], r'local_manpower\s*=\s*0\.75')
         self.assertRegex(native['impressment_offices'], r'local_sailors\s*=\s*250')
 
-    def test_live_preview_diagnostic_dispatch_agree(self):
-        for file,process in [('events/dicm_bh_trade.txt','construct'), ('common/scripted_effects/dicm_bh_estimate_effects.txt','estimate'), ('events/dicm_bh_manufactory_check.txt',None)]:
+    def test_live_and_preview_dispatch_agree(self):
+        for file,process in [('events/dicm_bh_trade.txt','construct'), ('common/scripted_effects/dicm_bh_estimate_effects.txt','estimate')]:
             script = (ROOT/file).read_text()
             for idx,name,tech,level,kind in CONFIG:
                 call = f'dicm_bh_collect_manufactory_candidates = {{ BUILDING = {name} KIND = {kind} }}'

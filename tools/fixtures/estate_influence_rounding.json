@@ -1,0 +1,12 @@
+{
+  "proposed_whole_influence_weights": {
+    "estate_church": 16,
+    "estate_nobles": 41,
+    "estate_burghers": 11
+  },
+  "proposed_losses": {
+    "estate_church": 0.047,
+    "estate_nobles": 0.12,
+    "estate_burghers": 0.032
+  }
+}

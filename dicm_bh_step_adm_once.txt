@@ -1,3 +1,0 @@
-# Dispatch the native hidden worker without a direct console event window.
-# EXPERIMENTAL: spends ADM and develops one supported affordable province.
-country_event = { id = dicm_bh_development_spend.1 }

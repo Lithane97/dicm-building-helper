@@ -1,9 +1,0 @@
-defined_text = {
-    name = GetDICMBHProbeStatus
-    random = no
-    text = { localisation_key = dicm_bh_probe_unsupported trigger = { NOT = { has_country_flag = dicm_bh_probe_supported } } }
-    text = { localisation_key = dicm_bh_probe_no_gain trigger = { NOT = { check_variable = { which = dicm_bh_probe_delta value = 0.001 } } } }
-    text = { localisation_key = dicm_bh_probe_zero_baseline trigger = { NOT = { has_country_flag = dicm_bh_probe_percent_defined } } }
-    text = { localisation_key = dicm_bh_probe_pass trigger = { has_country_flag = dicm_bh_probe_pass } }
-    text = { localisation_key = dicm_bh_probe_fail trigger = { always = yes } }
-}

@@ -107,15 +107,13 @@ class DevelopmentSpendChecks(unittest.TestCase):
             reduction = min(Fraction(100), Fraction(development * 5, 6))
             self.assertEqual(int(reduction + Fraction(1, 2)), expected)
 
-    def test_direct_observers_match_snapshot_helper(self):
-        helpers = dict(blocks((ROOT / 'common/scripted_effects/dicm_bh_development_spend_effects.txt').read_text()))
-        snapshot = ' '.join(tokens(helpers['dicm_bh_sp_watch_snapshot']))
-        for mode in ('baseline', 'after'):
-            script = (ROOT / f'dicm_bh_step_{mode}.txt').read_text()
-            # Validate run-file structure as well as the complete embedded snapshot.
-            list(blocks(script))
-            self.assertIn(snapshot, ' '.join(tokens(script)))
-            self.assertIn('province_from_counter', script)
+    def test_runtime_development_workers_survive_diagnostic_cleanup(self):
+        events = (ROOT / 'events/dicm_bh_development_spend.txt').read_text()
+        ids = set(re.findall(r'\bid\s*=\s*dicm_bh_development_spend\.(\d+)\b', events))
+        self.assertEqual(ids, {'1', '2', '3', '11', '12', '13', '21', '22', '23'})
+        for folder in ('common', 'events', 'customizable_localization'):
+            for path in (ROOT / folder).rglob('*.txt'):
+                self.assertNotIn('dicm_bh_sp_watch_snapshot', path.read_text(encoding='utf-8-sig'))
 
     def test_estate_weight_tree_and_weighted_land_dispatch(self):
         manifest = json.loads((ROOT / 'tools/development_hook_sources.json').read_text())
@@ -151,7 +149,7 @@ class DevelopmentSpendChecks(unittest.TestCase):
                         remaining -= units
                         total -= delta
                 self.assertEqual((remaining, total), (0, Decimal(loss) / 1000))
-        reference = json.loads((ROOT / 'tools/validation/estate_influence_fraction_probe.json').read_text())
+        reference = json.loads((ROOT / 'tools/fixtures/estate_influence_rounding.json').read_text())
         weights = reference['proposed_whole_influence_weights']
         losses = {e: (w * 200 // sum(weights.values())) / 1000 for e, w in weights.items()}
         self.assertEqual(losses, reference['proposed_losses'])
@@ -163,7 +161,7 @@ class DevelopmentSpendChecks(unittest.TestCase):
         self.assertNotIn('estate = all share = -0.2', spender)
         self.assertIn('owner = { dicm_bh_sp_apply_estate_land = yes }', spender)
 
-    def test_menu_batch_dispatch_and_read_only_observers(self):
+    def test_menu_batch_dispatch(self):
         events = (ROOT / 'events/dicm_bh_development_spend.txt').read_text()
         self.assertNotRegex(events, r'\bwhile\s*=')
         gui = (ROOT / 'common/custom_gui/dicm_bh_development_ui.txt').read_text()
@@ -174,10 +172,6 @@ class DevelopmentSpendChecks(unittest.TestCase):
             self.assertIn(f'country_event = {{ id = dicm_bh_development_batch.{idx} }}', button)
             self.assertIn('NOT = { has_country_flag = dicm_bh_db_running }', button)
             self.assertIn('NOT = { has_country_flag = dicm_bh_dm_scan_failed }', button)
-        for idx in (90, 91):
-            observer = next(body for _, body in blocks(events)
-                            if re.match(r'\s*id\s*=\s*dicm_bh_development_spend\.'+str(idx)+r'\b', body))
-            self.assertNotRegex(observer, r'\b(?:add_base_\w+|add_\w+_power|add_devastation)\s*=')
 
     def test_batch_reranks_and_stops_on_failure_or_attempt_limit(self):
         batch = (ROOT / 'common/scripted_effects/dicm_bh_development_batch_effects.txt').read_text()
@@ -206,20 +200,20 @@ class DevelopmentSpendChecks(unittest.TestCase):
             self.assertIn(f'dicm_bh_sp_collect_target = {{ TYPE = {kind} }}', single)
             self.assertIn('NOT = { has_country_flag = dicm_bh_db_running }', single)
 
-    def test_diagnostic_selection_stays_in_native_event_scope(self):
-        events = (ROOT / 'events/dicm_bh_development_spend.txt').read_text()
-        for kind, idx in (('dip', 92), ('mil', 93)):
-            script = (ROOT / f'dicm_bh_step_{kind}_baseline.txt').read_text()
-            self.assertIn(f'country_event = {{ id = dicm_bh_development_spend.{idx} }}', script)
-            self.assertNotIn('dicm_bh_sp_site_supported', script)
-            self.assertNotIn('dicm_bh_sp_collect_target', script)
-            self.assertNotIn('estate_influence', script)
-            observer = next(body for _, body in blocks(events)
-                            if re.match(r'\s*id\s*=\s*dicm_bh_development_spend\.'+str(idx)+r'\b', body))
-            self.assertIn(f'dicm_bh_sp_collect_target = {{ TYPE = {kind} }}', observer)
-            self.assertIn(f'which = dicm_bh_dm_{kind}_reserve', observer)
-            self.assertIn('set_province_flag = dicm_bh_sp_watched', observer)
-            self.assertNotRegex(observer, r'\b(?:add_base_\w+|add_\w+_power|add_devastation)\s*=')
+    def test_runtime_event_calls_resolve_after_cleanup(self):
+        declared, called = set(), set()
+        for path in (ROOT / 'events').glob('*.txt'):
+            for name, body in blocks(path.read_text(encoding='utf-8-sig')):
+                if name in ('country_event', 'province_event'):
+                    identifier = re.match(r'\s*id\s*=\s*(dicm_bh_\w+\.\d+)', body)
+                    self.assertIsNotNone(identifier, str(path))
+                    self.assertNotIn(identifier[1], declared)
+                    declared.add(identifier[1])
+        for folder in ('common', 'events'):
+            for path in (ROOT / folder).rglob('*.txt'):
+                called.update(re.findall(r'\bid\s*=\s*(dicm_bh_\w+\.\d+)\b',
+                                         path.read_text(encoding='utf-8-sig')))
+        self.assertFalse(called - declared, f'Unresolved events: {called - declared}')
 
 
 if __name__ == '__main__':
