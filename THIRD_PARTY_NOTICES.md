@@ -3,9 +3,7 @@
 This is an EU4 mod and includes content adapted from installed game/mod files:
 
 - **Europa Universalis IV**, Paradox Development Studio / Paradox Interactive:
-  interface definitions, game-script integration and the stock `latin_march.tga`
-  Ramparts icon, supplied as `gfx/interface/buildings/iv_weapons_1.tga` to fill a
-  missing texture reference in Idea Variation Lite.
+  interface definitions, game-script integration. 
 - **Europa Expanded**: the topbar integration, development-hook replay content
   and related scripted integration. The upstream workshop dependency is
   https://steamcommunity.com/sharedfiles/filedetails/?id=2164202838.
