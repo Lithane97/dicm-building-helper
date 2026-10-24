@@ -1,7 +1,7 @@
 # Trade, tax, production and fort building construction
 # Historical trade_* IDs and scratch slots are shared by both families.
 # GUI entry points: .4 = Build All, .5 = Upgrade All.
-# Both set their mode and immediately call .6; .2 displays the results.
+# Both set their mode and immediately call .6; actions complete without a popup.
 # Old manual preview events .1/.3 were replaced by dicm_bh_estimate.1.
 #
 # Scope rules:
@@ -461,28 +461,15 @@ country_event = {
         dicm_bh_clear_administration_plans = yes
         dicm_bh_clear_fort_plans = yes
 
-        # 5. Clear temporary selection state, refresh cached estimates, and show results.
+        # 5. Clear temporary selection state and refresh cached estimates.
         dicm_bh_clear_trade_candidates = yes
         clr_country_flag = dicm_bh_trade_best_set
         log = "DICM BH BUILD RESULT: selected=[Root.GetDICMBHBuilding] count=[Root.dicm_bh_trade_count.GetValue] eligible=[Root.dicm_bh_trade_eligible.GetValue] spent=[Root.dicm_bh_trade_spent.GetValue] budget=[Root.dicm_bh_trade_budget.GetValue] budget_skips=[Root.dicm_bh_trade_budget_skips.GetValue] failed=[Root.dicm_bh_trade_failed.GetValue]"
         country_event = {
             id = dicm_bh_estimate.1
         }
-        country_event = {
-            id = dicm_bh_trade.2
-        }
     }
     option = { name = dicm_bh_trade_close }
 }
 
-
-# Results window. The estimate refresh preserves these report values.
-country_event = {
-    id = dicm_bh_trade.2
-    title = dicm_bh_trade_result_title
-    desc = dicm_bh_trade_report_desc
-    picture = TRADE_eventPicture
-    is_triggered_only = yes
-    option = { name = dicm_bh_trade_close }
-}
 

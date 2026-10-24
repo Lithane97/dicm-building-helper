@@ -130,8 +130,6 @@
 
  dicm_bh_trade_build_tt:0 "Build [Root.GetDICMBHBuilding] in qualifying provinces without a building in this chain.\n[Root.GetDICMBHUnit]: §Y[Root.dicm_bh_minimum.GetValue]§!.\n[Root.GetDICMBHBuildEstimate][Root.GetDICMBHProductionEstimateNote][Root.GetDICMBHFortNote][Root.GetDICMBHAdministrationNote]"
  dicm_bh_trade_upgrade_tt:0 "Upgrade qualifying lower-tier buildings to [Root.GetDICMBHBuilding].\n[Root.GetDICMBHUnit]: §Y[Root.dicm_bh_minimum.GetValue]§!.\n[Root.GetDICMBHUpgradeEstimate][Root.GetDICMBHProductionEstimateNote][Root.GetDICMBHFortNote][Root.GetDICMBHAdministrationNote]"
- dicm_bh_trade_result_title:0 "Building Helper: construction results"
- dicm_bh_trade_report_desc:0 "Selected: [Root.GetDICMBHBuilding]\n[Root.GetDICMBHUnit]: [Root.dicm_bh_minimum.GetValue]\nTreasury share: [Root.dicm_bh_budget_percent.GetValue]%\n\nQualifying provinces: [Root.dicm_bh_trade_eligible.GetValue]\nProjects: [Root.dicm_bh_trade_count.GetValue]\nSpending cap: [Root.dicm_bh_trade_budget.GetValue] ducats\nTotal cost: [Root.dicm_bh_trade_spent.GetValue] ducats\nSkipped for budget or changed eligibility: [Root.dicm_bh_trade_budget_skips.GetValue]\nFailed construction requests: [Root.dicm_bh_trade_failed.GetValue]\n\n[Root.GetDICMBHTradeStatus][Root.GetDICMBHProductionEstimateNote][Root.GetDICMBHFortNote][Root.GetDICMBHAdministrationNote]"
  dicm_bh_trade_close:0 "Close"
  dicm_bh_trade_unsupported:0 "Select an enabled tax, production, trade, manpower, sailor, force-limit, coastal-defence, fort, governing-cost building, manufactory, or University. Other building families are not enabled yet."
  dicm_bh_trade_locked:0 "The selected building is not unlocked by your technology."

@@ -31,7 +31,7 @@ class BuildMenuChecks(unittest.TestCase):
         self.assertEqual(selectors['temple'], ('adm', 4))
         self.assertEqual(selectors['cathedral'], ('adm', 19))
 
-    def test_build_and_upgrade_refresh_after_construction_before_results(self):
+    def test_build_and_upgrade_refresh_after_construction_without_popup(self):
         events = {}
         for kind, body in blocks((ROOT/'events/dicm_bh_trade.txt').read_text()):
             if kind == 'country_event':
@@ -43,8 +43,10 @@ class BuildMenuChecks(unittest.TestCase):
         last_construction = max(m.start() for m in re.finditer(
             'dicm_bh_construct_trade_candidates', worker))
         self.assertLess(last_construction, worker.index('id = dicm_bh_estimate.1'))
-        self.assertLess(worker.index('id = dicm_bh_estimate.1'),
-                        worker.index('id = dicm_bh_trade.2'))
+        self.assertNotIn('dicm_bh_trade.2', events)
+        self.assertNotIn('id = dicm_bh_trade.2', worker)
+        for identifier, body in events.items():
+            self.assertRegex(body, r'\bhidden\s*=\s*yes\b', identifier)
         refresh = next(body for name, body in blocks(
             (ROOT/'events/dicm_bh_estimate.txt').read_text()) if name == 'country_event')
         self.assertLess(refresh.index('dicm_bh_save_trade_report'),

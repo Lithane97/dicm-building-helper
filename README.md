@@ -9,7 +9,7 @@ the macro builder, alongside EE's existing tab.
 - Build or upgrade supported buildings across qualifying provinces, with a
   configurable treasury percentage and minimum benefit.
 - Preview project counts and costs before committing. Native construction
-  handles payment, queues and completion effects; reports show actual spending,
+  handles payment, queues and completion effects; logs record actual spending,
   budget skips and failures.
 - Rank tax, production, trade, manpower, sailors, army/navy force limits,
   governing-cost buildings and manufactories by their estimated additional
@@ -78,6 +78,8 @@ Open the macro builder and select the Building Helper tab. Choose a building,
 set its minimum benefit and the percentage of current treasury to spend, and
 inspect the Build/Upgrade preview. Click the appropriate action to queue native
 construction. Each action takes its own budget from the current treasury.
+Build and Upgrade complete without a results popup and automatically refresh
+both spending previews afterward.
 
 The minimum uses the selected family's unit: monthly ducats, manpower, sailors,
 force-limit capacity, governing capacity saved or a strategic score. Tooltips
