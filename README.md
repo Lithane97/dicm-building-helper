@@ -89,7 +89,7 @@ ADM, DIP and MIL. The footer reports increases, points spent and the stop reason
 
 ## Validation and limits
 
-All 28 offline checks pass on the development installation. Native game tests
+All 30 offline checks pass on the development installation. Native game tests
 verified construction, costs, budgets and queues for each supported building
 family. Representative production, manpower and sailor manufactory estimates
 matched native tooltips. Development tests covered all three individual point
@@ -124,8 +124,7 @@ They are integration checks, not a self-contained CI suite.
 Run from this repository's root:
 
 ```sh
-python -m unittest discover -s tools -p "test_*buildings.py"
-python -m unittest discover -s tools -p "test_development_spend.py"
+python -m unittest discover -s tools -p "test_*.py"
 ```
 
 Temporary console probes, setup fixtures and diagnostic event windows have been

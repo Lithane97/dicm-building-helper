@@ -249,7 +249,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 6
     }
     tooltip = dicm_bh_select_barracks_tt
     effect = {
@@ -271,7 +271,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 16
     }
     tooltip = dicm_bh_select_training_fields_tt
     effect = {
@@ -293,7 +293,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 6
     }
     tooltip = dicm_bh_select_dock_tt
     effect = {
@@ -315,7 +315,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 19
     }
     tooltip = dicm_bh_select_drydock_tt
     effect = {
@@ -337,7 +337,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 8
     }
     tooltip = dicm_bh_select_regimental_camp_tt
     effect = {
@@ -359,7 +359,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 22
     }
     tooltip = dicm_bh_select_conscription_center_tt
     effect = {
@@ -381,7 +381,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 8
     }
     tooltip = dicm_bh_select_shipyard_tt
     effect = {
@@ -403,7 +403,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 24
     }
     tooltip = dicm_bh_select_grand_shipyard_tt
     effect = {
@@ -425,7 +425,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 8
     }
     tooltip = dicm_bh_select_courthouse_tt
     effect = {
@@ -447,7 +447,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 22
     }
     tooltip = dicm_bh_select_town_hall_tt
     effect = {
@@ -469,7 +469,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 17
     }
     tooltip = dicm_bh_select_university_tt
     effect = {
@@ -491,7 +491,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 1
     }
     tooltip = dicm_bh_select_fort_15th_tt
     effect = {
@@ -513,7 +513,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 14
     }
     tooltip = dicm_bh_select_fort_16th_tt
     effect = {
@@ -535,7 +535,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 19
     }
     tooltip = dicm_bh_select_fort_17th_tt
     effect = {
@@ -557,7 +557,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 24
     }
     tooltip = dicm_bh_select_fort_18th_tt
     effect = {
@@ -579,7 +579,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 5
     }
     tooltip = dicm_bh_select_coastal_defence_tt
     effect = {
@@ -601,7 +601,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 12
     }
     tooltip = dicm_bh_select_naval_battery_tt
     effect = {
@@ -623,7 +623,7 @@ custom_button = {
 
     }
     trigger = {
-
+        mil_tech = 11
     }
     tooltip = dicm_bh_select_weapons_tt
     effect = {
@@ -645,7 +645,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 11
     }
     tooltip = dicm_bh_select_textile_tt
     effect = {
@@ -667,7 +667,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 6
     }
     tooltip = dicm_bh_select_farm_estate_tt
     effect = {
@@ -689,7 +689,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 14
     }
     tooltip = dicm_bh_select_tradecompany_tt
     effect = {
@@ -1164,7 +1164,7 @@ custom_button = {
 
     }
     trigger = {
-
+        dip_tech = 7
     }
     tooltip = dicm_bh_select_impressment_offices_tt
     effect = {
@@ -1186,7 +1186,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 12
     }
     tooltip = dicm_bh_select_state_house_tt
     effect = {
@@ -1208,7 +1208,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 15
     }
     tooltip = dicm_bh_select_soldier_households_tt
     effect = {
@@ -1230,7 +1230,7 @@ custom_button = {
 
     }
     trigger = {
-
+        adm_tech = 21
     }
     tooltip = dicm_bh_select_furnace_tt
     effect = {
@@ -1297,7 +1297,9 @@ custom_button = {
 custom_button = {
     name = dicm_bh_select_wharf
     potential = { }
-    trigger = { }
+    trigger = {
+        dip_tech = 11
+    }
     tooltip = dicm_bh_select_wharf_tt
     effect = {
         hidden_effect = {
@@ -1310,7 +1312,9 @@ custom_button = {
 custom_button = {
     name = dicm_bh_select_plantations
     potential = { }
-    trigger = { }
+    trigger = {
+        adm_tech = 14
+    }
     tooltip = dicm_bh_select_plantations_tt
     effect = {
         hidden_effect = {
@@ -1323,7 +1327,9 @@ custom_button = {
 custom_button = {
     name = dicm_bh_select_mills
     potential = { }
-    trigger = { }
+    trigger = {
+        adm_tech = 16
+    }
     tooltip = dicm_bh_select_mills_tt
     effect = {
         hidden_effect = {
@@ -1336,7 +1342,9 @@ custom_button = {
 custom_button = {
     name = dicm_bh_select_ramparts
     potential = { }
-    trigger = { }
+    trigger = {
+        adm_tech = 6
+    }
     tooltip = dicm_bh_select_ramparts_tt
     effect = {
         hidden_effect = {
